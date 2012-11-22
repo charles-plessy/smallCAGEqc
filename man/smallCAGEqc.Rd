@@ -1,42 +1,25 @@
-\name{anRpackage-package}
-\alias{anRpackage-package}
-\alias{anRpackage}
+\name{smallCAGEqc-package}
+\alias{smallCAGEqc-package}
+\alias{smallCAGEqc}
 \docType{package}
 \title{
-What the package does (short line)
-~~ package title ~~
+Functions to QC shallow-sequenced libraries.
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+Ad-hoc functions to QC shallow-sequenced libraries, for instance from MiSeq.
 }
 \details{
-\tabular{ll}{
-Package: \tab anRpackage\cr
-Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2012-11-22\cr
-License: \tab What license is it under?\cr
-}
-~~ An overview of how to use the package, including the most important ~~
-~~ functions ~~
+Under construction
 }
 \author{
-Who wrote it
-
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+Charles Plessy <plessy@riken.jp>
 }
 \references{
-~~ Literature or other references for background information ~~
+To do
 }
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in ~~
-~~ the R documentation directory ~~
 \keyword{ package }
+\keyword{ CAGE }
 \seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
 }
 \examples{
-~~ simple examples of the most important functions ~~
 }

@@ -50,6 +50,7 @@ Charles Plessy <plessy@riken.jp>
 ##---- Should be DIRECTLY executable !! ----
 ##-- ==>  Define data, use random,
 ##--	or do  help(data=index)  for the standard data sets.
+}
 
 ## The function is currently defined as
 \keyword{ ~CAGE }
