@@ -15,11 +15,16 @@ A data frame with columns named \code{promoter}, \code{exon}, \code{intron}
 }
 }
 \details{
-To Do
+See http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2 about stacked barplot.
+
+To be plotted with:
+
+\code{ggplot(mapstats, aes(x=Type, y=value, fill=variable), main=LIBRARY) + geom_bar(stat="identity") + geom_segment(aes(xend = Type,y = ystart, yend = yend)) +  geom_point(aes(x = Type, y = yend),shape = "|",show_guide = FALSE) + coord_flip()  + opts(title=LIBRARY)}
 }
 
 \value{
-Returns data in percentages that can be used for stacked barplots.
+Returns mean and standard deviation of normalised mapping statistics, plus absolute
+positions for the error bars.
 }
 
 \author{
