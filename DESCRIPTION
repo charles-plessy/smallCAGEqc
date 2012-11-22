@@ -1,4 +1,4 @@
-Package: small-CAGE-QC
+Package: smallCAGEqc
 Type: Package
 Title: ad-hoc QC functions for shallow-sequenced test CAGE libraries
 Version: 0.1
