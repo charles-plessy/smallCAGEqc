@@ -13,7 +13,7 @@ A data frame of tag counts, where each row is a cluster and each column is a lib
 }
 }
 \details{
-To Do
+Ensures that the column names of the returned data frame are identical to the input.
 }
 
 \value{
