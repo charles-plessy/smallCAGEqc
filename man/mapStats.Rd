@@ -11,15 +11,11 @@ mapStats(libs)
 \arguments{
   \item{libs}{
 A data frame with columns named \code{promoter}, \code{exon}, \code{intron}
-\code{Mapped}, \code{Extracted}, \code{rRNA}, and \code{TagDust}.
+\code{mapped}, \code{extracted}, \code{rdna}, and \code{tagdust}.
 }
 }
 \details{
 See http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2 about stacked barplot.
-
-To be plotted with:
-
-\code{ggplot(mapstats, aes(x=Type, y=value, fill=variable), main=LIBRARY) + geom_bar(stat="identity") + geom_segment(aes(xend = Type,y = ystart, yend = yend)) +  geom_point(aes(x = Type, y = yend),shape = "|",show_guide = FALSE) + coord_flip()  + opts(title=LIBRARY)}
 }
 
 \value{
@@ -32,14 +28,14 @@ Charles Plessy <plessy@riken.jp>
 }
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+\code{\link{hierarchAnnot}}
 }
 
-## The function is currently defined as
+\examples{
+## To be plotted with:
+##
+## \code{ggplot(mapstats, aes(x=group, y=value, fill=variable), main=LIBRARY) + geom_bar(stat="identity") + geom_segment(aes(xend = group,y = ystart, yend = yend)) +  geom_point(aes(x = group, y = yend),shape = "|",show_guide = FALSE) + coord_flip()  + opts(title=LIBRARY)}
+}
+
 \keyword{ ~CAGE }
-\keyword{ ~annotation }% __ONLY ONE__ keyword per line
+\keyword{ ~annotation }

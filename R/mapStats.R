@@ -1,42 +1,42 @@
 mapStats <- function(libs) {
 
 maprates <- with(libs, data.frame(
-  Group=Group,
-  Promoter=(promoter / Extracted),
-  Exon=(exon / Extracted),
-  Intron=(intron / Extracted),
-  Mapped=((Mapped  - promoter - intron - exon )/ Extracted),
-  rRNA=(rRNA / Extracted),
-  TagDust=(TagDust / Extracted)
+  group=group,
+  promoter=(promoter / extracted),
+  exon=(exon / extracted),
+  intron=(intron / extracted),
+  mapped=((mapped  - promoter - intron - exon )/ extracted),
+  rdna=(rdna / extracted),
+  tagdust=(tagdust / extracted)
 ))
 
 mapstats <- with(maprates, data.frame(
-  Promoter=tapply(Promoter, Group, mean),
-  Exon=tapply(Exon, Group, mean),
-  Intron=tapply(Intron, Group, mean),
-  Mapped=tapply(Mapped, Group, mean),
-  rRNA=tapply(rRNA, Group, mean),
-  TagDust=tapply(TagDust, Group, mean)
+  promoter=tapply(promoter, group, mean),
+  exon=tapply(exon, group, mean),
+  intron=tapply(intron, group, mean),
+  mapped=tapply(mapped, group, mean),
+  rdna=tapply(rdna, group, mean),
+  tagdust=tapply(tagdust, group, mean)
 ))
 
-mapstats$Type <- rownames(mapstats)
+mapstats$group <- rownames(mapstats)
 
 mapstats.sd <- with(maprates, data.frame(
-  Promoter=tapply(Promoter, Group, sd),
-  Exon=tapply(Exon, Group, sd),
-  Intron=tapply(Intron, Group, sd),
-  Mapped=tapply(Mapped, Group, sd),
-  rRNA=tapply(rRNA, Group, sd),
-  TagDust=tapply(TagDust, Group, sd)
+  promoter=tapply(promoter, group, sd),
+  exon=tapply(exon, group, sd),
+  intron=tapply(intron, group, sd),
+  mapped=tapply(mapped, group, sd),
+  rdna=tapply(rdna, group, sd),
+  tagdust=tapply(tagdust, group, sd)
 ))
 
-mapstats.sd$Type <- rownames(mapstats.sd)
+mapstats.sd$group <- rownames(mapstats.sd)
 
 mapstats <- melt(mapstats)
 
 mapstats$sd <- melt(mapstats.sd)$value
 
-mapstats <- ddply(mapstats,.(Type),transform,ystart = cumsum(value),yend = cumsum(value) + sd)
+mapstats <- ddply(mapstats,.(group),transform,ystart = cumsum(value),yend = cumsum(value) + sd)
 
 return(mapstats)
 
