@@ -32,7 +32,7 @@ Charles Plessy <plessy@riken.jp>
 }
 
 \seealso{
-\code{\link{hierarchAnnot}}
+\code{\link{hierarchAnnot}}, \code{\link{loadLogs}}
 }
 
 \examples{

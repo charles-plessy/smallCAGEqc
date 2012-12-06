@@ -44,7 +44,7 @@ Charles Plessy <plessy@riken.jp>
 }
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{loadLogs}}, \code{\link{mapStats}}
 }
 \examples{
 ##---- Should be DIRECTLY executable !! ----
