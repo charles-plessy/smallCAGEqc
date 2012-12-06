@@ -1,13 +1,20 @@
-mapStats <- function(libs) {
+mapStats <- function(libs, scope='all') {
+
+if (scope == 'all')
+  scope <- libs$extracted
+else if (scope == 'annotation')
+  scope <- libs$mapped
+else
+  stop ('scope must be "all" or "annotation"')
 
 maprates <- with(libs, data.frame(
   group=group,
-  promoter=(promoter / extracted),
-  exon=(exon / extracted),
-  intron=(intron / extracted),
-  mapped=((mapped  - promoter - intron - exon )/ extracted),
-  rdna=(rdna / extracted),
-  tagdust=(tagdust / extracted)
+  promoter=(promoter / scope),
+  exon=(exon / scope),
+  intron=(intron / scope),
+  mapped=((mapped  - promoter - intron - exon )/ scope),
+  rdna=(rdna / scope),
+  tagdust=(tagdust / scope)
 ))
 
 mapstats <- with(maprates, data.frame(
