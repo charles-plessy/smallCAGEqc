@@ -14,8 +14,9 @@ A data frame with columns named \code{promoter}, \code{exon}, \code{intron}
 \code{mapped}, \code{extracted}, \code{rdna}, and \code{tagdust}.
 }
   \item{scope}{
-The value on which to normalise. \dquote{all} normalises on the number of extracted tags
-and \dquote{annotation} normalises on the number of aligned tags.
+The value on which to normalise. \dQuote{all} normalises on the number of extracted tags
+and \dQuote{annotation} normalises on the number of aligned tags.
+}
 }
 \details{
 See http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2 about stacked barplot.

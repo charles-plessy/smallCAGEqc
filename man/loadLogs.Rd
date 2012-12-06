@@ -43,6 +43,5 @@ Charles Plessy <plessy@riken.jp>
 ##--	or do  help(data=index)  for the standard data sets.
 }
 
-## The function is currently defined as
 \keyword{ ~CAGE }
 \keyword{ ~annotation }% __ONLY ONE__ keyword per line
