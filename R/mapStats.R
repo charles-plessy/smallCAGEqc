@@ -1,9 +1,15 @@
 mapStats <- function(libs, scope='all') {
 
 if (scope == 'all')
-  scope <- libs$extracted
+  if (is.numeric(libs$extracted))
+    scope <- libs$extracted
+  else
+    stop("libs$extracted missing or erroneous.")
 else if (scope == 'annotation')
-  scope <- libs$mapped
+  if (is.numeric(libs$mapped))
+    scope <- libs$mapped
+  else
+    stop("libs$mapped missing or erroneous.")
 else
   stop ('scope must be "all" or "annotation"')
 
