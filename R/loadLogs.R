@@ -17,6 +17,11 @@ if ( file.exists('rdna.log') )
 if ( file.exists('mapped.log') )
   logs <- rbind(logs, read.table('mapped.log',    col.names=colnames(logs)))
 
+# Maybe the following would be better ?
+# 
+# files <- list.files(..pattern to match files..)
+# results <- lapply(files, read.table, header = TRUE)
+
 logs <- reshape::cast(logs)
 rownames(logs) <- logs$sample
 
