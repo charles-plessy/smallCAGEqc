@@ -2,7 +2,7 @@
 \alias{loadLogs}
 \title{Load mapping statistics from log files}
 \description{
-Loads mapping statistics from a hard-coded list of files.
+Loads mapping counts and other statistics produced during processing.
 }
 \usage{
 loadLogs()
@@ -11,9 +11,14 @@ loadLogs()
 No arguments for the moment.
 }
 \details{
-The files contain tab-separated triples, with first the name of the mapping
-statistics, like extracted, mapped, rdna, etc., then the sample identifier,
-and then the number of reads.
+\code{loadLogs} will load data from every file ending in sQuote{\code{.log}} in
+the work directory.  Thes files are expected contain tab-separated triples,
+with first the name of the mapping statistics, like extracted, mapped, rdna,
+etc., then the sample identifier, and then the number of reads.
+
+\code{loadLogs} will crash or produce incorrect output if the files do not
+contain triples, or if the sample identifiers are not matched correctly in the
+files, or if the first word of the triples appears in multiple files.
 
 This function uses the \code{cast} function from the \code{reshape} package,
 and for this reason this library depends on \code{reshape}.
