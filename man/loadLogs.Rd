@@ -5,20 +5,26 @@
 Loads mapping counts and other statistics produced during processing.
 }
 \usage{
-loadLogs()
+loadLogs(source)
 }
 \arguments{
-No arguments for the moment.
+source: indicate to load the data from log files in the current directory, or from the summary
+file of Moirai.
 }
 \details{
-\code{loadLogs} will load data from every file ending in sQuote{\code{.log}} in
-the work directory.  Thes files are expected contain tab-separated triples,
-with first the name of the mapping statistics, like extracted, mapped, rdna,
-etc., then the sample identifier, and then the number of reads.
 
-\code{loadLogs} will crash or produce incorrect output if the files do not
-contain triples, or if the sample identifiers are not matched correctly in the
-files, or if the first word of the triples appears in multiple files.
+With \code{source='logs'}, \code{loadLogs} will load data from every file
+ending in sQuote{\code{.log}} in the work directory.  Thes files are expected
+contain tab-separated triples, with first the name of the mapping statistics,
+like extracted, mapped, rdna, etc., then the sample identifier, and then the
+number of reads.  \code{loadLogs} will crash or produce incorrect output if the
+files do not contain triples, or if the sample identifiers are not matched
+correctly in the files, or if the first word of the triples appears in multiple
+files.
+
+With \code{source='moirai'}, \code{loadLogs} will load data from a summary file
+found in the \code{PROCESSED_DATA} directory.  It will also need the library
+name to be in the \code{LIBRARY} variable.
 
 This function uses the \code{cast} function from the \code{reshape} package,
 and for this reason this library depends on \code{reshape}.
