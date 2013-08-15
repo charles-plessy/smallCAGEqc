@@ -8,8 +8,8 @@ Loads mapping counts and other statistics produced during processing.
 loadLogs(source)
 }
 \arguments{
-source: indicate to load the data from log files in the current directory, or from the summary
-file of Moirai.
+  \item{source}{indicate to load the data from log files in the current directory, or from the summary
+file of Moirai.}
 }
 \details{
 
