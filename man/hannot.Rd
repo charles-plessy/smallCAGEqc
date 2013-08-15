@@ -38,7 +38,10 @@ The default data frame is as follows (as of version 0.2.1).
 }
 
 \value{
-Returns a vector of annotations as factors.
+Returns a vector of annotations as factors, where the levels are sorted in the
+hierarchical order.  For instance, with the data frame above, if an annotation
+matches for the keywords sQuote{miRNA} and sQuote{snoRNA}, then the reported
+one will be sQuote{snoRNA}.
 }
 
 \author{Charles Plessy <plessy@riken.jp>}

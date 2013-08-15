@@ -23,5 +23,5 @@ hannot <- rep("other", length(annot))
 for (i in 1:nrow(hierarchy))
   hannot[grepl(hierarchy[i,1], annot)] <- hierarchy[i,2]
 
-factor(hannot)
+factor(hannot, levels=unique(hierarchy[[2]]))
 }
