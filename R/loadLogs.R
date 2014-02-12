@@ -25,8 +25,7 @@ setMethod(
       return(logs)
     }
     if (source=="moirai") {
-      libs <- read.table(paste('/osc-fs_home/scratch/moirai/nanoCAGE2/input/', LIBRARY, '.multiplex.txt', sep=''), sep='\t', header=T)[,c('samplename', 'group', 'barcode', 'filename')]
-      colnames(libs) <- c('sample', 'group', 'barcode', 'index')
+      libs <- read.table(paste('/osc-fs_home/scratch/moirai/nanoCAGE2/input/', LIBRARY, '.multiplex.txt', sep=''), sep='\t', header=T)[,c('samplename', 'group', 'barcode', 'index')]
       rownames(libs) <-libs$sample
 
       # Discard empty libraries
@@ -34,11 +33,11 @@ setMethod(
       
       x <- cast(data=read.table(paste(PROCESSED_DATA, '/text/summary.txt', sep=''), sep='\t'), value='V3', V1 ~ V2)
       rownames(x) <- sub('NCms1.....','', x$V1)
-      libs$extracted <- x[rownames(libs), 'pairend_extraction']
+      libs$extracted <- x[rownames(libs), 'extracted']
       libs$mapped    <- x[rownames(libs), 'genome_mapped']
-      libs$rdna      <- x[rownames(libs), 'removed_by_rRNAdust_ribosomal']
-      libs$tagdust   <- x[rownames(libs), 'removed_by_Tagdust']
-      libs$spikes    <- x[rownames(libs), 'removed_by_rRNAdust_spikes']
+      libs$rdna      <- x[rownames(libs), 'filtered_for_rrna']
+      libs$tagdust   <- x[rownames(libs), 'filtered_for_artefacts']
+      libs$spikes    <- x[rownames(libs), 'filtered_for_spikes']
       libs$extracted <- libs$extracted - libs$spikes
       return(libs)
     }
