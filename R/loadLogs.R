@@ -35,9 +35,9 @@ setMethod(
       rownames(x) <- sub('NCms1.....','', x$V1)
       libs$extracted <- x[rownames(libs), 'extracted']
       libs$mapped    <- x[rownames(libs), 'genome_mapped']
-      libs$rdna      <- x[rownames(libs), 'filtered_for_rrna']
-      libs$tagdust   <- x[rownames(libs), 'filtered_for_artefacts']
-      libs$spikes    <- x[rownames(libs), 'filtered_for_spikes']
+      libs$rdna      <- x[rownames(libs), 'removed_rrna']
+      libs$tagdust   <- x[rownames(libs), 'removed_artefacts']
+      libs$spikes    <- x[rownames(libs), 'removed_spikes']
       libs$extracted <- libs$extracted - libs$spikes
       return(libs)
     }
