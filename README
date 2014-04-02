@@ -1,0 +1,31 @@
+smallCAGEqc
+===========
+
+smallCAGEqc is a R package collecting scripts for the analysis of transcriptome
+libraries at RIKEN CLST/DGT ex-OSC.  It makes strong assumptions on our
+infrastructure and hardcodes paths for key files, therefore it does not make
+sense to share it to the public.
+
+To install smallCAGEqc on a linux system, retreive the source code with Git as
+follows:
+
+```
+git clone osc-ac2.gsc.riken.jp:/osc-fs_home/plessy/git/R/smallCAGEqc.git
+```
+
+Then install the R package locally.
+
+```
+R CMD INSTALL smallCAGEqc
+```
+
+That's it !  Of course, `git` and `R` must be already installed on your system,
+as well as the R packages needed by smallCAGEqc (see the `Depends` line of the
+[DESCRIPTION][] file).
+
+On Mac it should be similar, and on Windows I recommend to install a Linux
+virtual machine.
+
+Charles Plessy <plessy@riken.jp>  -- Wed, 02 Apr 2014 17:55:28 +0900
+
+[DESCRIPTION]: DESCRIPTION
