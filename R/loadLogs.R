@@ -31,7 +31,7 @@
                                   , sep='\t')
                                   , value='V3'
                                   , V1 ~ V2)
-        rownames(x) <- sub('NCms1.....','', x$V1)
+        rownames(x) <- sub(paste0(LIBRARY, '.'),'', x$V1)
         libs$extracted <- x[rownames(libs), 'extracted']
         libs$mapped    <- x[rownames(libs), 'genome_mapped']
         libs$rdna      <- x[rownames(libs), 'removed_rrna']
