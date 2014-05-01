@@ -19,7 +19,7 @@
                           , sep='\t'
                           , header=T
                           )[,c('samplename', 'group', 'barcode', 'index')]
-        rownames(libs) <-libs$sample
+        rownames(libs) <-libs$samplename
 
         # Discard empty libraries
         libs <- libs[colnames(l1),]
