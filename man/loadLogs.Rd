@@ -1,16 +1,23 @@
 \name{loadLogs}
 \alias{loadLogs}
+\alias{loadLogs,missing,ANY,ANY-method}
+\alias{loadLogs,character,ANY,ANY-method}
+\alias{loadLogs,character,character,character-method}
+
 \title{Load mapping statistics from log files}
 \description{
 Loads mapping counts and other statistics produced during processing.
 }
 \usage{
-loadLogs(source)
+loadLogs(source, multiplex, summary)
 }
 \arguments{
-  \item{source}{indicate to load the data from log files in the current directory, or from the summary
-file of Moirai.}
+  \item{source}{indicate to load the data from log files in the current
+       directory, or from the summary file of Moirai.}
+  \item{multiplex}{Optional. Path to a \sQuote{multiplex} file.}
+  \item{summary}{Optional. Path to a \sQuote{summary} file.}
 }
+
 \details{
 
 With \code{source='logs'}, \code{loadLogs} will load data from every file
@@ -23,19 +30,22 @@ correctly in the files, or if the first word of the triples appears in multiple
 files.
 
 With \code{source='moirai'}, \code{loadLogs} will load data from a summary file
-found in the \code{PROCESSED_DATA} directory.  It will also need the library
-name to be in the \code{LIBRARY} variable.
+and a multiplex file.  When their path is not given by \code{multiplex} and
+\code{summary}, they will be searched at fixed locations in the
+\code{PROCESSED_DATA} directory using the \code{LIBRARY} variable.
 }
 
 \value{
 Returns a data frame with one row per sample, and the following columns (if the
 corresponding data is available).
+\enumerate{
   \item{sample}{Sample identifier (factor)}
   \item{extracted}{Number of extracted reads}
   \item{tagdust}{Number of reads containing oligonucleotide artefacts}
   \item{spikes}{Number of reads overlaping with the reference spike sequences}
   \item{rdna}{Number of reads overlaping with the reference ribosomal DNA sequences}
   \item{mapped}{Number of reads aligned to the reference genome}
+}
 }
 
 \author{
@@ -45,10 +55,8 @@ Charles Plessy <plessy@riken.jp>
 \seealso{
 \code{\link{hierarchAnnot}}, \code{\link{mapStats}}
 }
+
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
 }
 
 \keyword{ ~CAGE }
