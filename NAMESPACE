@@ -1,1 +1,3 @@
 exportPattern("^[[:alpha:]]+")
+importFrom(plyr, ddply, .)
+importFrom(reshape, cast, melt)

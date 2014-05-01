@@ -25,9 +25,6 @@ files.
 With \code{source='moirai'}, \code{loadLogs} will load data from a summary file
 found in the \code{PROCESSED_DATA} directory.  It will also need the library
 name to be in the \code{LIBRARY} variable.
-
-This function uses the \code{cast} function from the \code{reshape} package,
-and for this reason this library depends on \code{reshape}.
 }
 
 \value{
