@@ -12,10 +12,9 @@
         return(logs)
     }
     if (source=="moirai") {
-        libs <- read.table( paste( '/osc-fs_home/scratch/moirai/nanoCAGE2/input/'
-                                 , LIBRARY
-                                 , '.multiplex.txt'
-                                 , sep='')
+        libs <- read.table( paste0( '/osc-fs_home/scratch/moirai/nanoCAGE2/input/'
+                                  , LIBRARY
+                                  , '.multiplex.txt')
                           , sep='\t'
                           , header=T
                           )[,c('samplename', 'group', 'barcode', 'index')]
@@ -24,10 +23,7 @@
         # Discard empty libraries
         libs <- libs[colnames(l1),]
     
-        x <- cast( data=read.table( paste( PROCESSED_DATA
-                                         , '/text/summary.txt'
-                                         , sep=''
-                                         )
+        x <- cast( data=read.table( paste0( PROCESSED_DATA, '/text/summary.txt')
                                   , sep='\t')
                                   , value='V3'
                                   , V1 ~ V2)
