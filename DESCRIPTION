@@ -10,4 +10,4 @@ Description: Functions to quickly generate reports about CAGE libraries
  assume a depth of sequencing typical of the MiSeq instrument, and are not
  guaranteed to work harmless on bigger data produced by HiSeqs.
 License: CC0, if possible
-Imports: plyr, reshape
+Imports: plyr, reshape (>= 0.8.5)
