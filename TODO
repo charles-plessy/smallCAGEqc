@@ -1,0 +1,1 @@
+ - loadLogs should not need LIBRARY to be set when loading local files.
