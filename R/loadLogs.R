@@ -13,9 +13,15 @@
 
 .loadStats <- function(source, multiplex, summary) {
     if (missing(multiplex)) {
-        multiplex <- paste0( '/osc-fs_home/scratch/moirai/nanoCAGE2/input/'
-                           , LIBRARY
-                           , '.multiplex.txt')
+        if (grepl('nanoCAGE2', PROCESSED_DATA)) {
+            multiplex <- paste0( '/osc-fs_home/scratch/moirai/nanoCAGE2/input/'
+                               , LIBRARY
+                               , '.multiplex.txt')
+        } else if (grepl('nano-fluidigm', PROCESSED_DATA)) {
+            multiplex <- '/osc-fs_home/scratch/moirai/nano-fluidigm/input/default.multiplex.txt'
+        } else {
+            stop('Could not dectect a known Moirai user in PROCESSED_DATA')
+        }
     }
     if (missing(summary)) {
         summary <- paste0( PROCESSED_DATA, '/text/summary.txt')
@@ -30,13 +36,30 @@
                               , sep='\t')
                               , value='V3'
                               , V1 ~ V2)
-    rownames(x) <- sub(paste0(LIBRARY, '.'),'', x$V1)
-    libs$extracted <- x[rownames(libs), 'extracted']
-    libs$mapped    <- x[rownames(libs), 'genome_mapped']
-    libs$rdna      <- x[rownames(libs), 'removed_rrna']
-    libs$tagdust   <- x[rownames(libs), 'removed_artefacts']
-    libs$spikes    <- x[rownames(libs), 'removed_spikes']
-    libs$extracted <- libs$extracted - libs$spikes
+    if (grepl('nano-fluidigm', PROCESSED_DATA)) {
+        # Ignore Read 2 and Undetermined
+        sampleNames <- x$V1
+        linesToKeep <- ! grepl('(_R2_|Undetermined)', sampleNames)
+        x           <- subset(x,           linesToKeep)
+        sampleNames <- subset(sampleNames, linesToKeep)
+        # Reorder from sample 1 to 96.
+        x <- x[order(as.numeric(sub('_.*','', sampleNames))),]
+        rownames(x) <- rownames(libs)
+        libs$extracted <- x[rownames(libs), 'raw']
+        libs$mapped    <- x[rownames(libs), 'genome_mapped']
+        libs$rdna      <- x[rownames(libs), 'removed_rrna']
+        libs$tagdust   <- x[rownames(libs), 'removed_artifacts'] # Note the different spelling
+        libs$spikes    <- x[rownames(libs), 'removed_spikes']
+        libs$extracted <- libs$extracted - libs$spikes
+    } else {
+        rownames(x) <- sub(paste0(LIBRARY, '.'),'', x$V1)
+        libs$extracted <- x[rownames(libs), 'extracted']
+        libs$mapped    <- x[rownames(libs), 'genome_mapped']
+        libs$rdna      <- x[rownames(libs), 'removed_rrna']
+        libs$tagdust   <- x[rownames(libs), 'removed_artefacts']
+        libs$spikes    <- x[rownames(libs), 'removed_spikes']
+        libs$extracted <- libs$extracted - libs$spikes
+    }
     return(libs)
 }
 
