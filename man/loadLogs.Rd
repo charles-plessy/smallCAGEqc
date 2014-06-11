@@ -33,6 +33,11 @@ With \code{source='moirai'}, \code{loadLogs} will load data from a summary file
 and a multiplex file.  When their path is not given by \code{multiplex} and
 \code{summary}, they will be searched at fixed locations in the
 \code{PROCESSED_DATA} directory using the \code{LIBRARY} variable.
+
+With \code{source='moirai'}, \code{loadLogs} will recognise the \sQuote{nano-fluidigm}
+or the \sQuote{nanoCAGE2} Moirai users, or fail.  For the \sQuote{nano-fluidigm}
+user, the samples are sorted by numbers and associated to sorted well names, from
+A01, A02, ..., to H11 and H12.
 }
 
 \value{
