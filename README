@@ -19,6 +19,14 @@ Then install the R package locally.
 R CMD INSTALL smallCAGEqc
 ```
 
+In case of error `no permission to install to directory 
+‘/usr/local/lib/R/site-library’`, create a local R directory with the following 
+command.
+
+```
+/usr/bin/Rscript -e 'dir.create(Sys.getenv("R_LIBS_USER"), recursive=TRUE)'
+````
+
 That's it !  Of course, `git` and `R` must be already installed on your system,
 as well as the R packages needed by smallCAGEqc (see the `Depends` line of the
 [DESCRIPTION][] file).
