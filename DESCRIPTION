@@ -1,13 +1,20 @@
 Package: smallCAGEqc
 Type: Package
 Title: ad-hoc QC functions for shallow-sequenced test CAGE libraries
-Version: 0.4.3
-Date: 2014-06-26
+Version: 0.4.4
+Date: 2015-03-18
 Author: Charles Plessy <plessy@riken.jp>
 Maintainer: Charles Plessy <plessy@riken.jp>
-Description: Functions to quickly generate reports about CAGE libraries
- that are prepared to test and develop the CAGE protocols.  These functions
- assume a depth of sequencing typical of the MiSeq instrument, and are not
- guaranteed to work harmless on bigger data produced by HiSeqs.
-License: CC0, if possible
+Description: Functions to quickly generate reports about CAGE libraries.
+ WARNING: this package is available to the public, but at the moment it
+ is strongly tied to our work environment at RIKEN, so there is no
+ guarantee that you will not waste your time with it.  In addition, some
+ of the code here was not written to be durable, but rather to quickly
+ produce results.
+ .
+ We use this package to analyse libraries that are prepared to test and
+ develop our CAGE protocols.  It assume a depth of sequencing typical of
+ the MiSeq instrument, and is guaranteed to work harmless on bigger data
+ produced by HiSeqs.
+License: file LICENSE
 Imports: plyr, reshape (>= 0.8.5)
