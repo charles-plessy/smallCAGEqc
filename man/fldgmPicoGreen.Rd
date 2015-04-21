@@ -5,11 +5,12 @@
 Reads Fluidigm C1 cDNA yields from fluorometric measures entered in a template Excel sheet.
 }
 \usage{
-fldgmPicoGreen(FILE, TEMPLATE="PN 100-6260")
+fldgmPicoGreen(FILE, TEMPLATE="PN 100-6260", FORMAT="long")
 }
 \arguments{
   \item{FILE}{Path to a file in Excel XML format.}
   \item{TEMPLATE}{A template identification number.}
+  \item{FORMAT}{Long or wide.}
 }
 \details{
 
@@ -27,8 +28,14 @@ were not tested.
 }
 
 \value{
-Returns a data frame representing a 96-well plate with 8 rows (A to H) and 12 columns
-(01 to 12), containing cDNA concentrations in nanograms per microliter.
+Returns a data frame indicating containing cDNA concentrations in nanograms per
+microliter for each well.
+
+In the "long" format, the data frame has 96 rows and 4 columns ("well", "row",
+"column" and "concentration").
+
+With a "wide" format, returns a data frame with 8 rows (A to H) and 12 columns
+(01 to 12).
 }
 
 \author{
