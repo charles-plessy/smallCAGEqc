@@ -26,7 +26,8 @@ fldgmPicoGreen <- function(FILE, TEMPLATE='PN 100-6260', FORMAT='long') {
     picogreen <- melt(TABLE, id.vars='row')
     colnames(picogreen) <- c('row', 'column', 'concentration')
     picogreen[,"well"] <- paste(picogreen$row, picogreen$column, sep='')
-    picogreen <- picogreen[, c('well', 'row', 'column', 'concentration')]
+    picogreen <- picogreen[ order(picogreen$well)
+                          , c('well', 'row', 'column', 'concentration')]
     picogreen
   }
 

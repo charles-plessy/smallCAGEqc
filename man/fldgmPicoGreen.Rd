@@ -31,8 +31,8 @@ were not tested.
 Returns a data frame indicating containing cDNA concentrations in nanograms per
 microliter for each well.
 
-In the "long" format, the data frame has 96 rows and 4 columns ("well", "row",
-"column" and "concentration").
+In the "long" format, the data frame has 4 columns ("well", "row", "column" and
+"concentration") and 96 rows, sorted by well from A01, A02, ... to H11, H12.
 
 With a "wide" format, returns a data frame with 8 rows (A to H) and 12 columns
 (01 to 12).
