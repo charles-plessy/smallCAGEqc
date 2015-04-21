@@ -1,3 +1,4 @@
 exportPattern("^[[:alpha:]]+")
+importFrom(gdata, read.xls)
 importFrom(plyr, ddply, .)
 importFrom(reshape, cast, melt)
