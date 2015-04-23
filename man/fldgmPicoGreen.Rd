@@ -5,12 +5,15 @@
 Reads Fluidigm C1 cDNA yields from fluorometric measures entered in a template Excel sheet.
 }
 \usage{
-fldgmPicoGreen(FILE, TEMPLATE="PN 100-6260", FORMAT="long")
+fldgmPicoGreen(FILE, TEMPLATE="PN 100-6260", FORMAT="long", RUN)
 }
 \arguments{
   \item{FILE}{Path to a file in Excel XML format.}
   \item{TEMPLATE}{A template identification number.}
   \item{FORMAT}{Long or wide.}
+  \item{RUN}{
+    A string representing the run name (for instance, the serial ID of the
+    capture array).}
 }
 \details{
 
@@ -33,6 +36,8 @@ microliter for each well.
 
 In the "long" format, the data frame has 4 columns ("well", "row", "column" and
 "concentration") and 96 rows, sorted by well from A01, A02, ... to H11, H12.
+Row names are either well names, or run and well names, separated by an
+underscore (\sQuote{_}).
 
 With a "wide" format, returns a data frame with 8 rows (A to H) and 12 columns
 (01 to 12).
@@ -46,9 +51,13 @@ Charles Plessy <plessy@riken.jp>
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+## With a file called "1772-064-102.picogreen.xlsx":
+##
+## fldgmPicoGreen(FILE="1772-064-102.picogreen.xlsx"
+##
+## In command line:
+##
+## Rscript -e 'smallCAGEqc::fldgmPicoGreen(FILE="1772-064-102.picogreen.xlsx", TEMPLATE="PN 100-6260", RUN="1772-064-102")
 }
 
 \keyword{ ~CAGE }

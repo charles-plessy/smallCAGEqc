@@ -1,4 +1,4 @@
-fldgmPicoGreen <- function(FILE, TEMPLATE='PN 100-6260', FORMAT='long') {
+fldgmPicoGreen <- function(FILE, TEMPLATE='PN 100-6260', FORMAT='long', RUN) {
 
   if      (TEMPLATE == 'PN 100-6260')
     linesToSkip = 45
@@ -22,19 +22,22 @@ fldgmPicoGreen <- function(FILE, TEMPLATE='PN 100-6260', FORMAT='long') {
 
   colnames(picogreen) <- c('row', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12')
 
-  meltConcentrationTable <- function (TABLE) {
-    picogreen <- melt.data.frame(TABLE, id.vars='row')
+  if (FORMAT == "long") {
+    picogreen <- melt.data.frame(picogreen, id.vars='row')
     colnames(picogreen) <- c('row', 'column', 'concentration')
     picogreen[,"well"] <- paste(picogreen$row, picogreen$column, sep='')
     picogreen <- picogreen[ order(picogreen$well)
                           , c('well', 'row', 'column', 'concentration')]
-    picogreen
-  }
-
-  if (FORMAT == "long")
-    return(meltConcentrationTable(picogreen))
-  else
+    if (missing(RUN)) {
+       rownames(picogreen) <- picogreen$well
+    } else {
+       picogreen$run <- RUN
+       rownames(picogreen) <- paste(picogreen$run, picogreen$well, sep='_')
+    }
+    return(picogreen)
+  } else {
     return(data.frame( picogreen
                      , row.names   = 1
                      , check.names = FALSE))
+  }
 }
