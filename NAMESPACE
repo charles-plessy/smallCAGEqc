@@ -2,3 +2,6 @@ exportPattern("^[[:alpha:]]+")
 importFrom(gdata, read.xls)
 importFrom(plyr, ddply, .)
 importFrom(reshape, cast, melt, melt.data.frame)
+importFrom(ggplot2, ggplot, aes 
+                  , geom_bar, geom_point, geom_segment
+                  , coord_flip, theme)
