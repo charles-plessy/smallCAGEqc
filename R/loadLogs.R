@@ -51,6 +51,14 @@
         libs$tagdust   <- x[rownames(libs), 'removed_artifacts'] # Note the different spelling
         libs$spikes    <- x[rownames(libs), 'removed_spikes']
         libs$extracted <- libs$extracted - libs$spikes
+    } else if (grepl('CAGEscan_short-reads_full-deduplication', PROCESSED_DATA)) {
+        rownames(x) <- sub(paste0(LIBRARY, '.'),'', x$V1)
+# remove later
+        rownames(x) <- sub('_READ1', '', rownames(x))
+        libs$extracted <- x[rownames(libs), 'umi_extracted']
+        libs$mapped    <- x[rownames(libs), 'genome_mapped']
+        libs$rdna      <- x[rownames(libs), 'removed_artifacts']
+        libs$counts    <- x[rownames(libs), 'exact_transcript_count']
     } else {
         rownames(x) <- sub(paste0(LIBRARY, '.'),'', x$V1)
         libs$extracted <- x[rownames(libs), 'extracted']
