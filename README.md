@@ -14,7 +14,7 @@ Installation on Linux computers
 ### From GitHub (recommended)
 
 ```
-devtools::install_github('oscR','charles-plessy')
+devtools::install_github('smallCAGEqc','charles-plessy')
 ```
 
 
