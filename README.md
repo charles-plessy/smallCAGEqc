@@ -11,7 +11,7 @@ you if we are not working together already._
 Installation on Linux computers
 -------------------------------
 
-### From GitHub (recommended)
+### From GitHub in `R` (recommended)
 
 ```
 devtools::install_github('smallCAGEqc','charles-plessy')
@@ -21,7 +21,7 @@ devtools::install_github('smallCAGEqc','charles-plessy')
 ### From a Git clone.
 
 ```
-git clone https://github.com/charles-plessy/oscR.git
+git clone https://github.com/charles-plessy/smallCAGEqc.git
 R CMD INSTALL smallCAGEqc
 ```
 
