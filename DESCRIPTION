@@ -17,5 +17,4 @@ Description: Functions to quickly generate reports about CAGE libraries.
  the MiSeq instrument, and is guaranteed to work harmless on bigger data
  produced by HiSeqs.
 License: file LICENSE
-Imports: gdata, ggplot2 (>= 1.0.0), grid, plyr, reshape (>= 0.8.5)
-       , VennDiagram
+Imports: gdata, ggplot2 (>= 1.0.0), grid, plyr, reshape (>= 0.8.5), VennDiagram
