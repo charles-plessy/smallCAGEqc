@@ -14,7 +14,7 @@ Installation on Linux computers
 ### From GitHub in `R` (recommended)
 
 ```
-devtools::install_github('smallCAGEqc','charles-plessy')
+devtools::install_github('charles-plessy/smallCAGEqc')
 ```
 
 
