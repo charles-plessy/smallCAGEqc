@@ -2,7 +2,7 @@ exportPattern("^[[:alpha:]]+")
 importFrom(gdata, read.xls)
 importFrom(ggplot2, ggplot, aes 
                   , geom_bar, geom_point, geom_segment
-                  , coord_flip, theme)
+                  , coord_flip, theme, element_text)
 importFrom(grid, grid.draw)
 importFrom(plyr, ddply, .)
 importFrom(reshape, cast, melt, melt.data.frame)
