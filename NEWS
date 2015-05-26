@@ -1,9 +1,17 @@
+Changes in version 0.7.0
+
+NEW FEATURES
+
+    o   Added the function listSymbols.
+    o   Added the function countSymbols.
+
 Changes in version 0.6.0
 
 NEW FEATURES
 
     o   Added the function plotAnnot.
     o   Added a convenience function VennAB.
+    o   Added the function listSymbols.
 
 Changes in version 0.5.0
 
