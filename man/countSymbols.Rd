@@ -32,7 +32,8 @@ Charles Plessy <plessy@riken.jp>
 }
 
 \examples{
-countSymbols("7SK,ACTR5", "7SK,ADAM10")
+g2 <- data.frame(sample1=c(1,2), sample2=c(1,0), row.names=c("A", "A,B"))
+countSymbols(g2)
 }
 
 \keyword{ ~CAGE }
