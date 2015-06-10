@@ -78,7 +78,7 @@ imageRenameCellomicsC1 <- function(C1ID, directory, fileExtension, nameLinkFile)
   finalName <- paste(finalName, paste(".", fileExtension, sep=""), sep="")
   
   # renames selected files with names in new name vector
-  file.rename(paste(directory, list.files(directory), sep=""), paste(directory, finalName, sep=""))
+  file.rename(paste(directory, list.files(directory), sep="/"), paste(directory, finalName, sep="/"))
 }
 
 
