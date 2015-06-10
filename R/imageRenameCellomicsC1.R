@@ -5,7 +5,7 @@ imageRenameCellomicsC1 <- function(C1ID, directory, fileExtension, nameLinkFile)
   
   # remove all files that do not match the extension
   removeOtherFiles <- function(path)
-    unlink(paste(path, grep(paste("\\.", fileExtension, sep=""), list.files(path), value=T, invert=T), sep="/"))
+    unlink(grep(paste("\\.", fileExtension, sep=""), list.files(path, full.names=T), value=T, invert=T))
   removeOtherFiles(RUN[1])
   removeOtherFiles(RUN[2])
   
