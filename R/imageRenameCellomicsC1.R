@@ -1,6 +1,4 @@
-#!/usr/bin/Rscript
-
-renameImages <- function(C1ID, directory, fileExtension, nameLinkFile) {
+imageRenameCellomicsC1 <- function(C1ID, directory, fileExtension, nameLinkFile) {
 
   # saves Cellomics directory names in vector
   RUN <- paste(directory, grep(C1ID, list.files(directory), value=T), sep="")
@@ -63,8 +61,9 @@ renameImages <- function(C1ID, directory, fileExtension, nameLinkFile) {
   file.rename(paste(directory, list.files(directory), sep=""), paste(directory, finalName, sep=""))
 }
 
-args <- commandArgs(trailingOnly = TRUE)
 
-if (length(args) != 4) stop ('Not enough command-line arguments, please read the manual\n')
-
-renameImages(args[1], args[2], args[3], args[4])
+## args <- commandArgs(trailingOnly = TRUE)
+## 
+## if (length(args) != 4) stop ('Not enough command-line arguments, please read the manual\n')
+## 
+## renameImages(args[1], args[2], args[3], args[4])
