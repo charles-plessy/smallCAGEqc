@@ -3,9 +3,11 @@ imageRenameCellomicsC1 <- function(C1ID, directory, fileExtension, nameLinkFile)
   # saves Cellomics directory names in vector
   RUN <- list.files(directory, pattern=C1ID, full.names=T)
   
-  # remove all files that are not bitmap files
-  unlink(paste(RUN[1], grep(paste("\\.", fileExtension, sep=""), list.files(RUN[1]), value=T, invert=T), sep="/"))
-  unlink(paste(RUN[2], grep(paste("\\.", fileExtension, sep=""), list.files(RUN[2]), value=T, invert=T), sep="/"))
+  # remove all files that do not match the extension
+  removeOtherFiles <- function(path)
+    unlink(paste(path, grep(paste("\\.", fileExtension, sep=""), list.files(path), value=T, invert=T), sep="/"))
+  removeOtherFiles(RUN[1])
+  removeOtherFiles(RUN[2])
   
   pics1 <- sub("f00d0", "_BF", list.files(RUN[1], "f00d.", full.names=T))
   pics1 <- sub("f00d1", "_Green", pics1)
