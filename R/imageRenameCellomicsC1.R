@@ -43,8 +43,8 @@ imageRenameCellomicsC1 <- function(C1ID, directory, fileExtension, nameLinkFile)
     return(names)
   }
 
-  run1 <- replaceCellomicsNameWithC1ID(run1, list.files(directory)[1])
-  run2 <- replaceCellomicsNameWithC1ID(run2, list.files(directory)[2])
+  run1 <- replaceCellomicsNameWithC1ID(run1, basename(RUN[1]))
+  run2 <- replaceCellomicsNameWithC1ID(run2, basename(RUN[2]))
   
   # first renaming step 
 
