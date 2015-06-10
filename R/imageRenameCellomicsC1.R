@@ -2,10 +2,12 @@ imageRenameCellomicsC1 <- function(C1ID, directory, fileExtension, nameLinkFile)
 
   # saves Cellomics directory names in vector
   RUN <- list.files(directory, pattern=C1ID, full.names=T)
+
+  fileExtensionPattern <- paste("\\.", fileExtension, sep="")
   
   # remove all files that do not match the extension
   removeOtherFiles <- function(path)
-    unlink(grep(paste("\\.", fileExtension, sep=""), list.files(path, full.names=T), value=T, invert=T))
+    unlink(grep(fileExtensionPattern, list.files(path, full.names=T), value=T, invert=T))
   removeOtherFiles(RUN[1])
   removeOtherFiles(RUN[2])
   
@@ -17,13 +19,13 @@ imageRenameCellomicsC1 <- function(C1ID, directory, fileExtension, nameLinkFile)
   pics2 <- sub("f00d1", "_Green", pics2)
   run2 <- sub("f00d2", "_Red", pics2)
   
-  run1 <- c(paste(grep("_[A-Z]01_", sub(paste("\\.", fileExtension, sep=""), "_", run1), value=T)
+  run1 <- c(paste(grep("_[A-Z]01_", sub(fileExtensionPattern, "_", run1), value=T)
                   , as.vector(sapply(seq(1,24), function(x) rep(x, 3))), paste(".", fileExtension, sep=""), sep="")
-            , paste(grep("_[A-Z]02_", sub(paste("\\.", fileExtension, sep=""), "_", run1), value=T)
+            , paste(grep("_[A-Z]02_", sub(fileExtensionPattern, "_", run1), value=T)
                     , as.vector(sapply(seq(49,72), function(x) rep(x, 3))), paste(".", fileExtension, sep=""), sep=""))
-  run2 <- c(paste(grep("_[A-Z]01_", sub(paste("\\.", fileExtension, sep=""), "_", run2), value=T)
+  run2 <- c(paste(grep("_[A-Z]01_", sub(fileExtensionPattern, "_", run2), value=T)
                   , as.vector(sapply(seq(25,48), function(x) rep(x, 3))), paste(".", fileExtension, sep=""), sep="")
-            , paste(grep("_[A-Z]02_", sub(paste("\\.", fileExtension, sep=""), "_", run2), value=T)
+            , paste(grep("_[A-Z]02_", sub(fileExtensionPattern, "_", run2), value=T)
                     , as.vector(sapply(seq(73,96), function(x) rep(x, 3))), paste(".", fileExtension, sep=""), sep=""))
   
   # replace Cellomics directory name with C1ID
@@ -33,9 +35,9 @@ imageRenameCellomicsC1 <- function(C1ID, directory, fileExtension, nameLinkFile)
   run2 <- gsub(list.files(directory)[2], C1ID, run2)
   
   # first renaming step 
-  file.rename(list.files(RUN[1], pattern=paste("\\.", fileExtension, sep=""), full.names=T)
+  file.rename(list.files(RUN[1], pattern=fileExtensionPattern, full.names=T)
               , paste(directory, sort(run1), sep=""))
-  file.rename(list.files(RUN[2], pattern=paste("\\.", fileExtension, sep=""), full.names=T)
+  file.rename(list.files(RUN[2], pattern=fileExtensionPattern, full.names=T)
               , paste(directory, sort(run2), sep=""))
   
   # delete empty directories
@@ -54,7 +56,7 @@ imageRenameCellomicsC1 <- function(C1ID, directory, fileExtension, nameLinkFile)
   run <- as.character(sapply(run, function(x) str_split(x, "_", n=5)[[1]][5]))
   Image <- as.character(sapply(run, function(x) str_split(x, "_", n=3)[[1]][2]))
   CellNumber <- as.character(sapply(run, function(x) str_split(x, "_", n=3)[[1]][3]))
-  CellNumber <- gsub(paste("\\.", fileExtension, sep=""), "", CellNumber)
+  CellNumber <- gsub(fileExtensionPattern, "", CellNumber)
   index <- match(as.integer(CellNumber), wellToCellomicsID$CellNumber)
   finalName <- paste(wellToCellomicsID$cell_id[index], Image, sep="_")
   finalName <- paste(finalName, paste(".", fileExtension, sep=""), sep="")
