@@ -56,7 +56,15 @@ imageRenameCellomicsC1 <- function(C1ID, directory, fileExtension, nameLinkFile)
   firstRename(run2, RUN[2])
 
   # delete empty directories
-  unlink(RUN, recursive=T)
+  removeIfEmpty <- function(path)
+    if (identical(list.files(path), character(0))) {
+      unlink(path, recursive=T)
+    } else {
+      stop(paste("Problem,", path, "was not empty."))
+  }
+
+  removeIfEmpty(RUN[1])
+  removeIfEmpty(RUN[2])
   
   # load table that links Cellomics ID to well
   wellToCellomicsID <- read.csv(nameLinkFile, stringsAsFactors=F)
