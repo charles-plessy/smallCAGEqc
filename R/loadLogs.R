@@ -17,26 +17,47 @@
             multiplex <- paste0( '/osc-fs_home/scratch/moirai/nanoCAGE2/input/'
                                , LIBRARY
                                , '.multiplex.txt')
+        } else if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.0', PROCESSED_DATA)) {
+            multiplex <- '/osc-fs_home/scratch/moirai/nano-fluidigm/input/samplename_to_sampleid.txt'
         } else if (grepl('nano-fluidigm', PROCESSED_DATA)) {
             multiplex <- '/osc-fs_home/scratch/moirai/nano-fluidigm/input/default.multiplex.txt'
         } else {
             stop('Could not dectect a known Moirai user in PROCESSED_DATA')
         }
     }
-    if (missing(summary)) {
+    if (missing(summary))
         summary <- paste0( PROCESSED_DATA, '/text/summary.txt')
+    readMultiplex <- function (multiplex) {
+       libs <- read.table( multiplex
+                         , sep       = '\t'
+                         , header    = T )
+       if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.0', PROCESSED_DATA)) {
+         rownames(libs) <- libs$sampleid
+       } else {
+         rownames(libs) <- libs$samplename
+       }
+       return(libs)
     }
-    libs <- read.table( multiplex
-                      , sep='\t'
-                      , header=T
-                      )[,c('samplename', 'group', 'barcode', 'index')]
-    rownames(libs) <-libs$samplename
-
-    x <- cast( data=read.table( summary
-                              , sep='\t')
-                              , value='V3'
-                              , V1 ~ V2)
-    if (grepl('nano-fluidigm', PROCESSED_DATA)) {
+    libs <- readMultiplex(multiplex)
+    moirai <- cast( data=read.table( summary
+                                   , sep='\t')
+                  , value='V3'
+                  , V1 ~ V2)
+    moiraiToLibs <- function(COL) moirai[rownames(libs), COL]
+    if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.0', PROCESSED_DATA)) {
+        libs$total       <- moiraiToLibs('raw')
+        libs$extracted   <- moiraiToLibs('extracted')
+        libs$rdna        <- moiraiToLibs('filtered_for_rrna')
+        libs$spikes      <- moiraiToLibs('filtered_for_spikes')
+        libs$mapped      <- moiraiToLibs('genome_mapped')
+        libs$properpairs <- moiraiToLibs('properly_mapped')
+        libs$counts      <- moiraiToLibs('transcript_count')
+        libs$extracted   <- libs$extracted - libs$spikes
+# raw                = extracted               + removed_by_extraction
+# extracted          = non_reference_extracted + removed_references
+# removed_references = filtered_for_spikes     + filtered_for_rrna
+# genome_mapped      = properly_mapped         + removed_improper_pairs
+    } else if (grepl('nano-fluidigm', PROCESSED_DATA)) {
         # Ignore Read 2 and Undetermined
         sampleNames <- x$V1
         linesToKeep <- ! grepl('(_R2_|Undetermined)', sampleNames)
@@ -45,27 +66,19 @@
         # Reorder from sample 1 to 96.
         x <- x[order(as.numeric(sub('_.*','', sampleNames))),]
         rownames(x) <- rownames(libs)
-        libs$extracted <- x[rownames(libs), 'raw']
-        libs$mapped    <- x[rownames(libs), 'genome_mapped']
-        libs$rdna      <- x[rownames(libs), 'removed_rrna']
-        libs$tagdust   <- x[rownames(libs), 'removed_artifacts'] # Note the different spelling
-        libs$spikes    <- x[rownames(libs), 'removed_spikes']
+        libs$extracted <- moiraiToLibs('raw')
+        libs$mapped    <- moiraiToLibs('genome_mapped')
+        libs$rdna      <- moiraiToLibs('removed_rrna')
+        libs$tagdust   <- moiraiToLibs('removed_artifacts') # Note the different spelling
+        libs$spikes    <- moiraiToLibs('removed_spikes')
         libs$extracted <- libs$extracted - libs$spikes
-    } else if (grepl('CAGEscan_short-reads_full-deduplication', PROCESSED_DATA)) {
-        rownames(x) <- sub(paste0(LIBRARY, '.'),'', x$V1)
-# remove later
-        rownames(x) <- sub('_READ1', '', rownames(x))
-        libs$extracted <- x[rownames(libs), 'umi_extracted']
-        libs$mapped    <- x[rownames(libs), 'genome_mapped']
-        libs$rdna      <- x[rownames(libs), 'removed_artifacts']
-        libs$counts    <- x[rownames(libs), 'exact_transcript_count']
     } else {
         rownames(x) <- sub(paste0(LIBRARY, '.'),'', x$V1)
-        libs$extracted <- x[rownames(libs), 'extracted']
-        libs$mapped    <- x[rownames(libs), 'genome_mapped']
-        libs$rdna      <- x[rownames(libs), 'removed_rrna']
-        libs$tagdust   <- x[rownames(libs), 'removed_artefacts']
-        libs$spikes    <- x[rownames(libs), 'removed_spikes']
+        libs$extracted <- moiraiToLibs('extracted')
+        libs$mapped    <- moiraiToLibs('genome_mapped')
+        libs$rdna      <- moiraiToLibs('removed_rrna')
+        libs$tagdust   <- moiraiToLibs('removed_artefacts')
+        libs$spikes    <- moiraiToLibs('removed_spikes')
         libs$extracted <- libs$extracted - libs$spikes
     }
     return(libs)
