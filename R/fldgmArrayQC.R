@@ -63,10 +63,10 @@ redblue <- c("#FF0000", "#FF0808", "#FF1010", "#FF1919", "#FF2121", "#FF2929",
 "#4A4AFF", "#4242FF", "#3A3AFF", "#3131FF", "#2929FF", "#2121FF", 
 "#1919FF", "#1010FF", "#0808FF", "#0000FF")
 
-if (max(LIBS$Error) > 6)
+if (max(LIBS$Error) > 7)
   stop('Unsupported number of error codes') 
 
-colorsForErrorCodes <- c('white', 'black', 'green', 'blue', 'red', 'purple')[1:max(LIBS$Error)]
+colorsForErrorCodes <- c('white', 'black', 'blue', 'grey', 'darkgreen', 'purple', 'red')[1:max(LIBS$Error)]
 
 mar.orig <- par(mar=c(2,6,4,2))
 
@@ -84,7 +84,7 @@ axis(2, at=seq(0,1,length.out=ncol( LIBS ) ), label=colnames(LIBS), las=1)
 
 par(mar=mar.orig)
 
-title(xlab='white: no error; black: no cell; green: debris; blue: no focus; red: multiple cells')
+title(xlab='black: no cell; blue: debris; grey: no focus; green: multiple cells, purple: control, red: dead')
 title(title)
 
 }
