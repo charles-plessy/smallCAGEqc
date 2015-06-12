@@ -1,4 +1,4 @@
-fldgmArrayQC.R <- function(LIBS, title='') {
+fldgmArrayQC <- function(LIBS, title='') {
 
 # 'http://rlgsw35.gsc.riken.jp/gitlab/fucci/fucci/raw/master/fluorescence/fluorescence_QC.csv' %>% read.csv(stringsAsFactors=F) %>% head(96) %>% subset(select=c('Well', 'Cell.Number')) %>% dput(control= NULL) # plus sorting afterwards and renaming column.
 
@@ -19,7 +19,7 @@ Chamber.Number = c(3, 2, 1, 49, 50, 51, 6, 5, 4, 52, 53, 54, 9, 8, 7, 55, 56, 57
 40, 41, 42, 90, 89, 88, 43, 44, 45, 93, 92, 91, 46, 47, 48, 96, 95, 94)
 )
 
-if (! all(W2C$Well == LIBS$well))
+if (! all(W2C$Well == LIBS$Well))
   stop('The data table is not well sorted.  See help page for details.')
 
 LIBS$Chamber.Number <- W2C$Chamber.Number
@@ -32,7 +32,7 @@ if (nrow(LIBS) == 192) {
 
 LIBS <- LIBS[order(LIBS$Chamber.Number),]
 
-displayedData <- c('Error', 'total', 'extracted', 'spikes', 'rdna', 'properpairs', 'counts', 'mean_ch2', 'mean_ch3')
+displayedData <- c('Error', 'Concentration', 'total', 'extracted', 'spikes', 'rdna', 'properpairs', 'counts', 'mean_ch2', 'mean_ch3')
 
 LIBS           <- LIBS[,displayedData]
 LIBS$Error     <- as.numeric(LIBS$Error)
