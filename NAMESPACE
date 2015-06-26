@@ -5,6 +5,6 @@ importFrom(ggplot2, ggplot, aes
                   , coord_flip, theme, element_text)
 importFrom(grid, grid.draw)
 importFrom(magrittr, '%>%')
-importFrom(plyr, ddply, .)
+importFrom(plyr, ddply, l_ply.)
 importFrom(reshape, cast, melt, melt.data.frame)
 importFrom(VennDiagram, venn.diagram)
