@@ -43,6 +43,7 @@
                                    , sep='\t')
                   , value='V3'
                   , V1 ~ V2)
+    if(nrow(moirai) == 96) libs <- libs[1:96,]
     moiraiToLibs <- function(COL) moirai[rownames(libs), COL]
     if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.0', PROCESSED_DATA)) {
         libs$total       <- moiraiToLibs('raw')
