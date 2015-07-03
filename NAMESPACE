@@ -1,4 +1,5 @@
 exportPattern("^[[:alpha:]]+")
+importFrom(edgeR, decideTestsDGE)
 importFrom(gdata, read.xls)
 importFrom(ggplot2, ggplot, aes 
                   , geom_bar, geom_point, geom_segment
