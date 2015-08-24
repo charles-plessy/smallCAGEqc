@@ -1,1 +1,4 @@
 .git
+^.*\.Rproj$
+^\.Rproj\.user$
+.Rproj.user
