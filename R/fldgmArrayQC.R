@@ -42,7 +42,7 @@ LIBS$Chamber.Number <- W2C$Chamber.Number
 if (nrow(LIBS) == 192) {
   LIBS[97:192, "Chamber.Number"] <- LIBS[97:192, "Chamber.Number"] + 96
 } else if (nrow(LIBS) != 96) {
-  stop('The data table should contain 96 or 129 rows.  See help page for details.')
+  stop('The data table should contain 96 or 192 rows.  See help page for details.')
 }
 
 LIBS <- LIBS[order(LIBS$Chamber.Number),]
