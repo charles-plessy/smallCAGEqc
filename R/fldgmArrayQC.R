@@ -1,3 +1,18 @@
+#' fldgmArrayQC
+#'
+#' Plots various quantities as heatmaps sorted by capture chamber.
+#'
+#' @param LIBS A "libs" table, where rows are capture chambers and columns are various data.
+#' @param title The title displayed on the plot.
+#'
+#' The "libs" table must contain columns for 'Error', 'Concentration', 'total', 'extracted',
+#' 'spikes', 'rdna', 'properpairs', 'counts', 'mean_ch2', 'mean_ch3'.  It must be sorted by
+#' well of 96-well plate.
+#'
+#' @examples
+#' fldgmArrayQCplot <- function(RUN) fldgmArrayQC(libs[libs$Run==RUN,], RUN)
+#' ## fldgmArrayQCplot(RunB)
+
 fldgmArrayQC <- function(LIBS, title='') {
 
 # 'http://rlgsw35.gsc.riken.jp/gitlab/fucci/fucci/raw/master/fluorescence/fluorescence_QC.csv' %>% read.csv(stringsAsFactors=F) %>% head(96) %>% subset(select=c('Well', 'Cell.Number')) %>% dput(control= NULL) # plus sorting afterwards and renaming column.
