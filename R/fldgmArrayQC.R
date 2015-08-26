@@ -9,6 +9,8 @@
 #' 'spikes', 'rdna', 'properpairs', 'counts', 'mean_ch2', 'mean_ch3'.  It must be sorted by
 #' well of 96-well plate.
 #'
+#' Each column containing numerical data is centered and reduce before plotting.
+#'
 #' @examples
 #' fldgmArrayQCplot <- function(RUN) fldgmArrayQC(libs[libs$Run==RUN,], RUN)
 #' ## fldgmArrayQCplot(RunB)
@@ -47,9 +49,6 @@ if (nrow(LIBS) == 192) {
 
 LIBS <- LIBS[order(LIBS$Chamber.Number),]
 
-displayedData <- c('Error', 'Concentration', 'total', 'extracted', 'spikes', 'rdna', 'properpairs', 'counts', 'mean_ch2', 'mean_ch3')
-
-LIBS           <- LIBS[,displayedData]
 LIBS$Error     <- as.numeric(LIBS$Error)
 LIBS[is.na(LIBS)] <- 0
 
@@ -82,24 +81,19 @@ if (max(LIBS$Error) > 7)
   stop('Unsupported number of error codes') 
 
 colorsForErrorCodes <- c('white', 'black', 'blue', 'grey', 'darkgreen', 'purple', 'red')[1:max(LIBS$Error)]
-
-mar.orig <- par(mar=c(2,6,4,2))
+displayedData <- c('Concentration', 'total', 'extracted', 'spikes', 'rdna', 'properpairs', 'counts', 'mean_ch2', 'mean_ch3')
 
 LIBS %>%
-  mask('Error') %>%
+  subset(.,,displayedData) %>%
   centerAndReduce %>%
-  image(xaxt= "n", yaxt= "n", col=redblue)
-
-LIBS %>%
-  mask(setdiff(colnames(LIBS), 'Error')) %>%
+  t %>%
   as.matrix %>%
-  image(xaxt= "n", yaxt= "n", col=colorsForErrorCodes, add=T)
-
-axis(2, at=seq(0,1,length.out=ncol( LIBS ) ), label=colnames(LIBS), las=1)
-
-par(mar=mar.orig)
-
-title(xlab='black: no cell; blue: debris; grey: no focus; green: multiple cells, purple: control, red: dead')
-title(title)
-
+  NMF::aheatmap( breaks=c(-3,-2,-1, 1, 2, 3)
+               , col="-RdYlBu2:5"
+               , Rowv=NA
+               , Colv=NA
+               , annCol=list(Error=LIBS$Error)
+               , annColors=list(Error=colorsForErrorCodes)
+               , main=title
+               )
 }
