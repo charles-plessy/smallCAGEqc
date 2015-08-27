@@ -93,10 +93,15 @@ setGeneric( "loadLogs"
                   , value='V3'
                   , V1 ~ V2)
     if(nrow(moirai) == 96) libs <- libs[1:96,]
-    moiraiToLibs <- function(COL) moirai[rownames(libs), COL]
+    moiraiToLibs <- function(COL) {
+      if (COL %in% colnames(moirai)) {
+        moirai[rownames(libs), COL]
+      } else 0
+    }
     if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.0', PROCESSED_DATA)) {
         libs$total       <- moiraiToLibs('raw')
         libs$extracted   <- moiraiToLibs('extracted')
+        libs$tagdust     <- moiraiToLibs('filtered_for_artefact')
         libs$rdna        <- moiraiToLibs('filtered_for_rrna')
         libs$spikes      <- moiraiToLibs('filtered_for_spikes')
         libs$mapped      <- moiraiToLibs('genome_mapped')
