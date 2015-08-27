@@ -1,3 +1,52 @@
+#' loadLogs
+#' 
+#' Load mapping statistics from log files
+#' 
+#' Loads mapping counts and other statistics produced during processing.
+#'  
+#' With \code{source='logs'}, \code{loadLogs} will load data from every file
+#' ending in sQuote{\code{.log}} in the work directory.  Thes files are expected
+#' contain tab-separated triples, with first the name of the mapping statistics,
+#' like extracted, mapped, rdna, etc., then the sample identifier, and then the
+#' number of reads.  \code{loadLogs} will crash or produce incorrect output if the
+#' files do not contain triples, or if the sample identifiers are not matched
+#' correctly in the files, or if the first word of the triples appears in multiple
+#' files.
+#' 
+#' With \code{source='moirai'}, \code{loadLogs} will load data from a summary file
+#' and a multiplex file.  When their path is not given by \code{multiplex} and
+#' \code{summary}, they will be searched at fixed locations in the
+#' \code{PROCESSED_DATA} directory using the \code{LIBRARY} variable.
+#' 
+#' With \code{source='moirai'}, \code{loadLogs} will recognise the \sQuote{nano-fluidigm}
+#' or the \sQuote{nanoCAGE2} Moirai users, or fail.  For the \sQuote{nano-fluidigm}
+#' user, the samples are sorted by numbers and associated to sorted well names, from
+#' A01, A02, ..., to H11 and H12.
+#' 
+#' @param source Indicate to load the data from log files in the current 
+#'  directory, or from the summary file of Moirai.
+#' @param multiplex Optional. Path to a \sQuote{multiplex} file.
+#' @param summary Optional. Path to a \sQuote{summary} file.
+#' 
+#' @return Returns a data frame with one row per sample, and the following columns (if the
+#' corresponding data is available).
+#' \enumerate{
+#'  \item{sample}{Sample identifier (factor)}
+#'  \item{extracted}{Number of extracted reads}
+#'  \item{tagdust}{Number of reads containing oligonucleotide artefacts}
+#'  \item{spikes}{Number of reads overlaping with the reference spike sequences}
+#'  \item{rdna}{Number of reads overlaping with the reference ribosomal DNA sequences}
+#'  \item{mapped}{Number of reads aligned to the reference genome}
+#'  }
+#'  
+#' @seealso \code{\link{hierarchAnnot}}, \code{\link{mapStats}}
+
+setGeneric( "loadLogs"
+            , signature=c("source", "multiplex", "summary")
+            , function(source, multiplex, summary)
+              standardGeneric("loadLogs")
+)
+
 .loadLogs <- function(source) {
     logfiles <- list.files(path='.', pattern='*log')
     logs <- data.frame( variable=factor()
@@ -84,12 +133,6 @@
     }
     return(libs)
 }
-
-setGeneric( "loadLogs"
-          , signature=c("source", "multiplex", "summary")
-          , function(source, multiplex, summary)
-              standardGeneric("loadLogs")
-)
 
 setMethod( loadLogs
          , signature=c(source="missing", multiplex="ANY", summary="ANY")
