@@ -19,11 +19,12 @@
 #'  open circles).
 #' @param ... Further arguments to be passed to the first plot function,
 #'  that plots the empty frame.
+#' @param GROUP A vector of factors grouping the samples.
 #' 
 #' @seealso vegan
 
 
-hanabiPlot <- function (RAR, S, log='xy', type='o', ...) {
+hanabiPlot <- function (RAR, S, log='xy', type='o', GROUP, ...) {
   
   # Accessory function to define the range of the empty frame's axis.
   minMax <- function (X) c( min(X, na.rm=TRUE)
@@ -49,7 +50,7 @@ hanabiPlot <- function (RAR, S, log='xy', type='o', ...) {
   rarLines  <- function (X)
     lines( S
         , RAR[X,]
-        , col=add.alpha(as.numeric(libs$Error[X]),0.5)
+        , col=add.alpha(as.numeric(GROUP[X]),0.5)
         , type=type)
   
   
@@ -67,9 +68,9 @@ hanabiPlot <- function (RAR, S, log='xy', type='o', ...) {
   
   RAR[shiftTrueLeft(RAR==apply(RAR, 1, max))] <- NA
   
-  emptFrame()
-  sapply( 1:ncol(RAR), rarLines)
+  emptyFrame()
+  sapply( 1:nrow(RAR), rarLines)
   points( x = apply(RAR, 1, function(X) max(s[!is.na(X)])) # sampling sizes for each cell
           , y = apply(RAR, 1, max, na.rm=T) # num. of detected feat. at max. sampl. size
-          , col=as.numeric(libs$Error))
+          , col=as.numeric(GROUP))
 }
