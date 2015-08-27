@@ -4,7 +4,7 @@
 \alias{hanabiPlot}
 \title{hanabiPlot}
 \usage{
-hanabiPlot(RAR, S, log = "xy", type = "o", ...)
+hanabiPlot(RAR, S, log = "xy", type = "o", GROUP, ...)
 }
 \arguments{
 \item{RAR}{A rarefaction table.}
@@ -16,8 +16,10 @@ hanabiPlot(RAR, S, log = "xy", type = "o", ...)
 \item{type}{What to plot at the end of the curve (by default,
 open circles).}
 
+\item{GROUP}{A vector of factors grouping the samples.}
+
 \item{...}{Further arguments to be passed to the first plot function,
- that plots the empty frame.}
+that plots the empty frame.}
 }
 \description{
 Plot feature discovery curves
