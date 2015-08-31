@@ -1,3 +1,22 @@
+#' imageRenameCellomicsC1
+#'
+#' Rename raw image files into 96-well format.
+#'
+#' Due to filesystem case-insensitivity, it is not possible to have 96
+#' different identifiers in one Cellomics run.  Therefore, two runs
+#' are made with arbitrary names, and the files are renamed with this
+#' script to reflect coordinates in 96-well format.
+#'
+#' WARNING: This function renames files and deletes directory; use it at
+#  your own risk.
+#' 
+#' @param C1ID Run ID, for example "1772-066-262".
+#' @param directory Directory containing raw files.
+#' @param fileExtension File extension for the raw files.  Usually "C01".
+#' @param nameLinkFile To be deprecated soon.
+#' 
+#' @author Michael Böttcher and Charles Plessy
+
 imageRenameCellomicsC1 <- function(C1ID, directory, fileExtension, nameLinkFile) {
 
   # saves Cellomics directory names in vector
