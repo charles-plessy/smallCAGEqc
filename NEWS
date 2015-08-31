@@ -1,3 +1,18 @@
+Changes in version 0.8.0
+
+NEW FEATURES
+
+    o   Added the function exportInEnv
+    o   Added the functions fldgmArrayQC, fldgmConcentrationPlot
+        fldgmPicoGreen, and fldgmPicoGreenStdCurve
+    o   Added the function hanabiPlot
+    o   Added the function llPostProcess
+    o   Added the function plotSlimSmear
+    o   Added the function setupForMoirai
+
+BUG FIXES
+   o   loadLogs now handles CAGEscan 2.0 pipelines.
+
 Changes in version 0.7.0
 
 NEW FEATURES
