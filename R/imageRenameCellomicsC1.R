@@ -12,11 +12,11 @@
 #' 
 #' @param C1ID Run ID, for example "1772-066-262".
 #' @param directory Directory containing raw files.
-#' @param fileExtension File extension for the raw files.  Usually "C01".
+#' @param fileExtension File extension for the raw files.  Defaults to "C01".
 #' 
 #' @author Michael Böttcher and Charles Plessy
 
-imageRenameCellomicsC1 <- function(C1ID, directory, fileExtension) {
+imageRenameCellomicsC1 <- function(C1ID, directory, fileExtension="C01") {
 
   # saves Cellomics directory names in vector
   RUN <- list.files(directory, pattern=C1ID, full.names=T)
