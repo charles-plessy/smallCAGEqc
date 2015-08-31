@@ -12,7 +12,7 @@
 #' frame. Only the templates PN 100-6260 and PN 100-6160 are supported, other
 #' templates (if any) were not tested.
 #' 
-#' @param FILE     Reads Fluidigm C1 cDNA yields from fluorometric measures entered in a template Excel sheet.
+#' @param FILE     A standard Excel sheet containing fluorometric measurements of Fluidigm C1 cDNA yields.
 #' @param TEMPLATE  devtools::document()A template identification number.
 #' @param FORMAT   Long or wide.
 #' @param RUN      A string representing the run name (for instance, the serial ID of the capture array.
