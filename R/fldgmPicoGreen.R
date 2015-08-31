@@ -38,16 +38,13 @@
 #' ##
 #' ## Rscript -e 'smallCAGEqc::fldgmPicoGreen(FILE="1772-064-102.picogreen.xlsx", TEMPLATE="PN 100-6260", RUN="1772-064-102")
 
+fldgmPicoGreen <- function(FILE, TEMPLATE=c("PN 100-6160", "PN 100-6260"), FORMAT='long', RUN) {
 
-
-fldgmPicoGreen <- function(FILE, TEMPLATE='PN 100-6260', FORMAT='long', RUN) {
-
+  TEMPLATE <- match.arg(TEMPLATE)
   if      (TEMPLATE == 'PN 100-6260')
     linesToSkip = 45
   else if (TEMPLATE == 'PN 100-6160')
     linesToSkip = 41
-  else
-    stop ('Unknown template number.')
 
   if (! FORMAT %in% c("long", "wide"))
     stop ("FORMAT should be 'long' or 'wide'.")
