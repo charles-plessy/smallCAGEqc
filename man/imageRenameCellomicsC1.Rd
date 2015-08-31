@@ -4,7 +4,7 @@
 \alias{imageRenameCellomicsC1}
 \title{imageRenameCellomicsC1}
 \usage{
-imageRenameCellomicsC1(C1ID, directory, fileExtension, nameLinkFile)
+imageRenameCellomicsC1(C1ID, directory, fileExtension)
 }
 \arguments{
 \item{C1ID}{Run ID, for example "1772-066-262".}
@@ -12,8 +12,6 @@ imageRenameCellomicsC1(C1ID, directory, fileExtension, nameLinkFile)
 \item{directory}{Directory containing raw files.}
 
 \item{fileExtension}{File extension for the raw files.  Usually "C01".}
-
-\item{nameLinkFile}{To be deprecated soon.}
 }
 \description{
 Rename raw image files into 96-well format.
