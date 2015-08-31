@@ -1,0 +1,13 @@
+#!/usr/bin/Rscript
+
+# Moves and deletes files; makes lots of assumptions; beware and use at your
+# own risk.
+
+args <- commandArgs(trailingOnly = TRUE)
+
+if (length(args) != 2) stop ('Not enough command-line arguments, please read the manual\n')
+
+if (! file.exists(args[2])) stop('Directory not found\n')
+
+# arg1 = runID, arg2 = directory
+smallCAGEqc::imageRenameCellomicsC1(args[1], args[2])
