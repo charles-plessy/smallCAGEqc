@@ -4,14 +4,14 @@
 \alias{imageRenameCellomicsC1}
 \title{imageRenameCellomicsC1}
 \usage{
-imageRenameCellomicsC1(C1ID, directory, fileExtension)
+imageRenameCellomicsC1(C1ID, directory, fileExtension = "C01")
 }
 \arguments{
 \item{C1ID}{Run ID, for example "1772-066-262".}
 
 \item{directory}{Directory containing raw files.}
 
-\item{fileExtension}{File extension for the raw files.  Usually "C01".}
+\item{fileExtension}{File extension for the raw files.  Defaults to "C01".}
 }
 \description{
 Rename raw image files into 96-well format.
