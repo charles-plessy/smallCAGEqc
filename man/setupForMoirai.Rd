@@ -4,14 +4,21 @@
 \alias{setupForMoirai}
 \title{setupForMoirai}
 \usage{
-setupForMoirai(LIBRARY, MOIRAI_USER, MOIRAI_PROJECT)
+setupForMoirai(LIBRARY, MOIRAI_USER, MOIRAI_PROJECT, MOIRAI_STAMP = "latest",
+  GENOME = c("hg19", "hg38"))
 }
 \arguments{
 \item{LIBRARY}{A name identifying a library given in Moirai.}
 
 \item{MOIRAI_USER}{A Moirai user name (part of the file path).}
 
-\item{MOIRAI_PROJECT}{A Moirai project name (part of the file path).}
+\item{MOIRAI_PROJECT}{A Moirai project name (part of the file path).
+Note that some Moirai project names look like user names and
+vice versa.}
+
+\item{MOIRAI_STAMP}{A Moirai time stamp.}
+
+\item{GENOME}{A genome identifier, to get default annoation and gene definition.}
 }
 \value{
 Prints shell commands that, would have the same effect.  This is useful when
