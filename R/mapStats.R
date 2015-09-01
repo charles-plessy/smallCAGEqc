@@ -1,3 +1,23 @@
+#' mapStats
+#' 
+#' Process mapping statistics
+#' 
+#' Using a data frame containing mapping statistics in counts, transform the data in
+#' percentages that can be used for stacked barplots.
+#' 
+#' See http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2 about stacked barplot.
+#' 
+#' @param libs A data frame with columns named \code{promoter}, \code{exon}, \code{intron}
+#'        \code{mapped}, \code{extracted}, \code{rdna}, and \code{tagdust}.
+#' @param scope The value on which to normalise. \dQuote{all} normalises on the number of extracted tags
+#'        and \dQuote{annotation} normalises on the number of aligned tags.
+#'
+#' @return
+#' Returns mean and standard deviation of normalised mapping statistics, plus absolute
+#' positions for the error bars.
+#' 
+#' @seealso \code{\link{hierarchAnnot}}, \code{\link{loadLogs}}, \code{\link{plotAnnot}}
+
 mapStats <- function(libs, scope='all') {
 
 if (scope == 'all')
