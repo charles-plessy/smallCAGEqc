@@ -49,7 +49,7 @@ if (nrow(LIBS) == 192) {
 
 LIBS <- LIBS[order(LIBS$Chamber.Number),]
 
-LIBS$Error     <- as.numeric(LIBS$Error)
+LIBS$Error     <- unclass(LIBS$Error) # as.numeric would skip unused levels
 LIBS[is.na(LIBS)] <- 0
 
 centerAndReduce <- function(TABLE) {
@@ -92,7 +92,7 @@ LIBS %>%
                , col="-RdYlBu2:5"
                , Rowv=NA
                , Colv=NA
-               , annCol=list(Error=LIBS$Error)
+               , annCol=list(Error=factor(LIBS$Error, 1:max(LIBS$Error)))  # Trying to make sure that colors are the same even if one error type is not used.
                , annColors=list(Error=colorsForErrorCodes)
                , main=title
                )
