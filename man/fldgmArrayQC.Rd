@@ -9,16 +9,17 @@ fldgmArrayQC(LIBS, title = "")
 \arguments{
 \item{LIBS}{A "libs" table, where rows are capture chambers and columns are various data.}
 
-\item{title}{The title displayed on the plot.
-
+\item{title}{The title displayed on the plot.}
+}
+\description{
+Plots various quantities as heatmaps sorted by capture chamber.
+}
+\details{
 The "libs" table must contain columns for 'Error', 'Concentration', 'total', 'extracted',
 'spikes', 'rdna', 'properpairs', 'counts', 'mean_ch2', 'mean_ch3'.  It must be sorted by
 well of 96-well plate.
 
-Each column containing numerical data is centered and reduce before plotting.}
-}
-\description{
-Plots various quantities as heatmaps sorted by capture chamber.
+Each column containing numerical data is centered and reduce before plotting.
 }
 \examples{
 fldgmArrayQCplot <- function(RUN) fldgmArrayQC(libs[libs$Run==RUN,], RUN)

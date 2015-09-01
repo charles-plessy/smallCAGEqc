@@ -8,7 +8,7 @@ fldgmPicoGreen(FILE, TEMPLATE = c("PN 100-6160", "PN 100-6260"),
   FORMAT = "long", RUN)
 }
 \arguments{
-\item{FILE}{Reads Fluidigm C1 cDNA yields from fluorometric measures entered in a template Excel sheet.}
+\item{FILE}{A standard Excel sheet containing fluorometric measurements of Fluidigm C1 cDNA yields.}
 
 \item{TEMPLATE}{devtools::document()A template identification number.}
 

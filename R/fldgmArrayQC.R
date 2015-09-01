@@ -2,14 +2,14 @@
 #'
 #' Plots various quantities as heatmaps sorted by capture chamber.
 #'
-#' @param LIBS A "libs" table, where rows are capture chambers and columns are various data.
-#' @param title The title displayed on the plot.
-#'
 #' The "libs" table must contain columns for 'Error', 'Concentration', 'total', 'extracted',
 #' 'spikes', 'rdna', 'properpairs', 'counts', 'mean_ch2', 'mean_ch3'.  It must be sorted by
 #' well of 96-well plate.
 #'
 #' Each column containing numerical data is centered and reduce before plotting.
+#' 
+#' @param LIBS A "libs" table, where rows are capture chambers and columns are various data.
+#' @param title The title displayed on the plot.
 #'
 #' @examples
 #' fldgmArrayQCplot <- function(RUN) fldgmArrayQC(libs[libs$Run==RUN,], RUN)

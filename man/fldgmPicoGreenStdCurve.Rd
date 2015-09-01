@@ -18,7 +18,7 @@ Reads standard curve from fluorometric measures entered in a template Excel shee
 \examples{
 ## With a file called "1772-064-102.picogreen.xlsx":
 ##
-## fldgmPicoGreenStdCurve(FILE="1772-064-102.picogreen.xlsx"
+## fldgmPicoGreenStdCurve(FILE="1772-064-102.picogreen.xlsx")
 }
 \seealso{
 fldgmPicoGreen
