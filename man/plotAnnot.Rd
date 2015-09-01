@@ -4,7 +4,7 @@
 \alias{plotAnnot}
 \title{Plot annotation statistics}
 \usage{
-plotAnnot(LIBS, SCOPE, TITLE)
+plotAnnot(LIBS, SCOPE, TITLE, GROUP = "default")
 }
 \arguments{
 \item{LIBS}{A data frame with columns named \code{promoter}, \code{exon}, \code{intron}

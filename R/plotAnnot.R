@@ -22,8 +22,8 @@
 #' @examples 
 #' ## plotAnnot(libs, 'annotation', 'Here is the title')
 
-plotAnnot <- function(LIBS, SCOPE, TITLE) {
-  ggplot( mapStats(LIBS, scope=SCOPE)
+plotAnnot <- function(LIBS, SCOPE, TITLE, GROUP="default") {
+  ggplot( mapStats(LIBS, scope=SCOPE, group=GROUP)
         , aes( x    = group
              , y    = value
              , fill = variable)

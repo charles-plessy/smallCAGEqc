@@ -4,14 +4,16 @@
 \alias{mapStats}
 \title{mapStats}
 \usage{
-mapStats(libs, scope = "all")
+mapStats(libs, scope = c("all", "annotation", "counts", "mapped"),
+  group = "default")
 }
 \arguments{
 \item{libs}{A data frame with columns named \code{promoter}, \code{exon}, \code{intron}
 \code{mapped}, \code{extracted}, \code{rdna}, and \code{tagdust}.}
 
-\item{scope}{The value on which to normalise. \dQuote{all} normalises on the number of extracted tags
-       and \dQuote{annotation} normalises on the number of aligned tags.}
+\item{scope}{The value on which to normalise. \dQuote{all} normalises on the number of extracted tags,
+       \dQuote{annotation} on the number of aligned tags, \dQuote{mapped} on the number of
+       aligned tags and \dQuote{counts} on the transcript counts.}
 }
 \value{
 Returns mean and standard deviation of normalised mapping statistics, plus absolute
@@ -25,6 +27,8 @@ Using a data frame containing mapping statistics in counts, transform the data i
 percentages that can be used for stacked barplots.
 
 See http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2 about stacked barplot.
+
+The \dQuote{mapped} and \dQuote{counts} scopes assume that transcript counts are available.
 }
 \seealso{
 \code{\link{hierarchAnnot}}, \code{\link{loadLogs}}, \code{\link{plotAnnot}}
