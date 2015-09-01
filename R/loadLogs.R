@@ -31,7 +31,7 @@
 #' @return Returns a data frame with one row per sample, and the following columns (if the
 #' corresponding data is available).
 #' \enumerate{
-#'  \item{sample} {Sample identifier (factor)}
+#'  \item{samplename} {Sample identifier (factor)}
 #'  \item{extracted} {Number of extracted reads}
 #'  \item{tagdust} {Number of reads containing oligonucleotide artefacts}
 #'  \item{spikes} {Number of reads overlaping with the reference spike sequences}
@@ -49,14 +49,14 @@ setGeneric( "loadLogs"
 
 .loadLogs <- function(source) {
     logfiles <- list.files(path='.', pattern='*\\.log')
-    logs <- data.frame( variable=factor()
-                      , sample=factor()
-                      , value=numeric())
+    logs <- data.frame( variable   = factor()
+                      , samplename = factor()
+                      , value      = numeric())
     for (logfile in logfiles) {
         logs <- rbind(logs, read.table(logfile, col.names=colnames(logs)))
     }
     logs <- cast(logs)
-    rownames(logs) <- logs$sample
+    rownames(logs) <- logs$samplename
     return(logs)
 }
 
