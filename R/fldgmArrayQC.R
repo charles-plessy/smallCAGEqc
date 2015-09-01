@@ -94,6 +94,7 @@ LIBS %>%
                , Colv=NA
                , annCol=list(Error=factor(LIBS$Error, 1:max(LIBS$Error)))  # Trying to make sure that colors are the same even if one error type is not used.
                , annColors=list(Error=colorsForErrorCodes)
+               , cexRow=2
                , main=title
                )
 }
