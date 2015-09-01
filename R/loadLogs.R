@@ -31,12 +31,12 @@
 #' @return Returns a data frame with one row per sample, and the following columns (if the
 #' corresponding data is available).
 #' \enumerate{
-#'  \item{sample}{Sample identifier (factor)}
-#'  \item{extracted}{Number of extracted reads}
-#'  \item{tagdust}{Number of reads containing oligonucleotide artefacts}
-#'  \item{spikes}{Number of reads overlaping with the reference spike sequences}
-#'  \item{rdna}{Number of reads overlaping with the reference ribosomal DNA sequences}
-#'  \item{mapped}{Number of reads aligned to the reference genome}
+#'  \item{sample} {Sample identifier (factor)}
+#'  \item{extracted} {Number of extracted reads}
+#'  \item{tagdust} {Number of reads containing oligonucleotide artefacts}
+#'  \item{spikes} {Number of reads overlaping with the reference spike sequences}
+#'  \item{rdna} {Number of reads overlaping with the reference ribosomal DNA sequences}
+#'  \item{mapped} {Number of reads aligned to the reference genome}
 #'  }
 #'  
 #' @seealso \code{\link{hierarchAnnot}}, \code{\link{mapStats}}
