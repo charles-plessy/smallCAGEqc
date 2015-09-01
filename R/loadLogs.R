@@ -48,7 +48,7 @@ setGeneric( "loadLogs"
 )
 
 .loadLogs <- function(source) {
-    logfiles <- list.files(path='.', pattern='*log')
+    logfiles <- list.files(path='.', pattern='*\\.log')
     logs <- data.frame( variable=factor()
                       , sample=factor()
                       , value=numeric())
