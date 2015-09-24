@@ -42,12 +42,11 @@
 #' @seealso \code{\link{hierarchAnnot}}, \code{\link{mapStats}}
 
 setGeneric( "loadLogs"
-            , signature=c("source", "multiplex", "summary")
             , function(source, multiplex, summary)
-              standardGeneric("loadLogs")
+                standardGeneric("loadLogs")
 )
 
-.loadLogs <- function(source) {
+.loadLogs <- function() {
     logfiles <- list.files(path='.', pattern='*\\.log')
     logs <- data.frame( variable   = factor()
                       , samplename = factor()
@@ -60,7 +59,7 @@ setGeneric( "loadLogs"
     return(logs)
 }
 
-.loadStats <- function(source, multiplex, summary) {
+.loadStats <- function(multiplex, summary) {
     if (missing(multiplex)) {
         if (grepl('nanoCAGE2', PROCESSED_DATA)) {
             multiplex <- paste0( '/osc-fs_home/scratch/moirai/nanoCAGE2/input/'
@@ -139,24 +138,35 @@ setGeneric( "loadLogs"
     return(libs)
 }
 
+syntaxHelp <- function ()
+  stop("Syntax: loadLogs(source='logs') or loadLogs(source='moirai')")
+
 setMethod( loadLogs
          , signature=c(source="missing", multiplex="ANY", summary="ANY")
-         , function(source)
-             stop("Syntax: loadLogs(source='logs') or loadLogs(source='moirai')")
-)
+         , syntaxHelp)
 
 setMethod( loadLogs
-         , signature=c(source="character", multiplex="ANY", summary="ANY")
+         , signature=c(source="character", multiplex="missing", summary="missing")
          , function(source) {
-               if (source=="logs")   {return (.loadLogs(source))  }
-               if (source=="moirai") {return (.loadStats(source)) }
-               stop("Syntax: loadLogs(source='logs') or loadLogs(source='moirai')")
-           }
-)
+               if (source=="logs")   return(.loadLogs())
+               if (source=="moirai") return(.loadStats())
+               syntaxHelp()
+           })
 
 setMethod( loadLogs
-         , signature=c(source="character", multiplex="character", summary="character")
-         , function(source, multiplex, summary) {
-               .loadStats(source, multiplex, summary)
-           }
-)
+           , signature=c(source="character", multiplex="character", summary="missing")
+           , function(source, multiplex, summary) {
+             .loadStats(multiplex)
+           })
+
+setMethod( loadLogs
+           , signature=c(source="character", multiplex="missing", summary="character")
+           , function(source, multiplex, summary) {
+             .loadStats(summary)
+           })
+
+setMethod( loadLogs
+           , signature=c(source="character", multiplex="character", summary="character")
+           , function(source, multiplex, summary) {
+             .loadStats(multiplex, summary)
+           })
