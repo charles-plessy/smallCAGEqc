@@ -113,13 +113,13 @@ setGeneric( "loadLogs"
 # genome_mapped      = properly_mapped         + removed_improper_pairs
     } else if (grepl('nano-fluidigm', PROCESSED_DATA)) {
         # Ignore Read 2 and Undetermined
-        sampleNames <- x$V1
+        sampleNames <- moirai$V1
         linesToKeep <- ! grepl('(_R2_|Undetermined)', sampleNames)
-        x           <- subset(x,           linesToKeep)
+        moirai         <- subset(moirai,           linesToKeep)
         sampleNames <- subset(sampleNames, linesToKeep)
         # Reorder from sample 1 to 96.
-        x <- x[order(as.numeric(sub('_.*','', sampleNames))),]
-        rownames(x) <- rownames(libs)
+        moirai <- moirai[order(as.numeric(sub('_.*','', sampleNames))),]
+        rownames(moirai) <- rownames(libs)
         libs$extracted <- moiraiToLibs('raw')
         libs$mapped    <- moiraiToLibs('genome_mapped')
         libs$rdna      <- moiraiToLibs('removed_rrna')
@@ -127,7 +127,7 @@ setGeneric( "loadLogs"
         libs$spikes    <- moiraiToLibs('removed_spikes')
         libs$extracted <- libs$extracted - libs$spikes
     } else {
-        rownames(x) <- sub(paste0(LIBRARY, '.'),'', x$V1)
+        rownames(moirai) <- sub(paste0(LIBRARY, '.'),'', moirai$V1)
         libs$extracted <- moiraiToLibs('extracted')
         libs$mapped    <- moiraiToLibs('genome_mapped')
         libs$rdna      <- moiraiToLibs('removed_rrna')
