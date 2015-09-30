@@ -58,6 +58,8 @@ loadLogs( "moirai"
         , summary = system.file("extdata/summary.txt", package="smallCAGEqc")
         , multiplex = system.file("extdata/samplename_to_sampleid.txt", package="smallCAGEqc")
         , pipeline="OP-WORKFLOW-CAGEscan-short-reads-v2.0")
+
+libs$group <- libs$samplename \%>\% sub("Run._", "", .) \%>\% substr(1,1) \%>\% factor
 }
 \seealso{
 \code{\link{hierarchAnnot}}, \code{\link{mapStats}}
