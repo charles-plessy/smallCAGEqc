@@ -94,6 +94,7 @@ setGeneric( "loadLogs"
                                    , sep='\t')
                   , value='V3'
                   , V1 ~ V2)
+    moirai[is.na(moirai)] <- 0
     if(nrow(moirai) == 96) libs <- libs[1:96,]
     moiraiToLibs <- function(COL) {
       if (COL %in% colnames(moirai)) {
