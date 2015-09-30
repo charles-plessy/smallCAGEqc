@@ -41,6 +41,12 @@
 #'  }
 #'  
 #' @seealso \code{\link{hierarchAnnot}}, \code{\link{mapStats}}
+#' 
+#' @examples 
+#' loadLogs( "moirai"
+#'         , summary = system.file("extdata/summary.txt", package="smallCAGEqc")
+#'         , multiplex = system.file("extdata/samplename_to_sampleid.txt", package="smallCAGEqc")
+#'         , pipeline="OP-WORKFLOW-CAGEscan-short-reads-v2.0")
 
 setGeneric( "loadLogs"
             , function(source, multiplex, summary, pipeline)
