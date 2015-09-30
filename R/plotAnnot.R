@@ -21,6 +21,7 @@
 #' 
 #' @examples 
 #' ## plotAnnot(libs, 'annotation', 'Here is the title')
+#' ## plotAnnot(libs, 'annotation', 'Here is the title') + theme_bw()
 
 plotAnnot <- function(LIBS, SCOPE, TITLE, GROUP="default") {
   ggplot( mapStats(LIBS, scope=SCOPE, group=GROUP)
