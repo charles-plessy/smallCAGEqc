@@ -4,16 +4,17 @@
 \alias{mapStats}
 \title{mapStats}
 \usage{
-mapStats(libs, scope = c("all", "annotation", "counts", "mapped"),
+mapStats(libs, scope = c("all", "annotation", "counts", "mapped", "qc"),
   group = "default")
 }
 \arguments{
 \item{libs}{A data frame with columns named \code{promoter}, \code{exon}, \code{intron}
 \code{mapped}, \code{extracted}, \code{rdna}, and \code{tagdust}.}
 
-\item{scope}{The value on which to normalise. \dQuote{all} normalises on the number of extracted tags,
-       \dQuote{annotation} on the number of aligned tags, \dQuote{mapped} on the number of
-       aligned tags and \dQuote{counts} on the transcript counts.}
+\item{scope}{The value on which to normalise. \dQuote{all} and \dQuote{qc}
+       normalise on the number of extracted tags, \dQuote{annotation} on the
+       number of aligned tags, \dQuote{mapped} on the number of aligned tags
+       and \dQuote{counts} on the transcript counts.}
 }
 \value{
 Returns mean and standard deviation of normalised mapping statistics, plus absolute

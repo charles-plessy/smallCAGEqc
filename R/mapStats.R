@@ -11,9 +11,10 @@
 #' 
 #' @param libs A data frame with columns named \code{promoter}, \code{exon}, \code{intron}
 #'        \code{mapped}, \code{extracted}, \code{rdna}, and \code{tagdust}.
-#' @param scope The value on which to normalise. \dQuote{all} normalises on the number of extracted tags,
-#'        \dQuote{annotation} on the number of aligned tags, \dQuote{mapped} on the number of
-#'        aligned tags and \dQuote{counts} on the transcript counts.
+#' @param scope The value on which to normalise. \dQuote{all} and \dQuote{qc}
+#'        normalise on the number of extracted tags, \dQuote{annotation} on the
+#'        number of aligned tags, \dQuote{mapped} on the number of aligned tags
+#'        and \dQuote{counts} on the transcript counts.
 #'
 #' @return
 #' Returns mean and standard deviation of normalised mapping statistics, plus absolute
@@ -21,7 +22,7 @@
 #' 
 #' @seealso \code{\link{hierarchAnnot}}, \code{\link{loadLogs}}, \code{\link{plotAnnot}}
 
-mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped"), group="default") {
+mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"), group="default") {
     
   scope <- match.arg(scope)
   if (identical(group, "default"))
@@ -47,6 +48,8 @@ mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped"), gro
       total <- libs$mapped
     } else {
       stop("libs$mapped missing or erroneous.") }
+  } else if (scope == "qc") {
+    total <- libs$extracted
   }
   
   if (! ("tagdust" %in% colnames(libs)))
@@ -59,6 +62,10 @@ mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped"), gro
     libs$intergenic = with(libs, counts - promoter - intron - exon)
     libs$duplicates = with(libs, mapped - counts)
     columns <- c("promoter","exon","intron","intergenic", "duplicates")
+  } else if (scope == "qc") {
+    libs$mapped %<>% subtract(libs$properpairs)
+    libs$properpairs %<>% subtract(libs$counts)
+    columns <- c("counts", "properpairs", "mapped", "spikes", "rdna", "tagdust")
   } else {
     libs$mapped <- with(libs, mapped  - promoter - intron - exon)
     columns <- c("promoter","exon","intron","mapped","rdna", "tagdust")
@@ -76,7 +83,11 @@ mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped"), gro
   mapstats          <- melt(mapstats)
   mapstats$sd       <- melt(mapstats.sd)$value
   
-  mapstats          <- ddply(mapstats,.(group),transform,ystart = cumsum(value),yend = cumsum(value) + sd)
+  mapstats          <- ddply( mapstats
+                            , .(group)
+                            , transform
+                            , ystart = cumsum(value)
+                            , yend   = cumsum(value) + sd)
   
   mapstats
 }
