@@ -4,7 +4,7 @@
 \alias{loadLogs}
 \title{loadLogs}
 \usage{
-loadLogs(source, multiplex, summary)
+loadLogs(source, multiplex, summary, pipeline)
 }
 \arguments{
 \item{source}{Indicate to load the data from log files in the current
@@ -13,6 +13,8 @@ directory, or from the summary file of Moirai.}
 \item{multiplex}{Optional. Path to a \sQuote{multiplex} file.}
 
 \item{summary}{Optional. Path to a \sQuote{summary} file.}
+
+\item{pipeline}{Optional. Version string identifying the pipeline used to process the data.}
 }
 \value{
 Returns a data frame with one row per sample, and the following columns (if the

@@ -27,6 +27,7 @@
 #'  directory, or from the summary file of Moirai.
 #' @param multiplex Optional. Path to a \sQuote{multiplex} file.
 #' @param summary Optional. Path to a \sQuote{summary} file.
+#' @param pipeline Optional. Version string identifying the pipeline used to process the data.
 #' 
 #' @return Returns a data frame with one row per sample, and the following columns (if the
 #' corresponding data is available).
@@ -42,7 +43,7 @@
 #' @seealso \code{\link{hierarchAnnot}}, \code{\link{mapStats}}
 
 setGeneric( "loadLogs"
-            , function(source, multiplex, summary)
+            , function(source, multiplex, summary, pipeline)
                 standardGeneric("loadLogs")
 )
 
@@ -54,12 +55,14 @@ setGeneric( "loadLogs"
     for (logfile in logfiles) {
         logs <- rbind(logs, read.table(logfile, col.names=colnames(logs)))
     }
-    logs <- cast(logs)
+    logs <- reshape::cast(logs)
     rownames(logs) <- logs$samplename
     return(logs)
 }
 
-.loadStats <- function(multiplex, summary) {
+.loadStats <- function(multiplex, summary, pipeline) {
+    if (missing(pipeline))
+      pipeline <- PROCESSED_DATA
     if (missing(multiplex)) {
         if (grepl('nanoCAGE2', PROCESSED_DATA)) {
             multiplex <- paste0( '/osc-fs_home/scratch/moirai/nanoCAGE2/input/'
@@ -79,7 +82,7 @@ setGeneric( "loadLogs"
        libs <- read.table( multiplex
                          , sep       = '\t'
                          , header    = T )
-       if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.0', PROCESSED_DATA)) {
+       if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.0', pipeline)) {
          rownames(libs) <- libs$sampleid
        } else {
          rownames(libs) <- libs$samplename
@@ -87,7 +90,7 @@ setGeneric( "loadLogs"
        return(libs)
     }
     libs <- readMultiplex(multiplex)
-    moirai <- cast( data=read.table( summary
+    moirai <- reshape::cast( data=read.table( summary
                                    , sep='\t')
                   , value='V3'
                   , V1 ~ V2)
@@ -97,7 +100,7 @@ setGeneric( "loadLogs"
         moirai[rownames(libs), COL]
       } else 0
     }
-    if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.0', PROCESSED_DATA)) {
+    if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.0', pipeline)) {
         libs$total       <- moiraiToLibs('raw')
         libs$extracted   <- moiraiToLibs('extracted')
         libs$tagdust     <- moiraiToLibs('filtered_for_artefact')
@@ -111,7 +114,7 @@ setGeneric( "loadLogs"
 # extracted          = non_reference_extracted + removed_references
 # removed_references = filtered_for_spikes     + filtered_for_rrna
 # genome_mapped      = properly_mapped         + removed_improper_pairs
-    } else if (grepl('nano-fluidigm', PROCESSED_DATA)) {
+    } else if (grepl('nano-fluidigm', pipeline)) {
         # Ignore Read 2 and Undetermined
         sampleNames <- moirai$V1
         linesToKeep <- ! grepl('(_R2_|Undetermined)', sampleNames)
@@ -142,11 +145,11 @@ syntaxHelp <- function ()
   stop("Syntax: loadLogs(source='logs') or loadLogs(source='moirai')")
 
 setMethod( loadLogs
-         , signature=c(source="missing", multiplex="ANY", summary="ANY")
+         , signature=c(source="missing", multiplex="ANY", summary="ANY", pipeline="ANY")
          , syntaxHelp)
 
 setMethod( loadLogs
-         , signature=c(source="character", multiplex="missing", summary="missing")
+         , signature=c(source="character", multiplex="missing", summary="missing", pipeline="ANY")
          , function(source) {
                if (source=="logs")   return(.loadLogs())
                if (source=="moirai") return(.loadStats())
@@ -154,19 +157,19 @@ setMethod( loadLogs
            })
 
 setMethod( loadLogs
-           , signature=c(source="character", multiplex="character", summary="missing")
-           , function(source, multiplex, summary) {
+           , signature=c(source="character", multiplex="character", summary="missing", pipeline="ANY")
+           , function(source, multiplex, summary, pipeline) {
              .loadStats(multiplex)
            })
 
 setMethod( loadLogs
-           , signature=c(source="character", multiplex="missing", summary="character")
-           , function(source, multiplex, summary) {
+           , signature=c(source="character", multiplex="missing", summary="character", pipeline="ANY")
+           , function(source, multiplex, summary, pipeline) {
              .loadStats(summary)
            })
 
 setMethod( loadLogs
-           , signature=c(source="character", multiplex="character", summary="character")
-           , function(source, multiplex, summary) {
-             .loadStats(multiplex, summary)
+           , signature=c(source="character", multiplex="character", summary="character", pipeline="ANY")
+           , function(source, multiplex, summary, pipeline) {
+             .loadStats(multiplex, summary, pipeline)
            })
