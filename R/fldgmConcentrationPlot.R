@@ -17,6 +17,5 @@ fldgmConcentrationPlot <- function ( LIBS
        , colour = Run
        # Suppress annoying message about defaults of binwidth
        , binwidth = diff(range(LIBS$Concentration))/30) +
-    facet_wrap( ~Run, scales=scales) +
-    theme_bw()
+    facet_wrap( ~Run, scales=scales)
 }
