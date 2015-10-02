@@ -1,3 +1,12 @@
+#' fldgmConcentrationPlot
+#' 
+#' Plot histogram of cDNA concentrations after a C1 run
+#' 
+#' @param LIBS A \sQuote{libs} table, that contains at least a
+#'        \sQuote{Concentration} and a \sQuote{Run} column
+#' @param scales The \sQuote{scales} argument for the plot.
+#'        Default: \sQuote{fixed}.
+
 fldgmConcentrationPlot <- function ( LIBS
                                    , scales="fixed") {
   qplot( data   = LIBS
