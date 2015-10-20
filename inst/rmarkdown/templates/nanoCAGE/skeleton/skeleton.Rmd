@@ -169,7 +169,8 @@ libs$genes       <- colSums(genes > 0)
 ```
 
 
-### Raw reads per molecule (BED12 data)
+Raw reads per molecule (BED12 data)
+-----------------------------------
 
 ```{r}
 loadBed <- function(SAMPLE) {
