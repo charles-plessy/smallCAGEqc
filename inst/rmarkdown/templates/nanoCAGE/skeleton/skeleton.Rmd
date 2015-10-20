@@ -280,7 +280,7 @@ libs$r100l1 <- rarefy(t(l1),100)
 ```
 
 
-```{r richness-concentration}
+```{r richness-concentration, dev=c('svg', 'png')}
 with(libs, plotNameColor(Concentration, r100l1, Error, Well))
 ```
 
