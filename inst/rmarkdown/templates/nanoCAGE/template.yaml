@@ -1,0 +1,7 @@
+name: nanoCAGE workflow
+description: >
+  Retreives metadata and processed files from Moirai, annotates CAGE start
+  sites, and produces simple quality reports.
+  
+  This workflow is strongly tied to our Intranet, but I hope it can be a source
+  of inspiration...

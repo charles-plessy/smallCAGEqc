@@ -1,0 +1,508 @@
+---
+title: "<Insert title>"
+output: 
+  html_document: 
+    keep_md: yes
+    number_sections: yes
+    toc: yes
+---
+
+```{r echo=FALSE}
+knitr::opts_chunk$set(cache  = TRUE)
+knitr::opts_knit$set(verbose = TRUE)
+ggplot2::theme_set(ggplot2::theme_bw())
+```
+
+```{r}
+LIBRARY      <- "<Insert Run ID>"
+ZENBU_COLLAB <- "<Insert Zenbu collaboration ID>"
+
+RUN_ID       <- LIBRARY
+WORKFLOW     <- "<Insert workflow ID>" # For example "OP-WORKFLOW-CAGEscan-short-reads-v2.0"
+MOIRAI_STAMP <- "<Insert Moirai run stamp>" # For example "20150803121351"
+MOIRAI_USER  <- "<Insert Moirai user name>" # For example "Charles"
+
+# The following is still hardcoded...
+# See https://gist.github.com/charles-plessy/9dbc8bc98fb773bf71b6 for hints
+
+GROUP_SHARED <- "/osc-fs_home/scratch/gmtu"
+GENE_SYMBOLS <- paste0(GROUP_SHARED, "/annotation/homo_sapiens/gencode-23/gencode.v23.annotation.genes.bed")
+ANNOTATION   <- paste0(GROUP_SHARED, "/annotation/homo_sapiens/gencode-23/gencode.v23.annotation.bed")
+
+# In case of a pair of Fludigm C1 CAGE runs, uncomment the lines below and fill
+# insert missing information.  Otherwise, delete or leave as it is.
+#RunA         <- "<Insert ID of Run A>"
+#RunB         <- "<Insert ID of Run B>"
+#ctrls        <- list( RunA=list(posi="<Insert well ID>", nega="<Insert well ID>")
+#                    , RunB=list(posi="<Insert well ID>", nega="<Insert well ID>"))
+```
+
+<!-- Example title: MiSeq run `r LIBRARY` -->
+
+<Insert title>
+==============
+
+ - C1 runs `r RunA` and `r RunB`.
+ - Sequenced on MiSeq (`r LIBRARY`)
+ 
+<!-- The lines about cellomics and controls below can be deleted if not using
+     C1 CAGE -->
+
+- cellomics IDs:
+   - `r RunA`: <Insert short description of Run A>
+   - `r RunB`: <Insert short description of Run B>
+
+ - Positive control (200 cells): `r ctrls$RunA$posi`, `r ctrls$RunB$posi`.
+ - Negative control: `r ctrls$RunA$nega`, `r ctrls$RunB$nega`.
+ 
+Data Processing
+===============
+
+Link files from MOIRAI.
+-----------------------
+
+```{r}
+BASEDIR      <- "/osc-fs_home/scratch/moirai/nano-fluidigm/project"
+MOIRAI_RUN   <- paste(RUN_ID, WORKFLOW, MOIRAI_STAMP, sep=".")
+MOIRAI_BASE  <- paste(BASEDIR, MOIRAI_USER, MOIRAI_RUN, sep="/")
+MOIRAI_ID    <- paste(RUN_ID, WORKFLOW, MOIRAI_STAMP, sep=".")
+MOIRAI_FRAGS <- paste0(MOIRAI_BASE, "/CAGEscan_fragments")
+MOIRAI_BAM   <- paste0(MOIRAI_BASE, "/genome_mapped")
+MOIRAI_URL   <- paste0("http://moirai.gsc.riken.jp/", MOIRAI_BASE, "/", MOIRAI_RUN, ".html")
+
+smallCAGEqc::exportInEnv("RUN_ID", "MOIRAI_BASE", "GENE_SYMBOLS", "ANNOTATION")
+```
+
+ Intranet link: [`r MOIRAI_RUN`](`r MOIRAI_URL`)
+
+```{r engine="bash"}
+ln --symbolic --force $MOIRAI_BASE/$RUN_ID.l1.osc.gz
+```
+
+Annotation and gene symbols.
+----------------------------
+
+```{r engine="bash"}
+function osc2bed {
+  zcat $1 |
+    grep -v \# |
+    sed 1d |
+    awk '{OFS="\t"}{print $2, $3, $4, "l1", "1000", $5}'
+}
+
+function bed2annot {
+  bedtools intersect -a $1 -b $ANNOTATION -s -loj |
+    awk '{OFS="\t"}{print $1":"$2"-"$3$6,$10}' | 
+    bedtools groupby -g 1 -c 2 -o collapse
+}
+
+function bed2symbols {
+  bedtools intersect -a $1 -b $GENE_SYMBOLS -s -loj |
+    awk '{OFS="\t"}{print $1":"$2"-"$3$6,$10}' | 
+    bedtools groupby -g 1 -c 2 -o distinct
+}
+
+osc2bed $RUN_ID.l1.osc.gz | tee $RUN_ID.l1.bed | bed2annot - > $RUN_ID.l1.annot
+bed2symbols $RUN_ID.l1.bed > $RUN_ID.l1.genes
+```
+
+Data load and QC in R.
+======================
+
+Moirai metadata
+---------------
+
+```{r, message=F}
+library(oscR) # at least 0.2.0
+library(smallCAGEqc) # at least 0.8.0
+library(data.table)
+library(magrittr)
+library(reshape)
+library(ggplot2)
+library(vegan)
+library(plyr)
+
+PROCESSED_DATA <- MOIRAI_BASE
+
+libs <- loadLogs('moirai') %>% llPostProcess('nano-fluidigm')
+```
+
+Transcript counts (properly paired)
+-----------------------------------
+
+Note that `fread` needs to temporarly save an uncompressed copy of the file
+that is being read.  If there is not enough space in the temporary directory
+(often `\tmp`),  either uncompress the file first, or point to a larger
+directory to contain the temporary files (for example, run `R` with `TMPDIR=.
+R`).
+
+Note that _data.tables_ seem to be saved as simple _data frames_ when
+closing a session.  After restoring a workspace, one needs to re-convert with the `data.table` command.
+
+```{r}
+l1 <- fread.osc(paste0(LIBRARY, ".l1.osc.gz"), dropIdCoords=TRUE)
+
+setnames(l1, colnames(l1) %>% sub('raw.', '', .) %>% sub('.None', '', .) %>% sub('RunA',RunA,.) %>% sub('RunB',RunB,.))
+```
+
+Annotation
+----------
+
+```{r}
+annot.l1 <- read.table(paste(LIBRARY,'l1','annot',sep='.'), head=F, col.names=c('id', 'feature'), row.names=1)
+annot.l1 <- hierarchAnnot(annot.l1)
+
+libs <- cbind(libs, t(rowsum(l1,  annot.l1[,'class']))[rownames(libs),])
+```
+
+Gene count
+----------
+
+```{r}
+genesymbols <- read.table(paste(LIBRARY,'l1','genes',sep='.'), col.names=c("cluster","symbol"), stringsAsFactors=FALSE)
+rownames(genesymbols) <- genesymbols$cluster
+
+genes <- rowsum(l1, genesymbols$symbol)
+
+libs$genes       <- colSums(genes > 0)
+#libs$geneSymbols <- countSymbols(genes) # Not the same!
+```
+
+
+### Raw reads per molecule (BED12 data)
+
+```{r}
+loadBed <- function(SAMPLE) {
+  FILENAME <- paste0(SAMPLE, ".bed")
+  FILEPATH <- paste(MOIRAI_FRAGS, FILENAME, sep="/")
+  if (file.info(FILEPATH)$size == 0 )
+    return (data.table())
+  DT <- fread(FILEPATH, sep="\t")
+  setnames(DT, bedFieldNames())
+  DT$library <- SAMPLE
+  DT
+}
+
+bed <- Reduce(function(X,Y) {rbind(X, loadBed(Y))}, libs$samplename %>% sub(RunA, "RunA", .) %>% sub(RunB, "RunB", .), data.table())
+```
+
+Cell pictures
+-------------
+
+```{r}
+read.fluo <- function(RUN) read.delim( paste0("../imageJ/", RUN, ".txt")
+                                     , row.names="cell_id"
+                                     , stringsAsFactors = FALSE)
+fluo <- rbind(read.fluo(RunA), read.fluo(RunB))
+libs <- cbind(libs, subset(fluo,,c("mean_ch2", "bg_mean_ch2", "mean_ch3", "bg_mean_ch3", "Error", "Comment")))
+libs$Error <- factor( libs$Error
+                    , levels=c("0-No Error", "1-No cell", "2-Debris", "3-OutOfFocus", "4-MultipleCells", "5-Control", "6-Dead"))
+```
+
+A hardocoded treshold of 2.5 is used to identify dead cells.  The histogram
+below is to check if this value makes sense in this dataset.
+
+```{r dead-cells, dev=c('svg', 'png'), fig.height=2.5}
+hist( libs$mean_ch3 - libs$bg_mean_ch3
+    , br   = 100
+    , main = "Current threshold for identifying dead cells"
+    , xlab = "mean_ch3 - bg_mean_ch3" )
+deadThresh <- 2.5
+abline(v=deadThresh, col="red")
+
+libs[libs$mean_ch3 - libs$bg_mean_ch3 > deadThresh, "Error"] <- "6-Dead"
+```
+
+Controls
+--------
+
+Some samples with errors were repalced by the positive and negative controls.
+
+```{r flag-controls}
+libs[libs$Well %in% ctrls[["RunA"]] & libs$Run == RunA, "Error"]   <- "5-Control"
+libs[libs$Well %in% ctrls[["RunB"]] & libs$Run == RunB, "Error"]   <- "5-Control"
+libs[libs$Well == ctrls$RunA$posi & libs$Run == RunA, "Comment"] <- "Positive control"
+libs[libs$Well == ctrls$RunB$posi & libs$Run == RunB, "Comment"] <- "Positive control"
+libs[libs$Well == ctrls$RunA$nega & libs$Run == RunA, "Comment"] <- "Negative control"
+libs[libs$Well == ctrls$RunB$nega & libs$Run == RunB, "Comment"] <- "Negative control"
+```
+
+cDNA concentration.
+-------------------
+
+```{r cDNA_concentration, dev=c('svg', 'png'), fig.height=2.5, message=FALSE, warning=FALSE}
+read.pg <- function(RUN)
+  paste0("../cDNA_yields/", RUN, ".picogreen.xlsx") %>%
+    fldgmPicoGreen("PN 100-6160") %>%
+    extract(,"concentration")
+libs$Concentration <- c(read.pg(RunA), read.pg(RunB))
+fldgmConcentrationPlot(libs)
+```
+
+Combined analysis of fluorescence and cDNA concentration.
+---------------------------------------------------------
+
+### Array heatmaps.
+
+```{r}
+fldgmArrayQCplot <- function(RUN) fldgmArrayQC(libs[libs$Run==RUN,], RUN)
+```
+
+```{r 'runA.arrayQC', dev=c('svg', 'png'), fig.height=2.5}
+fldgmArrayQCplot(RunA)
+```
+
+```{r 'runB.arrayQC', dev=c('svg', 'png'), fig.height=2.5}
+fldgmArrayQCplot(RunB)
+```
+
+### Live / dead stain and DNA concentration.
+
+Both runs are plotted together; this explains why there may be two groups, when cDNA
+yields differed strongly. 
+
+```{r live-dead, dev=c('svg', 'png')}
+with(libs, plotNameColor(Concentration, mean_ch2 - bg_mean_ch2, Error, Well))
+with(libs, plotNameColor(Concentration, mean_ch3 - bg_mean_ch3, Error, Well))
+```
+
+Analysis
+========
+
+Richness
+--------
+
+```{r}
+libs$l1 <- colSums(l1 > 0)
+libs$r100l1 <- rarefy(t(l1),100)
+```
+
+
+```{r richness-concentration}
+with(libs, plotNameColor(Concentration, r100l1, Error, Well))
+```
+
+```{r richness-outliers, dev=c('svg', 'png')}
+with(subset(libs, Error == "0-No Error"), plotNameColor(Concentration, r100l1, Run, Well))
+```
+
+QC barplots
+-----------
+
+```{r qc-barplots, dev=c('svg', 'png')}
+plotAnnot(libs, 'qc', LIBRARY, libs$Error)
+```
+
+Annotation
+----------
+
+```{r annotation-barplots, dev=c('svg', 'png')}
+plotAnnot(libs, 'all', LIBRARY, libs$Error)
+```
+
+Correlation between runs
+------------------------
+
+```{r correlation-heatmap, dev=c('svg', 'png')}
+#FIXME
+# Here, we could not rely on images only
+NMF::aheatmap( cor(genes[-1, libs$Error == "0-No Error"])
+             , annCol=list(Run=libs[libs$Error == "0-No Error", "Run"]))
+```
+
+Gene counts and TSS discovery
+-----------------------------
+
+### Gene count by error code.
+
+```{r gene-count, dev=c('svg', 'png'), fig.height=2.5}
+dotsize <- 50
+ggplot(libs, aes(x=Error, y=genes)) +
+  stat_summary(fun.y=mean, fun.ymin=mean, fun.ymax=mean, geom="crossbar", color="gray") +
+  geom_dotplot(aes(fill=Error), binaxis='y', binwidth=1, dotsize=dotsize, stackdir='center') +
+  coord_flip() + facet_wrap(~Run)
+```
+
+### Gene count per transcript count.
+
+```{r gene-counts-run-plot, dev=c('svg', 'png')}
+with(subset(libs, Error == "0-No Error"), plotNameColor(genes, counts, Run, Well))
+```
+
+### Gene counts per C1 run.
+
+```{r gene-counts-run-boxplot, dev=c('svg', 'png')}
+boxplot(data=subset(libs, Error == "0-No Error"), genes ~ Run, ylab="Number of genes detexted (aprox)", main="Comparison of gene detection by run.")
+t.test(data=subset(libs, Error == "0-No Error"), genes ~ Run)
+```
+
+Rarefaction (hanabi plot).
+--------------------------
+
+FIXME: dark orange !
+
+### Rarefaction
+
+```{r}
+cs <- colSums(l1)
+
+# Subsampling sizes: one point for each cell's sample size, plus a few
+# points for smaller values, to be able to plot smoothly.
+
+subSampleSizes <- function(X)
+  sort(unique(round(c( X
+                   , max(X) / 2^(16:0)
+                   , (max(X) / 16) * 16:1))))
+
+s <- subSampleSizes(cs)
+
+# Cachig the transpositions, just in case
+# it matters for the performance.
+
+t1 <- t(l1)
+tg <- t(genes)
+
+# Rarefy at each sampling point.  It takes time !
+# In the resluting tables, the columns are a subsampling size, and
+# the rows are a cell.
+
+rar1 <- sapply(s, function(X) rarefy(t1, X))
+rarg <- sapply(s, function(X) rarefy(tg, X))
+
+samplesOK <- bed$library %>% factor %>% levels %>% sub('RunA',RunA,.) %>% sub('RunB',RunB,.) # somes samples will be missing if they had no reads.
+csU <- libs[samplesOK, "properpairs"]
+sU <- subSampleSizes(cs)
+
+rarefyLong <- function(TABLE, N)
+  tapply(TABLE$score, TABLE$library, rarefy, N)
+
+tapply(rarefyLong(bed, 100), libs[samplesOK, "Error"], mean)
+
+rarU <- sapply(sU, function(N) rarefyLong(bed, N))
+```
+
+### TSS discovery
+
+```{r hanabi-TSS, dev=c('svg', 'png')}
+hanabiPlot(rar1, s, log='', type='l', ylab='number of TSS detected', xlab='number of unique molecule counts', main=paste("TSS discovery for", LIBRARY), GROUP=libs$Error)
+
+legend('topleft',legend=levels(libs$Error), col=1:length(levels(libs$Error)), pch=1)
+```
+
+### Gene discovery
+
+```{r hanabi-gene, dev=c('svg', 'png')}
+hanabiPlot(rarg, s, log='', type='l', ylab='number of genes detected', xlab='number of unique molecule counts', main=paste("Gene discovery for", LIBRARY), GROUP=libs$Error)
+
+legend('topleft',legend=levels(libs$Error), col=1:length(levels(libs$Error)), pch=1)
+```
+
+### Molecule discovery (with raw reads)
+
+Caution !  Might be buggy
+
+````{r hanabi-UMI, dev=c('svg', 'png')}
+hanabiPlot(rarU, sU, log='', type='l', ylab='number of molecules detected', xlab='number of properly mapped reads', main=paste("Transcript discovery for", LIBRARY), GROUP=libs$Error)
+
+legend('topleft',legend=levels(libs$Error), col=1:length(levels(libs$group)), pch=1)
+```
+
+### Comparison between the runs
+
+(only "No Error" cells)
+
+```{r hanabi-runs, dev=c('svg', 'png')}
+hanabiPlot(rarg[libs$Error=="0-No Error",], s, log='', type='l', ylab='number of genes detected', xlab='number of unique molecule counts', main=paste("Gene discovery for", LIBRARY), GROUP=libs[libs$Error=="0-No Error", "Run"])
+
+legend('topleft',legend=levels(libs[libs$Error=="0-No Error", "Run"]), col=1:length(levels(libs[libs$Error=="0-No Error", "Run"])), pch=1)
+```
+
+
+Data load on Zenbu.
+===================
+
+FIXME: will do later
+FIXME: make idempotent
+
+Accessory functions
+-------------------
+
+Uploading to Zenbu collaboration `r ZENBU_COLLAB`.
+
+```{r}
+zenbuUpload <- function ( ...
+                        , URL="http://fantom.gsc.riken.jp/zenbu"
+                        , verbose=FALSE
+                        , echo=FALSE
+                        , stdout=TRUE) {
+  zenbu <- 'zenbu_upload'
+  url <- c('-url', URL)
+  args <- sapply(c(url, ...), shQuote)
+  if (verbose == TRUE) print(paste(c(zenbu, args), collapse=' '))
+  if (echo    == FALSE) {
+      system2(zenbu, args, stdout=stdout)
+  } else {
+      system2('echo', c(zenbu, args), stdout=stdout)
+  }
+}
+
+bedToSample <- function(BED)
+  BED %>%
+    sub("RunA", RunA, .) %>%
+    sub("RunB", RunB, .) %>%
+    sub(".bed", "", .)
+
+standardDescription <- function(BED)
+  paste( MOIRAI_FRAGS
+       , bedToSample(BED)
+       , "C1_CAGEscan_fragments"
+       , "KnitrUpload")
+
+safeZupload <- function (BED) {
+  notFound <- function(BED)
+    zenbuUpload( "-list", "-filter", standardDescription(BED)) %>%
+      tail(1) %>%
+      grepl ("0 uploads --- 0 featuresources --- 0 experiments --- \\[0 total sources\\]", .)
+  if(notFound(BED))
+    zenbuUpload( "-file",        paste(MOIRAI_FRAGS, BED, sep="/")
+               , "-name",        BED  %>% sub(".bed", "", .)
+               , "-assembly",    "hg19"
+               , "-desc",        standardDescription(BED)
+               , "-collab_uuid", ZENBU_COLLAB
+               , "-singletag_exp"
+               , stdout="")
+}
+
+zenbuTag <- function (filter, key, value, mode='add', ...) {
+  args <- c('-mdedit', filter, mode, key, value)
+  zenbuUpload (args, ...)
+}
+
+bedToError <- function(BED)
+  libs[bedToSample(BED), "Error"] %>% as.character
+
+tagError <- function(BED)
+  zenbuTag(standardDescription(BED), 'cellomics', bedToError(BED))
+
+tagComment <- function (Sample, comment, ...) {
+  filter <- paste(MOIRAI_FRAGS, Sample, "C1_CAGEscan_fragments", "KnitrUpload")
+  zenbuTag(filter, 'cellomics_comment', comment, ...)
+}
+
+#apply(libs[,c('Well', 'Error')],   1, function(X) tagError  (X[1], X[2]))
+#apply(libs[,c('Well', 'Comment')], 1, function(X) tagComment(X[1], X[2]))
+
+#keywords need to be stringent: "D12"" matches BED12 !!!
+```
+
+### Zenbu uploads and tagging
+
+```{r}
+samplesToUpload <- subset(libs, properpairs > 0, "samplename", drop=T) %>%
+  sub(RunA, "RunA", .) %>%
+  sub(RunB, "RunB", .) %>%
+  sub("$", ".bed", .)
+
+sapply(samplesToUpload, safeZupload)
+sapply(samplesToUpload, tagError)
+```
