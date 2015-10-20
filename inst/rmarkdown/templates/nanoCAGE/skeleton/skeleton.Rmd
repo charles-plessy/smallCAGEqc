@@ -175,6 +175,8 @@ libs$genes       <- colSums(genes > 0)
 loadBed <- function(SAMPLE) {
   FILENAME <- paste0(SAMPLE, ".bed")
   FILEPATH <- paste(MOIRAI_FRAGS, FILENAME, sep="/")
+  if (! file.exists(FILEPATH))
+    stop(paste("Could not find file:", FILEPATH))
   if (file.info(FILEPATH)$size == 0 )
     return (data.table())
   DT <- fread(FILEPATH, sep="\t")
