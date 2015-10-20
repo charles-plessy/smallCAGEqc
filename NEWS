@@ -1,3 +1,9 @@
+Changes in version 0.0.0
+
+NEW FEATURES
+
+    o   nanoCAGE workflow as rmarkdown template.
+
 Changes in version 0.8.0
 
 NEW FEATURES
@@ -9,6 +15,7 @@ NEW FEATURES
     o   Added the function llPostProcess
     o   Added the function plotSlimSmear
     o   Added the function setupForMoirai
+    o   Many other things ???
 
 BUG FIXES
    o   loadLogs now handles CAGEscan 2.0 pipelines.
