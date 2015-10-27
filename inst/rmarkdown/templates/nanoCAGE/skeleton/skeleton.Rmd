@@ -143,6 +143,9 @@ closing a session.  After restoring a workspace, one needs to re-convert with th
 l1 <- fread.osc(paste0(LIBRARY, ".l1.osc.gz"), dropIdCoords=TRUE)
 
 setnames(l1, colnames(l1) %>% sub('raw.', '', .) %>% sub('.None', '', .) %>% sub('RunA',RunA,.) %>% sub('RunB',RunB,.))
+
+# Be sure that the "libs" and "l1" tables have matching names.
+stopifnot(all(colnames(l1) == rownames(libs)))
 ```
 
 Annotation
