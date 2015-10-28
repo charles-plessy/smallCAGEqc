@@ -1,4 +1,10 @@
-Changes in version 0.0.0
+Changes in version 0.10.0
+
+NEW FEATURES
+
+    o   Added the loadMoiraiStats function to replace loadLogs("moirai").
+
+Changes in version 0.9.0
 
 NEW FEATURES
 
