@@ -21,6 +21,7 @@ RUN_ID       <- LIBRARY
 WORKFLOW     <- "<Insert workflow ID>" # For example "OP-WORKFLOW-CAGEscan-short-reads-v2.0"
 MOIRAI_STAMP <- "<Insert Moirai run stamp>" # For example "20150803121351"
 MOIRAI_USER  <- "<Insert Moirai user name>" # For example "Charles"
+ASSEMBLY     <- "<Insert name of genome assembly>" # For example "hg38"
 
 # The following is still hardcoded...
 # See https://gist.github.com/charles-plessy/9dbc8bc98fb773bf71b6 for hints
@@ -486,7 +487,7 @@ safeZupload <- function (BED) {
   if(notFound(BED))
     zenbuUpload( "-file",        paste(MOIRAI_FRAGS, BED, sep="/")
                , "-name",        BED  %>% sub(".bed", "", .)
-               , "-assembly",    "hg19"
+               , "-assembly",    ASSEMBLY
                , "-desc",        standardDescription(BED)
                , "-collab_uuid", ZENBU_COLLAB
                , "-singletag_exp"
