@@ -435,6 +435,8 @@ Accessory functions
 
 Uploading to Zenbu collaboration `r ZENBU_COLLAB`.
 
+Ad-hoc wrapper to the shell command `zenbu_upload`
+
 ```{r}
 zenbuUpload <- function ( ...
                         , URL="http://fantom.gsc.riken.jp/zenbu"
@@ -451,19 +453,31 @@ zenbuUpload <- function ( ...
       system2('echo', c(zenbu, args), stdout=stdout)
   }
 }
+```
 
+To transform a file name in a sample identifier.
+
+```{r}
 bedToSample <- function(BED)
   BED %>%
     sub("RunA", RunA, .) %>%
     sub("RunB", RunB, .) %>%
     sub(".bed", "", .)
+```
 
+To produce a string of keywords that will uniquely identify a sample.
+
+```{r}
 standardDescription <- function(BED)
   paste( MOIRAI_FRAGS
        , bedToSample(BED)
        , "CAGEscan_fragments"
        , "KnitrUpload")
+```
 
+To upload CAGEscan fragments, only if they have not yet been uploaded.
+
+```{r}
 safeZupload <- function (BED) {
   notFound <- function(BED)
     zenbuUpload( "-list", "-filter", standardDescription(BED)) %>%
@@ -478,7 +492,11 @@ safeZupload <- function (BED) {
                , "-singletag_exp"
                , stdout="")
 }
+```
 
+Functions to add metadata tags.
+
+```{r}
 zenbuTag <- function (filter, key, value, mode='add', ...) {
   args <- c('-mdedit', filter, mode, key, value)
   zenbuUpload (args, ...)
