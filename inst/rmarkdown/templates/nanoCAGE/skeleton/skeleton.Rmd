@@ -461,7 +461,7 @@ bedToSample <- function(BED)
 standardDescription <- function(BED)
   paste( MOIRAI_FRAGS
        , bedToSample(BED)
-       , "C1_CAGEscan_fragments"
+       , "CAGEscan_fragments"
        , "KnitrUpload")
 
 safeZupload <- function (BED) {
