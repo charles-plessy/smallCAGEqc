@@ -503,11 +503,15 @@ zenbuTag <- function (filter, key, value, mode='add', ...) {
   zenbuUpload (args, ...)
 }
 
-bedToError <- function(BED)
-  libs[bedToSample(BED), "Error"] %>% as.character
-
 tagError <- function(BED)
-  zenbuTag(standardDescription(BED), 'cellomics', bedToError(BED))
+  zenbuTag( standardDescription(BED)
+          , 'cellomics'
+          , libs[bedToSample(BED), "Error"] %>% as.character)
+
+tagGroup <- function(BED)
+  zenbuTag( standardDescription(BED)
+          , 'group'
+          , libs[bedToSample(BED), "group"] %>% as.character)
 
 tagComment <- function (Sample, comment, ...) {
   filter <- paste(MOIRAI_FRAGS, Sample, "C1_CAGEscan_fragments", "KnitrUpload")
@@ -530,4 +534,5 @@ samplesToUpload <- subset(libs, properpairs > 0, "samplename", drop=T) %>%
 
 sapply(samplesToUpload, safeZupload)
 sapply(samplesToUpload, tagError)
+sapply(samplesToUpload, tagGroup)
 ```
