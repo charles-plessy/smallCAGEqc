@@ -480,6 +480,7 @@ To upload CAGEscan fragments, only if they have not yet been uploaded.
 
 ```{r}
 safeZupload <- function (BED) {
+  # Warning: the "notFound" function ignores queued uploads...
   notFound <- function(BED)
     zenbuUpload( "-list", "-filter", standardDescription(BED)) %>%
       tail(1) %>%
