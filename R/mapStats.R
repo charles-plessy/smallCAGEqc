@@ -89,14 +89,14 @@ mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"
   mapstats.sd       <- sapply(columns, doSd)   %>% data.frame
   mapstats.sd$group <- rownames(mapstats.sd)
   
-  mapstats          <- melt(mapstats)
-  mapstats$sd       <- melt(mapstats.sd)$value
+  mapstats          <- reshape::melt(mapstats)
+  mapstats$sd       <- reshape::melt(mapstats.sd)$value
   
-  mapstats          <- ddply( mapstats
-                            , .(group)
-                            , transform
-                            , ystart = cumsum(value)
-                            , yend   = cumsum(value) + sd)
+  mapstats          <- plyr::ddply( mapstats
+                                  , plyr::.(group)
+                                  , transform
+                                  , ystart = cumsum(value)
+                                  , yend   = cumsum(value) + sd)
   
   mapstats
 }
