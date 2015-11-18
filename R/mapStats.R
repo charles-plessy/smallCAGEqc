@@ -83,10 +83,12 @@ mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"
   doMean <- function (X) tapply(libs[,X] / total, group, mean)
   doSd   <- function (X) tapply(libs[,X] / total, group, sd  )
   
-  mapstats          <- sapply(columns, doMean) %>% data.frame
+  # "simplify" needs to be FALSE so that conversion to data frame works even
+  # when the group contains only a single factor.
+  mapstats          <- sapply(columns, doMean, simplify = FALSE) %>% data.frame
   mapstats$group    <- rownames(mapstats)
   
-  mapstats.sd       <- sapply(columns, doSd)   %>% data.frame
+  mapstats.sd       <- sapply(columns, doSd, simplify = FALSE)   %>% data.frame
   mapstats.sd$group <- rownames(mapstats.sd)
   
   mapstats          <- reshape::melt(mapstats)
