@@ -1,3 +1,13 @@
+Changes in version 0.10.1
+
+BUG FIXES
+
+    o   mapStats works again with groups with a single level.
+
+OTHER CHANGES
+
+    o   Added example data for mapStats and plotAnnot.
+
 Changes in version 0.10.0
 
 NEW FEATURES
