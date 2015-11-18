@@ -21,6 +21,7 @@ RUN_ID       <- LIBRARY
 WORKFLOW     <- "<Insert workflow ID>" # For example "OP-WORKFLOW-CAGEscan-short-reads-v2.0"
 MOIRAI_STAMP <- "<Insert Moirai run stamp>" # For example "20150803121351"
 MOIRAI_USER  <- "<Insert Moirai user name>" # For example "Charles"
+ASSEMBLY     <- "<Insert name of genome assembly>" # For example "hg38"
 
 # The following is still hardcoded...
 # See https://gist.github.com/charles-plessy/9dbc8bc98fb773bf71b6 for hints
@@ -438,6 +439,8 @@ Accessory functions
 
 Uploading to Zenbu collaboration `r ZENBU_COLLAB`.
 
+Ad-hoc wrapper to the shell command `zenbu_upload`
+
 ```{r}
 zenbuUpload <- function ( ...
                         , URL="http://fantom.gsc.riken.jp/zenbu"
@@ -454,20 +457,33 @@ zenbuUpload <- function ( ...
       system2('echo', c(zenbu, args), stdout=stdout)
   }
 }
+```
 
+To transform a file name in a sample identifier.
+
+```{r}
 bedToSample <- function(BED)
   BED %>%
     sub("RunA", RunA, .) %>%
     sub("RunB", RunB, .) %>%
     sub(".bed", "", .)
+```
 
+To produce a string of keywords that will uniquely identify a sample.
+
+```{r}
 standardDescription <- function(BED)
   paste( MOIRAI_FRAGS
        , bedToSample(BED)
-       , "C1_CAGEscan_fragments"
+       , "CAGEscan_fragments"
        , "KnitrUpload")
+```
 
+To upload CAGEscan fragments, only if they have not yet been uploaded.
+
+```{r}
 safeZupload <- function (BED) {
+  # Warning: the "notFound" function ignores queued uploads...
   notFound <- function(BED)
     zenbuUpload( "-list", "-filter", standardDescription(BED)) %>%
       tail(1) %>%
@@ -475,23 +491,31 @@ safeZupload <- function (BED) {
   if(notFound(BED))
     zenbuUpload( "-file",        paste(MOIRAI_FRAGS, BED, sep="/")
                , "-name",        BED  %>% sub(".bed", "", .)
-               , "-assembly",    "hg19"
+               , "-assembly",    ASSEMBLY
                , "-desc",        standardDescription(BED)
                , "-collab_uuid", ZENBU_COLLAB
                , "-singletag_exp"
                , stdout="")
 }
+```
 
+Functions to add metadata tags.
+
+```{r}
 zenbuTag <- function (filter, key, value, mode='add', ...) {
   args <- c('-mdedit', filter, mode, key, value)
   zenbuUpload (args, ...)
 }
 
-bedToError <- function(BED)
-  libs[bedToSample(BED), "Error"] %>% as.character
-
 tagError <- function(BED)
-  zenbuTag(standardDescription(BED), 'cellomics', bedToError(BED))
+  zenbuTag( standardDescription(BED)
+          , 'cellomics'
+          , libs[bedToSample(BED), "Error"] %>% as.character)
+
+tagMeta <- function(BED, TAG)
+  zenbuTag( standardDescription(BED)
+          , TAG
+          , libs[bedToSample(BED), TAG] %>% as.character)
 
 tagComment <- function (Sample, comment, ...) {
   filter <- paste(MOIRAI_FRAGS, Sample, "C1_CAGEscan_fragments", "KnitrUpload")
@@ -514,4 +538,8 @@ samplesToUpload <- subset(libs, properpairs > 0, "samplename", drop=T) %>%
 
 sapply(samplesToUpload, safeZupload)
 sapply(samplesToUpload, tagError)
+sapply(samplesToUpload, tagMeta, TAG="group")
+sapply(samplesToUpload, tagMeta, TAG="Run")
+sapply(samplesToUpload, tagMeta, TAG="row")
+sapply(samplesToUpload, tagMeta, TAG="column")
 ```
