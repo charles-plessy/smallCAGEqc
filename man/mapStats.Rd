@@ -36,7 +36,7 @@ The \dQuote{mapped} and \dQuote{counts} scopes assume that transcript counts are
 }
 \examples{
 libs <- read.csv(system.file("extdata", "libs.csv", package = "smallCAGEqc"))
-mapStats(libs, "qc", Error)
+mapStats(libs, "qc", libs$Error)
 }
 \seealso{
 \code{\link{hierarchAnnot}}, \code{\link{loadLogs}}, \code{\link{plotAnnot}}

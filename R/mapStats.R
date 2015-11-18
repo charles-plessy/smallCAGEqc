@@ -26,7 +26,7 @@
 #' 
 #' @examples
 #' libs <- read.csv(system.file("extdata", "libs.csv", package = "smallCAGEqc"))
-#' mapStats(libs, "qc", Error)
+#' mapStats(libs, "qc", libs$Error)
 #' 
 #' @importFrom magrittR '%>%' '%<>%' subtract
 
