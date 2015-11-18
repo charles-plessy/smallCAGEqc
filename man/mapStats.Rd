@@ -12,9 +12,12 @@ mapStats(libs, scope = c("all", "annotation", "counts", "mapped", "qc"),
 \code{mapped}, \code{extracted}, \code{rdna}, and \code{tagdust}.}
 
 \item{scope}{The value on which to normalise. \dQuote{all} and \dQuote{qc}
-       normalise on the number of extracted tags, \dQuote{annotation} on the
-       number of aligned tags, \dQuote{mapped} on the number of aligned tags
-       and \dQuote{counts} on the transcript counts.}
+normalise on the number of extracted tags, \dQuote{annotation} on the
+number of aligned tags, \dQuote{mapped} on the number of aligned tags
+and \dQuote{counts} on the transcript counts.}
+
+\item{group}{A vector of factors defining groups in the data.  By default,
+       the \dQuote{group} column of the \dQuote{libs} table.}
 }
 \value{
 Returns mean and standard deviation of normalised mapping statistics, plus absolute
@@ -30,6 +33,10 @@ percentages that can be used for stacked barplots.
 See http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2 about stacked barplot.
 
 The \dQuote{mapped} and \dQuote{counts} scopes assume that transcript counts are available.
+}
+\examples{
+libs <- read.csv(system.file("extdata", "libs.csv", package = "smallCAGEqc"))
+mapStats(libs, "qc", Error)
 }
 \seealso{
 \code{\link{hierarchAnnot}}, \code{\link{loadLogs}}, \code{\link{plotAnnot}}

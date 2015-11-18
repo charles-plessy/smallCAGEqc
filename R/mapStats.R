@@ -15,6 +15,8 @@
 #'        normalise on the number of extracted tags, \dQuote{annotation} on the
 #'        number of aligned tags, \dQuote{mapped} on the number of aligned tags
 #'        and \dQuote{counts} on the transcript counts.
+#' @param group A vector of factors defining groups in the data.  By default,
+#'        the \dQuote{group} column of the \dQuote{libs} table.
 #'
 #' @return
 #' Returns mean and standard deviation of normalised mapping statistics, plus absolute
@@ -24,7 +26,7 @@
 #' 
 #' @examples
 #' libs <- read.csv(system.file("extdata", "libs.csv", package = "smallCAGEqc"))
-#' mapStats(libs)
+#' mapStats(libs, "qc", Error)
 #' 
 #' @importFrom magrittR '%>%'
 
@@ -84,7 +86,7 @@ mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"
   doSd   <- function (X) tapply(libs[,X] / total, group, sd  )
   
   # "simplify" needs to be FALSE so that conversion to data frame works even
-  # when the group contains only a single factor.
+  # when the group contains only a single level.
   mapstats          <- sapply(columns, doMean, simplify = FALSE) %>% data.frame
   mapstats$group    <- rownames(mapstats)
   
