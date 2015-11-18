@@ -31,8 +31,11 @@
 mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"), group="default") {
     
   scope <- match.arg(scope)
-  if (identical(group, "default"))
+  if (identical(group, "default")) {
+    if (! "group" %in% colnames(libs))
+      stop(paste("Missing", dQuote("group"), "column in the data frame."))
     group <- libs$group
+  }
   
   if (scope == 'all') {
     if (is.numeric(libs$extracted)){
