@@ -21,6 +21,12 @@
 #' positions for the error bars.
 #' 
 #' @seealso \code{\link{hierarchAnnot}}, \code{\link{loadLogs}}, \code{\link{plotAnnot}}
+#' 
+#' @examples
+#' libs <- read.csv(system.file("extdata", "libs.csv", package = "smallCAGEqc"))
+#' mapStats(libs)
+#' 
+#' @importFrom magrittR '%>%'
 
 mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"), group="default") {
     
