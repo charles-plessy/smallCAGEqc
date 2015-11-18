@@ -5,7 +5,7 @@ importFrom(ggplot2, ggplot, aes
                   , geom_bar, geom_point, geom_segment
                   , coord_flip, theme, element_text)
 importFrom(grid, grid.draw)
-importFrom(magrittr, '%>%')
+importFrom(magrittr, '%>%', '%<>%', subtract)
 importFrom(plyr, ddply, l_ply,.)
 importFrom(reshape, cast, melt, melt.data.frame)
 importFrom(VennDiagram, venn.diagram)

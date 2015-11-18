@@ -28,7 +28,7 @@
 #' libs <- read.csv(system.file("extdata", "libs.csv", package = "smallCAGEqc"))
 #' mapStats(libs, "qc", Error)
 #' 
-#' @importFrom magrittR '%>%'
+#' @importFrom magrittR '%>%' '%<>%' subtract
 
 mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"), group="default") {
     
