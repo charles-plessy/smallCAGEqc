@@ -35,7 +35,8 @@ See http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-u
 The \dQuote{mapped} and \dQuote{counts} scopes assume that transcript counts are available.
 }
 \examples{
-libs <- read.csv(system.file("extdata", "libs.csv", package = "smallCAGEqc"))
+libs <- read.csv( system.file("extdata", "libs.csv", package = "smallCAGEqc")
+                , row.names = 1)
 mapStats(libs, "qc", libs$Error)
 }
 \seealso{

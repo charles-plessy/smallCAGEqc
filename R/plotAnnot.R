@@ -19,10 +19,15 @@
 #' 
 #' @seealso \code{\link{hierarchAnnot}}, \code{\link{loadLogs}}, \code{\link{mapStats}}
 #' 
-#' @examples 
-#' ## plotAnnot(libs, 'annotation', 'Here is the title')
-#' ## theme_set(theme_bw()) ; plotAnnot(libs, 'annotation', 'Here is the title')
-#' ## plotAnnot(libs, 'annotation', 'Here is the title') + theme_bw()
+#' @examples
+#' libs <- read.csv( system.file("extdata", "libs.csv", package = "smallCAGEqc")
+#'                 , row.names = 1)
+#' p <- plotAnnot(libs, 'qc', 'Here is the title', libs$Error)
+#' \dontrun{
+#' print(p)
+#' p + ggplot2::theme_bw()
+#' ggplot2::theme_set(ggplot2::theme_bw()) ; p
+#' }
 
 plotAnnot <- function(LIBS, SCOPE, TITLE, GROUP="default") {
   ggplot( mapStats(LIBS, scope=SCOPE, group=GROUP)

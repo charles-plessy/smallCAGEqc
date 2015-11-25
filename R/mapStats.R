@@ -25,7 +25,8 @@
 #' @seealso \code{\link{hierarchAnnot}}, \code{\link{loadLogs}}, \code{\link{plotAnnot}}
 #' 
 #' @examples
-#' libs <- read.csv(system.file("extdata", "libs.csv", package = "smallCAGEqc"))
+#' libs <- read.csv( system.file("extdata", "libs.csv", package = "smallCAGEqc")
+#'                 , row.names = 1)
 #' mapStats(libs, "qc", libs$Error)
 #' 
 #' @importFrom magrittR '%>%' '%<>%' subtract
