@@ -1,3 +1,10 @@
+Changes in version 0.10.3
+
+BUG FIXES
+
+    o   Correct a PDF crash in plotAnnot().
+    o   Correct documentation in mapStats() and plotAnnot().
+
 Changes in version 0.10.2
 
 BUG FIXES
