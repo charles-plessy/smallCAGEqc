@@ -19,6 +19,8 @@
 #' 
 #' @seealso \code{\link{hierarchAnnot}}, \code{\link{loadLogs}}, \code{\link{mapStats}}
 #' 
+#' @import ggplot2
+#' 
 #' @examples
 #' libs <- read.csv( system.file("extdata", "libs.csv", package = "smallCAGEqc")
 #'                 , row.names = 1)
@@ -44,5 +46,5 @@ plotAnnot <- function(LIBS, SCOPE, TITLE, GROUP="default") {
               , shape = "|"
               , show_guide = FALSE) +
     coord_flip() +
-    theme(title=element_text(TITLE))
+    ggtitle(TITLE)
 }
