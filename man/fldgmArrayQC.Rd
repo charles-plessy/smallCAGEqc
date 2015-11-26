@@ -23,6 +23,8 @@ Each column containing numerical data is centered and reduce before plotting.
 }
 \examples{
 fldgmArrayQCplot <- function(RUN) fldgmArrayQC(libs[libs$Run==RUN,], RUN)
-## fldgmArrayQCplot(RunB)
+\dontrun{
+fldgmArrayQCplot(RunB)
+}
 }
 
