@@ -1,9 +1,7 @@
 exportPattern("^[[:alpha:]]+")
+import(ggplot2) 
 importFrom(edgeR, decideTestsDGE)
 importFrom(gdata, read.xls)
-importFrom(ggplot2, ggplot, aes 
-                  , geom_bar, geom_point, geom_segment
-                  , coord_flip, theme, element_text)
 importFrom(grid, grid.draw)
 importFrom(magrittr, '%>%', '%<>%', subtract)
 importFrom(plyr, ddply, l_ply,.)
