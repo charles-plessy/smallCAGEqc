@@ -1,3 +1,10 @@
+Changes in version 0.11.0
+
+NEW FEATURES
+
+    o   Added the fldgmChamberWell function to convert between chamber
+        and plate coordinate systems.
+
 Changes in version 0.10.3
 
 BUG FIXES
