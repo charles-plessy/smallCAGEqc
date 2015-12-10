@@ -1,3 +1,12 @@
+Changes in version 0.11.2
+
+BUG FIXES
+
+    o   hanabiPlot correction: was using data from general environment
+        instead of its own parameter.
+    o   Template correction: was using incorrect scale for rarefying raw
+        counts.
+
 Changes in version 0.11.1
 
 BUG FIXES
