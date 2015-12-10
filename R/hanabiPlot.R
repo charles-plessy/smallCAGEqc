@@ -19,6 +19,8 @@
 #'  that plots the empty frame.
 #' 
 #' @seealso vegan
+#' 
+#' @export hanabiPlot
 
 
 hanabiPlot <- function (RAR, S, GROUP, ...) {
