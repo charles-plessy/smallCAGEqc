@@ -65,7 +65,7 @@ hanabiPlot <- function (RAR, S, GROUP, ...) {
   
   emptyFrame()
   sapply( 1:nrow(RAR), rarLines)
-  points( x = apply(RAR, 1, function(X) max(s[!is.na(X)])) # sampling sizes for each cell
+  points( x = apply(RAR, 1, function(X) max(S[!is.na(X)])) # sampling sizes for each cell
           , y = apply(RAR, 1, max, na.rm=T) # num. of detected feat. at max. sampl. size
           , col=as.numeric(GROUP))
 }
