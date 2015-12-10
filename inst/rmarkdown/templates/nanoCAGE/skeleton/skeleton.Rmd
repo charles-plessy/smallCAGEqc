@@ -381,7 +381,7 @@ rarg <- sapply(s, function(X) rarefy(tg, X))
 
 samplesOK <- bed$library %>% factor %>% levels %>% sub('RunA',RunA,.) %>% sub('RunB',RunB,.) # somes samples will be missing if they had no reads.
 csU <- libs[samplesOK, "properpairs"]
-sU <- subSampleSizes(cs)
+sU <- subSampleSizes(csU)
 
 rarefyLong <- function(TABLE, N)
   tapply(TABLE$score, TABLE$library, rarefy, N)
