@@ -14,8 +14,6 @@
 #' 
 #' @param RAR A rarefaction table.
 #' @param S A vector of subsample sizes.
-#' @param type What to plot at the end of the curve (by default,
-#'  open circles).
 #' @param GROUP A vector of factors grouping the samples.
 #' @param ... Further arguments to be passed to the first plot function,
 #'  that plots the empty frame.
@@ -23,7 +21,7 @@
 #' @seealso vegan
 
 
-hanabiPlot <- function (RAR, S, type='o', GROUP, ...) {
+hanabiPlot <- function (RAR, S, GROUP, ...) {
   
   # Accessory function to define the range of the empty frame's axis.
   minMax <- function (X) c( min(X, na.rm=TRUE)
@@ -48,8 +46,7 @@ hanabiPlot <- function (RAR, S, type='o', GROUP, ...) {
   rarLines  <- function (X)
     lines( S
         , RAR[X,]
-        , col=add.alpha(as.numeric(GROUP[X]),0.5)
-        , type=type)
+        , col=add.alpha(as.numeric(GROUP[X]),0.5))
   
   
   # Eliminate data points past a cell's sampling size.
