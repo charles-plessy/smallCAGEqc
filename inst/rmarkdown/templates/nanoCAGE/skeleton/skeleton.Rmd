@@ -180,20 +180,10 @@ Raw reads per molecule (BED12 data)
 -----------------------------------
 
 ```{r}
-loadBed <- function(SAMPLE) {
-  FILENAME <- paste0(SAMPLE, ".bed")
-  FILEPATH <- paste(MOIRAI_FRAGS, FILENAME, sep="/")
-  if (! file.exists(FILEPATH))
-    stop(paste("Could not find file:", FILEPATH))
-  if (file.info(FILEPATH)$size == 0 )
-    return (data.table())
-  DT <- fread(FILEPATH, sep="\t")
-  setnames(DT, bedFieldNames())
-  DT$library <- SAMPLE
-  DT
-}
-
-bed <- Reduce(function(X,Y) {rbind(X, loadBed(Y))}, libs$samplename %>% sub(RunA, "RunA", .) %>% sub(RunB, "RunB", .), data.table())
+bed <- loadBED12( libs$samplename %>%
+             sub(RunA, "RunA", .) %>%
+             sub(RunB, "RunB", .) %>%
+             paste0(MOIRAI_FRAGS, "/", ., ".bed"))
 ```
 
 Cell pictures
