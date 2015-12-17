@@ -69,9 +69,13 @@ setGeneric( "loadLogs"
 }
 
 .loadStats <- function(multiplex, summary, pipeline) {
-    if (missing(pipeline))
-      pipeline <- PROCESSED_DATA
+    if (missing(pipeline)) {
+      if (! exists("PROCESSED_DATA")) {
+        stop("PROCESSED_DATA must exist or the 'pipeline' argument must be passed.")}
+      pipeline <- PROCESSED_DATA }
     if (missing(multiplex)) {
+      if (! exists("PROCESSED_DATA"))
+        stop("PROCESSED_DATA must exist or the 'multiplex' argument must be passed.")
         if (grepl('nanoCAGE2', PROCESSED_DATA)) {
             multiplex <- paste0( '/osc-fs_home/scratch/moirai/nanoCAGE2/input/'
                                , LIBRARY
@@ -85,6 +89,8 @@ setGeneric( "loadLogs"
         }
     }
     if (missing(summary))
+      if (! exists("PROCESSED_DATA"))
+        stop("PROCESSED_DATA must exist or the 'summary' argument must be passed.")
         summary <- paste0( PROCESSED_DATA, '/text/summary.txt')
     readMultiplex <- function (multiplex) {
        libs <- read.table( multiplex
@@ -168,13 +174,13 @@ setMethod( loadLogs
 setMethod( loadLogs
            , signature=c(source="character", multiplex="character", summary="missing", pipeline="ANY")
            , function(source, multiplex, summary, pipeline) {
-             .loadStats(multiplex)
+             .loadStats(multiplex, pipeline)
            })
 
 setMethod( loadLogs
            , signature=c(source="character", multiplex="missing", summary="character", pipeline="ANY")
            , function(source, multiplex, summary, pipeline) {
-             .loadStats(summary)
+             .loadStats(summary, pipeline)
            })
 
 setMethod( loadLogs

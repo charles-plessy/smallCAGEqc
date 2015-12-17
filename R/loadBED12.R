@@ -8,15 +8,17 @@
 #' extensions.
 #' 
 #' We use the BED12 format to represent data related to the CAGE and CAGEscan 
-#' methods.  In brief, in a file repesents \sQuote{CAGEscan pairs}, then each
-#' line is one read count and the score is the sum of the mapping qualities of
-#' both reads.  In files representing \sQuote{CAGEscan fragments}, each line is
+#' methods.  In brief, in a file repesents \sQuote{CAGEscan pairs}, then each 
+#' line is one read count and the score is the sum of the mapping qualities of 
+#' both reads.  In files representing \sQuote{CAGEscan fragments}, each line is 
 #' one RNA molecule and the score is the number of CAGEscan pairs that were used
-#' to build the fragment.  For \sQuote{CAGEscan clusters}, each line is one
-#' transcript model and the score is the number of molecules used to build the
+#' to build the fragment.  For \sQuote{CAGEscan clusters}, each line is one 
+#' transcript model and the score is the number of molecules used to build the 
 #' model.
 #' 
-#' @param file Name of the BED12 file or full path to it.
+#' @param file Name of the BED12 file or full path to it.  If multiple names are
+#'   priovided, multiple files will be loaded, but in that case sample names can
+#'   not be provided with the \code{samplename} argument (see below).
 #' @param samplename Optional. Name of the sample represented by the file.
 #'   
 #' @return \code{loadBED12} always returns a \code{data.table}, so that it can 
@@ -33,26 +35,36 @@
 #' fileC <- system.file("extdata", "BED12_C.bed", package="smallCAGEqc")
 #' 
 #' loadBED12(fileA, "A")
-#' Reduce( function(X,Y) {rbind(X, loadBed(Y))}
-#'       , c(fileA, fileB, fileC)
-#'       , data.table::data.table())
+#' loadBED12(c(fileA, fileB, fileC))
 #'   
 #' @export loadBED12
 
 loadBED12 <- function(file, samplename) {
   
-  if (! file.exists(file))
-    stop(paste("Could not find file:", file))
+  loadOneFile <- function(file, samplename) {
+    if (! file.exists(file))
+      stop(paste("Could not find file:", file))
+    
+    if (file.info(file)$size == 0 )
+      return(data.table::data.table())
+    
+    if (missing(samplename))
+      samplename <- sub(".bed(.gz|.bz2|.xz|)", "", basename(file))
+    
+    DT <- data.table::fread(file, sep="\t")
+    data.table::setnames(DT, bedFieldNames())
+    DT$library <- samplename
+    DT
+  }
   
-  if (file.info(file)$size == 0 )
-    return(data.table::data.table())
+  if (length(file) == 1)
+    return(loadOneFile(file, samplename))
   
-  if (missing(samplename))
-    samplename <- sub(".bed(.gz|.bz2|.xz|)", "", basename(file))
-  
-  DT <- data.table::fread(file, sep="\t")
-  data.table::setnames(DT, bedFieldNames())
-  DT$library <- samplename
-  DT
-  
+  if (length(file > 1)){
+    if (! missing(samplename))
+      stop("Sample names not yet supported when loading multiple files")
+    Reduce( function(X,Y) {rbind(X, loadOneFile(Y))}
+           , file
+           , data.table::data.table())
+  }
 }
