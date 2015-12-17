@@ -7,16 +7,19 @@
 loadBED12(file, samplename)
 }
 \arguments{
-\item{file}{Name of the BED12 file or full path to it.}
+\item{file}{Name of the BED12 file or full path to it.  If multiple names are
+priovided, multiple files will be loaded, but in that case sample names can
+not be provided with the \code{samplename} argument (see below).}
 
 \item{samplename}{Optional. Name of the sample represented by the file.}
 }
 \value{
-\code{loadBED12} always returns a \code{data.table}, so that it can
-  safely be used in a accumulator loop.  It will check if the file exists and
-  if it is not empty, because in our current pipeline, absence of emptiness
-  can happen when a sample contains no properly paired reads.  In that case,
-  it will return an empty \code{data.table},
+When the file is found, \code{loadBED12} always returns a
+  \code{data.table}, so that it can safely be used in a accumulator loop.  It
+  will check if the file is empty, because in our current pipeline produces
+  such files when a sample contains no properly paired reads.  In that case,
+  it will return an empty \code{data.table}.  If the file is not found, it
+  aborts with an error.
 }
 \description{
 Load CAGE data from a file in BED12 format.
@@ -42,9 +45,7 @@ fileB <- system.file("extdata", "BED12_B.bed", package="smallCAGEqc")
 fileC <- system.file("extdata", "BED12_C.bed", package="smallCAGEqc")
 
 loadBED12(fileA, "A")
-Reduce( function(X,Y) {rbind(X, loadBed(Y))}
-      , c(fileA, fileB, fileC)
-      , data.table::data.table())
+loadBED12(c(fileA, fileB, fileC))
 }
 \seealso{
 \code{\link{bedFieldNames}}, \code{\link{data.table}}

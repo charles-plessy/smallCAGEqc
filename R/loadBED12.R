@@ -21,11 +21,12 @@
 #'   not be provided with the \code{samplename} argument (see below).
 #' @param samplename Optional. Name of the sample represented by the file.
 #'   
-#' @return \code{loadBED12} always returns a \code{data.table}, so that it can 
-#'   safely be used in a accumulator loop.  It will check if the file exists and
-#'   if it is not empty, because in our current pipeline, absence of emptiness 
-#'   can happen when a sample contains no properly paired reads.  In that case, 
-#'   it will return an empty \code{data.table},
+#' @return When the file is found, \code{loadBED12} always returns a 
+#'   \code{data.table}, so that it can safely be used in a accumulator loop.  It
+#'   will check if the file is empty, because in our current pipeline produces
+#'   such files when a sample contains no properly paired reads.  In that case,
+#'   it will return an empty \code{data.table}.  If the file is not found, it
+#'   aborts with an error.
 #'   
 #' @seealso \code{\link{bedFieldNames}}, \code{\link{data.table}}
 #'   
