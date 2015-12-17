@@ -1,3 +1,10 @@
+Changes in version 0.12.0
+
+NEW FEATURES
+
+    o   Added the loadBED12 function to load CAGEscan fragment data,
+        especially from multiple libraries processed separately.
+
 Changes in version 0.11.2
 
 BUG FIXES
