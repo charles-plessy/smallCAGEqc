@@ -344,8 +344,6 @@ FIXME: dark orange !
 ### Rarefaction
 
 ```{r}
-cs <- colSums(l1)
-
 # Subsampling sizes: one point for each cell's sample size, plus a few
 # points for smaller values, to be able to plot smoothly.
 
@@ -354,7 +352,7 @@ subSampleSizes <- function(X)
                    , max(X) / 2^(16:0)
                    , (max(X) / 16) * 16:1))))
 
-s <- subSampleSizes(cs)
+s <- subSampleSizes(colSums(l1))
 
 # Cachig the transpositions, just in case
 # it matters for the performance.
