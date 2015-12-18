@@ -352,7 +352,7 @@ subSampleSizes <- function(X)
                    , max(X) / 2^(16:0)
                    , (max(X) / 16) * 16:1))))
 
-s <- subSampleSizes(colSums(l1))
+sampleSizeCounts <- subSampleSizes(colSums(l1))
 
 # Cachig the transpositions, just in case
 # it matters for the performance.
@@ -364,24 +364,25 @@ tg <- t(genes)
 # In the resluting tables, the columns are a subsampling size, and
 # the rows are a cell.
 
-rar1 <- sapply(s, function(X) rarefy(t1, X))
-rarg <- sapply(s, function(X) rarefy(tg, X))
+rar1 <- sapply(sampleSizeCounts, function(X) rarefy(t1, X))
+rarg <- sapply(sampleSizeCounts, function(X) rarefy(tg, X))
 
 samplesOK <- bed$library %>% factor %>% levels %>% sub('RunA',RunA,.) %>% sub('RunB',RunB,.) # somes samples will be missing if they had no reads.
-sU <- subSampleSizes(libs[samplesOK, "properpairs"])
+
+sampleSizePairs <- subSampleSizes(libs[samplesOK, "properpairs"])
 
 rarefyLong <- function(TABLE, N)
   tapply(TABLE$score, TABLE$library, rarefy, N)
 
 tapply(rarefyLong(bed, 100), libs[samplesOK, "Error"], mean)
 
-rarU <- sapply(sU, function(N) rarefyLong(bed, N))
+rarU <- sapply(sampleSizePairs, function(N) rarefyLong(bed, N))
 ```
 
 ### TSS discovery
 
 ```{r hanabi-TSS, dev=c('svg', 'png')}
-hanabiPlot(rar1, s, log='', type='l', ylab='number of TSS detected', xlab='number of unique molecule counts', main=paste("TSS discovery for", LIBRARY), GROUP=libs$Error)
+hanabiPlot(rar1, sampleSizeCounts, log='', type='l', ylab='number of TSS detected', xlab='number of unique molecule counts', main=paste("TSS discovery for", LIBRARY), GROUP=libs$Error)
 
 legend('topleft',legend=levels(libs$Error), col=1:length(levels(libs$Error)), pch=1)
 ```
@@ -389,7 +390,7 @@ legend('topleft',legend=levels(libs$Error), col=1:length(levels(libs$Error)), pc
 ### Gene discovery
 
 ```{r hanabi-gene, dev=c('svg', 'png')}
-hanabiPlot(rarg, s, log='', type='l', ylab='number of genes detected', xlab='number of unique molecule counts', main=paste("Gene discovery for", LIBRARY), GROUP=libs$Error)
+hanabiPlot(rarg, sampleSizeCounts, log='', type='l', ylab='number of genes detected', xlab='number of unique molecule counts', main=paste("Gene discovery for", LIBRARY), GROUP=libs$Error)
 
 legend('topleft',legend=levels(libs$Error), col=1:length(levels(libs$Error)), pch=1)
 ```
@@ -399,7 +400,7 @@ legend('topleft',legend=levels(libs$Error), col=1:length(levels(libs$Error)), pc
 Caution !  Might be buggy
 
 ````{r hanabi-UMI, dev=c('svg', 'png')}
-hanabiPlot(rarU, sU, log='', type='l', ylab='number of molecules detected', xlab='number of properly mapped reads', main=paste("Transcript discovery for", LIBRARY), GROUP=libs$Error)
+hanabiPlot(rarU, sampleSizePairs, log='', type='l', ylab='number of molecules detected', xlab='number of properly mapped reads', main=paste("Transcript discovery for", LIBRARY), GROUP=libs$Error)
 
 legend('topleft',legend=levels(libs$Error), col=1:length(levels(libs$group)), pch=1)
 ```
@@ -409,7 +410,7 @@ legend('topleft',legend=levels(libs$Error), col=1:length(levels(libs$group)), pc
 (only "No Error" cells)
 
 ```{r hanabi-runs, dev=c('svg', 'png')}
-hanabiPlot(rarg[libs$Error=="0-No Error",], s, log='', type='l', ylab='number of genes detected', xlab='number of unique molecule counts', main=paste("Gene discovery for", LIBRARY), GROUP=libs[libs$Error=="0-No Error", "Run"])
+hanabiPlot(rarg[libs$Error=="0-No Error",], sampleSizeCounts, log='', type='l', ylab='number of genes detected', xlab='number of unique molecule counts', main=paste("Gene discovery for", LIBRARY), GROUP=libs[libs$Error=="0-No Error", "Run"])
 
 legend('topleft',legend=levels(libs[libs$Error=="0-No Error", "Run"]), col=1:length(levels(libs[libs$Error=="0-No Error", "Run"])), pch=1)
 ```
