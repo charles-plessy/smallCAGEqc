@@ -20,7 +20,8 @@ ZENBU_COLLAB <- "<Insert Zenbu collaboration ID>"
 RUN_ID       <- LIBRARY
 WORKFLOW     <- "<Insert workflow ID>" # For example "OP-WORKFLOW-CAGEscan-short-reads-v2.0"
 MOIRAI_STAMP <- "<Insert Moirai run stamp>" # For example "20150803121351"
-MOIRAI_USER  <- "<Insert Moirai user name>" # For example "Charles"
+MOIRAI_PROJ  <- "<Insert Moirai user name>" # For example "Charles"
+MOIRAI_USER  <- "<Insert Moirai user name>" # For example "nano-fluidigm"
 ASSEMBLY     <- "<Insert name of genome assembly>" # For example "hg38"
 
 # The following is still hardcoded...
@@ -63,9 +64,9 @@ Link files from MOIRAI.
 -----------------------
 
 ```{r}
-BASEDIR      <- "/osc-fs_home/scratch/moirai/nano-fluidigm/project"
+BASEDIR      <- "/osc-fs_home/scratch/moirai"
 MOIRAI_RUN   <- paste(RUN_ID, WORKFLOW, MOIRAI_STAMP, sep=".")
-MOIRAI_BASE  <- paste(BASEDIR, MOIRAI_USER, MOIRAI_RUN, sep="/")
+MOIRAI_BASE  <- paste(BASEDIR, MOIRAI_USER, "project", MOIRAI_PROJ, MOIRAI_RUN, sep="/")
 MOIRAI_ID    <- paste(RUN_ID, WORKFLOW, MOIRAI_STAMP, sep=".")
 MOIRAI_FRAGS <- paste0(MOIRAI_BASE, "/CAGEscan_fragments")
 MOIRAI_BAM   <- paste0(MOIRAI_BASE, "/genome_mapped")
