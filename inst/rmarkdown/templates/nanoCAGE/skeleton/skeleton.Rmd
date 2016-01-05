@@ -177,7 +177,7 @@ rownames(genesymbols) <- genesymbols$cluster
 genes <- rowsum(l1, genesymbols$symbol)
 
 libs$genes       <- colSums(genes > 0)
-#libs$geneSymbols <- countSymbols(genes) # Not the same!
+libs$geneSymbols <- countSymbols(genes) # Not the same!
 ```
 
 
