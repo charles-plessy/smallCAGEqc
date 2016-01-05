@@ -117,8 +117,12 @@ Moirai metadata
 ---------------
 
 ```{r, message=F}
-library(oscR) # at least 0.2.0
-library(smallCAGEqc) # at least 0.8.0
+library(oscR)
+library(smallCAGEqc)
+stopifnot(
+    packageVersion("oscR") >= "0.2.0"
+  , packageVersion("smallCAGEqc") > "0.11.2"
+)
 library(data.table)
 library(magrittr)
 library(reshape)
