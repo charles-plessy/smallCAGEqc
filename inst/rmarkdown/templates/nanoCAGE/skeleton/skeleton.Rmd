@@ -402,8 +402,6 @@ legend('topleft',legend=levels(libs$Error), col=1:length(levels(libs$Error)), pc
 
 ### Molecule discovery (with raw reads)
 
-Caution !  Might be buggy
-
 ````{r hanabi-UMI, dev=c('svg', 'png')}
 hanabiPlot(rarU, sampleSizePairs, ylab='number of molecules detected', xlab='number of properly mapped reads', main=paste("Transcript discovery for", LIBRARY), GROUP=libs$Error)
 
