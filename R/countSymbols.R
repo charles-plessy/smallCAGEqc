@@ -34,6 +34,5 @@ countSymbols <- function(TABLE) {
     length
   }
 
-  lapply(TABLE, countSymbolsVector) %>%
-  unlist
+  apply(TABLE, 2, countSymbolsVector)
 }
