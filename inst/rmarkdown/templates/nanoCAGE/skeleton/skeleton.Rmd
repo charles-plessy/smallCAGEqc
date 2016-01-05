@@ -466,8 +466,9 @@ To produce a string of keywords that will uniquely identify a sample.
 standardDescription <- function(BED)
   paste( MOIRAI_FRAGS
        , bedToSample(BED)
-       , "CAGEscan_fragments"
-       , "KnitrUpload")
+       , "what kind of data" # For innstance "CAGEscan_fragments"
+       , "a keyword for easy retrieval" # For instance "KnitrUpload"
+         # add more keywords as needed)
 ```
 
 To upload CAGEscan fragments, only if they have not yet been uploaded.
