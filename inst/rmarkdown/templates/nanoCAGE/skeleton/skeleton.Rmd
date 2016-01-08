@@ -80,7 +80,7 @@ smallCAGEqc::exportInEnv("RUN_ID", "MOIRAI_BASE", "GENE_SYMBOLS", "ANNOTATION")
 Create a symbolic link from Moirai results to the working directory.
 
 ```{r engine="bash"}
-[ -L $MOIRAI_BASE/$RUN_ID.l1.osc.gz ] ||
+[ -L $RUN_ID.l1.osc.gz ] ||
   ln --symbolic $MOIRAI_BASE/$RUN_ID.l1.osc.gz
 ```
 
