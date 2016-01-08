@@ -26,7 +26,9 @@
 #'   will check if the file is empty, because in our current pipeline produces
 #'   such files when a sample contains no properly paired reads.  In that case,
 #'   it will return an empty \code{data.table}.  If the file is not found, it
-#'   aborts with an error.
+#'   aborts with an error.  The first column of the data table, \code{chrom},
+#'   is a factor.  The other columns are numeric or character according to their
+#'   contents. 
 #'   
 #' @seealso \code{\link{bedFieldNames}}, \code{\link{data.table}}
 #'   
@@ -59,13 +61,16 @@ loadBED12 <- function(file, samplename) {
   }
   
   if (length(file) == 1)
-    return(loadOneFile(file, samplename))
+    bed <- loadOneFile(file, samplename)
   
-  if (length(file > 1)){
+  if (length(file) > 1){
     if (! missing(samplename))
       stop("Sample names not yet supported when loading multiple files")
-    Reduce( function(X,Y) {rbind(X, loadOneFile(Y))}
-           , file
-           , data.table::data.table())
+    bed <- Reduce( function(X,Y) {rbind(X, loadOneFile(Y))}
+                 , file
+                 , data.table::data.table())
   }
+  
+  bed$chrom <- factor(bed$chrom)
+  return(bed)
 }
