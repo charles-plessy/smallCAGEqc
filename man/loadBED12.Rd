@@ -19,8 +19,8 @@ When the file is found, \code{loadBED12} always returns a
   will check if the file is empty, because in our current pipeline produces
   such files when a sample contains no properly paired reads.  In that case,
   it will return an empty \code{data.table}.  If the file is not found, it
-  aborts with an error.  The first column of the data table, \code{chrom},
-  is a factor.  The other columns are numeric or character according to their
+  aborts with an error.  The columns \code{chrom} and \code{library}
+  are factors.  The other columns are numeric or character according to their
   contents.
 }
 \description{
