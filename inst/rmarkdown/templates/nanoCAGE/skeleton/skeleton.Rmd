@@ -13,7 +13,7 @@ knitr::opts_knit$set(verbose = TRUE)
 ggplot2::theme_set(ggplot2::theme_bw())
 ```
 
-```{r}
+```{r library_information_1}
 LIBRARY      <- "<Insert Run ID>"
 ZENBU_COLLAB <- "<Insert Zenbu collaboration ID>"
 
@@ -66,7 +66,7 @@ Data Processing
 Link files from MOIRAI.
 -----------------------
 
-```{r}
+```{r library_information_2}
 BASEDIR      <- "/osc-fs_home/scratch/moirai"
 MOIRAI_RUN   <- paste(RUN_ID, WORKFLOW, MOIRAI_STAMP, sep=".")
 MOIRAI_BASE  <- paste(BASEDIR, MOIRAI_USER, "project", MOIRAI_PROJ, MOIRAI_RUN, sep="/")
@@ -82,7 +82,7 @@ smallCAGEqc::exportInEnv("RUN_ID", "MOIRAI_BASE", "GENE_SYMBOLS", "ANNOTATION")
 
 Create a symbolic link from Moirai results to the working directory.
 
-```{r engine="bash"}
+```{r create_link engine="bash"}
 [ -L $RUN_ID.l1.osc.gz ] ||
   ln --symbolic $MOIRAI_BASE/$RUN_ID.l1.osc.gz
 ```
@@ -90,7 +90,7 @@ Create a symbolic link from Moirai results to the working directory.
 Annotation and gene symbols.
 ----------------------------
 
-```{r engine="bash"}
+```{r annotate_bed engine="bash"}
 function osc2bed {
   zcat $1 |
     grep -v \# |
@@ -120,7 +120,7 @@ Data load and QC in R.
 Moirai metadata
 ---------------
 
-```{r, message=F}
+```{r load_libs_and_moirai, message=F}
 library(oscR)
 library(smallCAGEqc)
 stopifnot(
@@ -151,7 +151,7 @@ R`).
 Note that _data.tables_ seem to be saved as simple _data frames_ when
 closing a session.  After restoring a workspace, one needs to re-convert with the `data.table` command.
 
-```{r}
+```{r load_osc_data}
 l1 <- fread.osc(paste0(LIBRARY, ".l1.osc.gz"), dropIdCoords=TRUE)
 
 setnames(l1, colnames(l1) %>% sub('raw.', '', .) %>% sub('.None', '', .) %>% sub('RunA',RunA,.) %>% sub('RunB',RunB,.))
@@ -163,7 +163,7 @@ stopifnot(all(colnames(l1) == rownames(libs)))
 Annotation
 ----------
 
-```{r}
+```{r annotate_l1}
 annot.l1 <- read.table(paste(LIBRARY,'l1','annot',sep='.'), head=F, col.names=c('id', 'feature'), row.names=1)
 annot.l1 <- hierarchAnnot(annot.l1)
 
@@ -173,7 +173,7 @@ libs <- cbind(libs, t(rowsum(l1,  annot.l1[,'class']))[rownames(libs),])
 Gene count
 ----------
 
-```{r}
+```{r genesymbols_l1}
 genesymbols <- read.table(paste(LIBRARY,'l1','genes',sep='.'), col.names=c("cluster","symbol"), stringsAsFactors=FALSE)
 rownames(genesymbols) <- genesymbols$cluster
 
@@ -187,7 +187,7 @@ libs$geneSymbols <- countSymbols(genes) # Not the same!
 Raw reads per molecule (BED12 data)
 -----------------------------------
 
-```{r}
+```{r load_fragments}
 bed <- loadBED12( libs$samplename %>%
              sub(RunA, "RunA", .) %>%
              sub(RunB, "RunB", .) %>%
@@ -197,7 +197,7 @@ bed <- loadBED12( libs$samplename %>%
 Cell pictures
 -------------
 
-```{r}
+```{r load_fluo_data}
 read.fluo <- function(RUN) read.delim( paste0("../imageJ/", RUN, ".txt")
                                      , row.names="cell_id"
                                      , stringsAsFactors = FALSE)
@@ -252,7 +252,7 @@ Combined analysis of fluorescence and cDNA concentration.
 
 ### Array heatmaps.
 
-```{r}
+```{r define_fldgmArrayQCplot}
 fldgmArrayQCplot <- function(RUN) fldgmArrayQC(libs[libs$Run==RUN,], RUN)
 ```
 
@@ -280,7 +280,7 @@ Analysis
 Richness
 --------
 
-```{r}
+```{r calculate-richness}
 libs$l1 <- colSums(l1 > 0)
 libs$r100l1 <- rarefy(t(l1),100)
 ```
@@ -351,7 +351,7 @@ FIXME: dark orange !
 
 ### Rarefaction
 
-```{r}
+```{r calculate-rarefactions}
 # Subsampling sizes: one point for each cell's sample size, plus a few
 # points for smaller values, to be able to plot smoothly.
 
@@ -435,7 +435,7 @@ Uploading to Zenbu collaboration `r ZENBU_COLLAB`.
 
 Ad-hoc wrapper to the shell command `zenbu_upload`
 
-```{r}
+```{r define_zenbuUpload}
 zenbuUpload <- function ( ...
                         , URL="http://fantom.gsc.riken.jp/zenbu"
                         , verbose=FALSE
@@ -455,7 +455,7 @@ zenbuUpload <- function ( ...
 
 To transform a file name in a sample identifier.
 
-```{r}
+```{r define_bedToSample}
 bedToSample <- function(BED)
   BED %>%
     sub("RunA", RunA, .) %>%
@@ -467,7 +467,7 @@ To produce a string of keywords that will uniquely identify a sample.
 
 TODO: move keywords to the top.
 
-```{r}
+```{r define_standardDescription}
 standardDescription <- function(BED)
   paste( MOIRAI_FRAGS
        , bedToSample(BED)
@@ -479,7 +479,7 @@ standardDescription <- function(BED)
 
 To upload CAGEscan fragments, only if they have not yet been uploaded.
 
-```{r}
+```{r define_safeZupload}
 safeZupload <- function (BED) {
   # Warning: the "notFound" function ignores queued uploads...
   notFound <- function(BED)
@@ -499,7 +499,7 @@ safeZupload <- function (BED) {
 
 Functions to add metadata tags.
 
-```{r}
+```{r tag-in-zenbu}
 zenbuTag <- function (filter, key, value, mode='add', ...) {
   args <- c('-mdedit', filter, mode, key, value)
   zenbuUpload (args, ...)
@@ -528,7 +528,7 @@ tagComment <- function (Sample, comment, ...) {
 
 ### Zenbu uploads and tagging
 
-```{r}
+```{r upload-and-tag}
 samplesToUpload <- subset(libs, properpairs > 0, "samplename", drop=T) %>%
   sub(RunA, "RunA", .) %>%
   sub(RunB, "RunB", .) %>%
