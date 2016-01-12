@@ -57,6 +57,9 @@ ANNOTATION   <- paste0(GROUP_SHARED, "/annotation/homo_sapiens/gencode-23/gencod
  - Positive control (200 cells): `r ctrls$RunA$posi`, `r ctrls$RunB$posi`.
  - Negative control: `r ctrls$RunA$nega`, `r ctrls$RunB$nega`.
  
+Jump directly to the [Analysis](#analysis) section if you are not interested in the details of the data processing.
+
+
 Data Processing
 ===============
 
