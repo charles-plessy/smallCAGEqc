@@ -75,9 +75,10 @@ mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"
     libs$duplicates = with(libs, mapped - counts)
     columns <- c("promoter","exon","intron","intergenic", "duplicates")
   } else if (scope == "qc") {
+    libs$unmapped <- libs$extracted - libs$tagdust - libs$rdna - libs$spikes - libs$mapped
     libs$mapped %<>% subtract(libs$properpairs)
     libs$properpairs %<>% subtract(libs$counts)
-    columns <- c("counts", "properpairs", "mapped", "spikes", "rdna", "tagdust")
+    columns <- c("counts", "properpairs", "mapped", "unmapped", "spikes", "rdna", "tagdust")
   } else {
     libs$mapped <- with(libs, mapped  - promoter - intron - exon)
     columns <- c("promoter","exon","intron","mapped","rdna", "tagdust")
