@@ -10,6 +10,11 @@ BUG FIXES
     o   countSymbols now handles cases where zero symbols are detected
         in a sample.
 
+OTHER CHANGES
+
+    o   After adding a "unmapped" category, the "qc" type in plotAnnot()
+        now totals to 100 %.
+
 Changes in version 0.11.2
 
 BUG FIXES
