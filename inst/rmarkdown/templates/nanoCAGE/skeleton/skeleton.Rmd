@@ -305,7 +305,7 @@ Annotation
 ----------
 
 ```{r annotation-barplots, dev=c('svg', 'png')}
-plotAnnot(libs, 'all', LIBRARY, libs$Error)
+plotAnnot(libs, 'counts', LIBRARY, libs$Error)
 ```
 
 Correlation between runs
