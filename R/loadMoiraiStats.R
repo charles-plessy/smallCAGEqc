@@ -103,7 +103,9 @@ loadMoiraiStats <- function(multiplex, summary, pipeline) {
       libs$mapped      <- moiraiToLibs('genome_mapped')
       libs$properpairs <- moiraiToLibs('properly_mapped')
       libs$counts      <- moiraiToLibs('transcript_count')
-      libs$extracted   <- libs$extracted - libs$spikes
+# delete the following line if confirmed that it is also un-needed with nanoCAGE2 user
+# libs$extracted   <- libs$extracted - libs$spikes
+
 # raw                = extracted               + removed_by_extraction
 # extracted          = non_reference_extracted + removed_references
 # removed_references = filtered_for_spikes     + filtered_for_rrna
