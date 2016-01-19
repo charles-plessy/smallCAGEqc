@@ -77,12 +77,6 @@ loadMoiraiStats <- function(multiplex, summary, pipeline) {
                     , header = T )
   rownames(libs) <- libs$samplename
   
-  # When using the nano-fluidigm user, rownames should be numbers.
-  
-  if ( exists("PROCESSED_DATA") )
-    if (grepl("nano-fluidigm", PROCESSED_DATA))
-      rownames(libs) <- libs$sampleid
-  
   # Load the "summary" file in a table called "moirai".  
   
   moirai <- reshape::cast( data=read.table( summary, sep='\t')
@@ -114,21 +108,6 @@ loadMoiraiStats <- function(multiplex, summary, pipeline) {
 # extracted          = non_reference_extracted + removed_references
 # removed_references = filtered_for_spikes     + filtered_for_rrna
 # genome_mapped      = properly_mapped         + removed_improper_pairs
-    } else if (grepl('nano-fluidigm', pipeline)) {
-        # Ignore Read 2 and Undetermined
-        sampleNames <- moirai$V1
-        linesToKeep <- ! grepl('(_R2_|Undetermined)', sampleNames)
-        moirai         <- subset(moirai,           linesToKeep)
-        sampleNames <- subset(sampleNames, linesToKeep)
-        # Reorder from sample 1 to 96.
-        moirai <- moirai[order(as.numeric(sub('_.*','', sampleNames))),]
-        rownames(moirai) <- rownames(libs)
-        libs$extracted <- moiraiToLibs('raw')
-        libs$mapped    <- moiraiToLibs('genome_mapped')
-        libs$rdna      <- moiraiToLibs('removed_rrna')
-        libs$tagdust   <- moiraiToLibs('removed_artifacts') # Note the different spelling
-        libs$spikes    <- moiraiToLibs('removed_spikes')
-        libs$extracted <- libs$extracted - libs$spikes
     } else {
         rownames(moirai) <- sub(paste0(LIBRARY, '.'),'', moirai$V1)
         libs$extracted <- moiraiToLibs('extracted')
