@@ -274,9 +274,6 @@ with(libs, plotNameColor(Concentration, mean_ch2 - bg_mean_ch2, Error, Well))
 with(libs, plotNameColor(Concentration, mean_ch3 - bg_mean_ch3, Error, Well))
 ```
 
-Analysis
-========
-
 Richness
 --------
 
@@ -285,6 +282,8 @@ libs$l1 <- colSums(l1 > 0)
 libs$r100l1 <- rarefy(t(l1),100)
 ```
 
+Analysis
+========
 
 ```{r richness-concentration, dev=c('svg', 'png')}
 with(libs, plotNameColor(Concentration, r100l1, Error, Well))
