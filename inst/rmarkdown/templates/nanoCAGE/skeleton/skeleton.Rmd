@@ -297,24 +297,28 @@ QC barplots
 -----------
 
 ```{r qc-barplots, dev=c('svg', 'png')}
-plotAnnot(libs, 'qc', LIBRARY, libs$Error)
+plotAnnot(libs, 'qc', LIBRARY, libs$Group)
 ```
 
 Annotation
 ----------
 
 ```{r annotation-barplots, dev=c('svg', 'png')}
-plotAnnot(libs, 'counts', LIBRARY, libs$Error)
+plotAnnot(libs, 'counts', LIBRARY, libs$Group)
 ```
 
 Correlation between runs
 ------------------------
 
 ```{r correlation-heatmap, dev=c('svg', 'png')}
-#FIXME
-# Here, we could not rely on images only
-NMF::aheatmap( cor(genes[-1, libs$Error == "0-No Error"])
-             , annCol=list(Run=libs[libs$Error == "0-No Error", "Run"]))
+NMF::aheatmap( cor(genes[-1, ])
+             , annCol=list(Run=libs$Ru))
+```
+
+```{r correlation-heatmap-noerrors, dev=c('svg', 'png')}
+# Uncomment if you have a Error column
+#NMF::aheatmap( cor(genes[-1, libs$Error == "0-No Error"])
+#             , annCol=list(Run=libs[libs$Error == "0-No Error", "Run"]))
 ```
 
 Gene counts and TSS discovery
@@ -324,23 +328,23 @@ Gene counts and TSS discovery
 
 ```{r gene-count, dev=c('svg', 'png'), fig.height=2.5}
 dotsize <- 50
-ggplot(libs, aes(x=Error, y=genes)) +
+ggplot(libs, aes(x=Group, y=genes)) +
   stat_summary(fun.y=mean, fun.ymin=mean, fun.ymax=mean, geom="crossbar", color="gray") +
-  geom_dotplot(aes(fill=Error), binaxis='y', binwidth=1, dotsize=dotsize, stackdir='center') +
+  geom_dotplot(aes(fill=Group), binaxis='y', binwidth=1, dotsize=dotsize, stackdir='center') +
   coord_flip() + facet_wrap(~Run)
 ```
 
 ### Gene count per transcript count.
 
 ```{r gene-counts-run-plot, dev=c('svg', 'png')}
-with(subset(libs, Error == "0-No Error"), plotNameColor(genes, counts, Run, Well))
+with(libs, plotNameColor(genes, counts, Run, Well))
 ```
 
 ### Gene counts per C1 run.
 
 ```{r gene-counts-run-boxplot, dev=c('svg', 'png')}
-boxplot(data=subset(libs, Error == "0-No Error"), genes ~ Run, ylab="Number of genes detexted (aprox)", main="Comparison of gene detection by run.")
-t.test(data=subset(libs, Error == "0-No Error"), genes ~ Run)
+#boxplot(data=subset(libs, Error == "0-No Error"), genes ~ Run, ylab="Number of genes detexted (aprox)", main="Comparison of gene detection by run.")
+#t.test(data=subset(libs, Error == "0-No Error"), genes ~ Run)
 ```
 
 Rarefaction (hanabi plot).
@@ -381,33 +385,31 @@ sampleSizePairs <- subSampleSizes(libs[samplesOK, "properpairs"])
 rarefyLong <- function(TABLE, N)
   tapply(TABLE$score, TABLE$library, rarefy, N)
 
-tapply(rarefyLong(bed, 100), libs[samplesOK, "Error"], mean)
-
 rarU <- sapply(sampleSizePairs, function(N) rarefyLong(bed, N))
 ```
 
 ### TSS discovery
 
 ```{r hanabi-TSS, dev=c('svg', 'png')}
-hanabiPlot(rar1, sampleSizeCounts, ylab='number of TSS detected', xlab='number of unique molecule counts', main=paste("TSS discovery for", LIBRARY), GROUP=libs$Error)
+hanabiPlot(rar1, sampleSizeCounts, ylab='number of TSS detected', xlab='number of unique molecule counts', main=paste("TSS discovery for", LIBRARY), GROUP=libs$Group)
 
-legend('topleft',legend=levels(libs$Error), col=1:length(levels(libs$Error)), pch=1)
+legend('topleft',legend=levels(libs$Group), col=1:length(levels(libs$Group)), pch=1)
 ```
 
 ### Gene discovery
 
 ```{r hanabi-gene, dev=c('svg', 'png')}
-hanabiPlot(rarg, sampleSizeCounts, ylab='number of genes detected', xlab='number of unique molecule counts', main=paste("Gene discovery for", LIBRARY), GROUP=libs$Error)
+hanabiPlot(rarg, sampleSizeCounts, ylab='number of genes detected', xlab='number of unique molecule counts', main=paste("Gene discovery for", LIBRARY), GROUP=libs$Group)
 
-legend('topleft',legend=levels(libs$Error), col=1:length(levels(libs$Error)), pch=1)
+legend('topleft',legend=levels(libs$Group), col=1:length(levels(libs$Group)), pch=1)
 ```
 
 ### Molecule discovery (with raw reads)
 
 ````{r hanabi-UMI, dev=c('svg', 'png')}
-hanabiPlot(rarU, sampleSizePairs, ylab='number of molecules detected', xlab='number of properly mapped reads', main=paste("Transcript discovery for", LIBRARY), GROUP=libs$Error)
+hanabiPlot(rarU, sampleSizePairs, ylab='number of molecules detected', xlab='number of properly mapped reads', main=paste("Transcript discovery for", LIBRARY), GROUP=libs$Group)
 
-legend('topleft',legend=levels(libs$Error), col=1:length(levels(libs$group)), pch=1)
+legend('topleft',legend=levels(libs$Group), col=1:length(levels(libs$Group)), pch=1)
 ```
 
 ### Comparison between the runs
@@ -415,9 +417,9 @@ legend('topleft',legend=levels(libs$Error), col=1:length(levels(libs$group)), pc
 (only "No Error" cells)
 
 ```{r hanabi-runs, dev=c('svg', 'png')}
-hanabiPlot(rarg[libs$Error=="0-No Error",], sampleSizeCounts, ylab='number of genes detected', xlab='number of unique molecule counts', main=paste("Gene discovery for", LIBRARY), GROUP=libs[libs$Error=="0-No Error", "Run"])
+#hanabiPlot(rarg[libs$Error=="0-No Error",], sampleSizeCounts, ylab='number of genes detected', xlab='number of unique molecule counts', main=paste("Gene discovery for", LIBRARY), GROUP=libs[libs$Error=="0-No Error", "Run"])
 
-legend('topleft',legend=levels(libs[libs$Error=="0-No Error", "Run"]), col=1:length(levels(libs[libs$Error=="0-No Error", "Run"])), pch=1)
+#legend('topleft',legend=levels(libs[libs$Error=="0-No Error", "Run"]), col=1:length(levels(libs[libs$Error=="0-No Error", "Run"])), pch=1)
 ```
 
 
@@ -535,7 +537,7 @@ samplesToUpload <- subset(libs, properpairs > 0, "samplename", drop=T) %>%
 
 sapply(samplesToUpload, safeZupload)
 sapply(samplesToUpload, tagError)
-sapply(samplesToUpload, tagMeta, TAG="group")
+sapply(samplesToUpload, tagMeta, TAG="Group")
 sapply(samplesToUpload, tagMeta, TAG="Run")
 sapply(samplesToUpload, tagMeta, TAG="row")
 sapply(samplesToUpload, tagMeta, TAG="column")
