@@ -82,7 +82,7 @@ smallCAGEqc::exportInEnv("RUN_ID", "MOIRAI_BASE", "GENE_SYMBOLS", "ANNOTATION")
 
 Create a symbolic link from Moirai results to the working directory.
 
-```{r create_link engine="bash"}
+```{r create_link, engine="bash"}
 [ -L $RUN_ID.l1.osc.gz ] ||
   ln --symbolic $MOIRAI_BASE/$RUN_ID.l1.osc.gz
 ```
@@ -90,7 +90,7 @@ Create a symbolic link from Moirai results to the working directory.
 Annotation and gene symbols.
 ----------------------------
 
-```{r annotate_bed engine="bash"}
+```{r annotate_bed, engine="bash"}
 function osc2bed {
   zcat $1 |
     grep -v \# |
