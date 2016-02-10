@@ -82,7 +82,7 @@ smallCAGEqc::exportInEnv("RUN_ID", "MOIRAI_BASE", "GENE_SYMBOLS", "ANNOTATION")
 
 Create a symbolic link from Moirai results to the working directory.
 
-```{r create_link engine="bash"}
+```{r create_link, engine="bash"}
 [ -L $RUN_ID.l1.osc.gz ] ||
   ln --symbolic $MOIRAI_BASE/$RUN_ID.l1.osc.gz
 ```
@@ -90,7 +90,7 @@ Create a symbolic link from Moirai results to the working directory.
 Annotation and gene symbols.
 ----------------------------
 
-```{r annotate_bed engine="bash"}
+```{r annotate_bed, engine="bash"}
 function osc2bed {
   zcat $1 |
     grep -v \# |
@@ -468,8 +468,8 @@ To produce a string of keywords that will uniquely identify a sample.
 
 TODO: move keywords to the top.
 
-```{r define_standardDescription}
-standardDescription <- function(BED)
+```{r define_sampleDescription}
+sampleDescription <- function(BED)
   paste( MOIRAI_FRAGS
        , bedToSample(BED)
        , "what kind of data" # For innstance "CAGEscan_fragments"
@@ -484,14 +484,14 @@ To upload CAGEscan fragments, only if they have not yet been uploaded.
 safeZupload <- function (BED) {
   # Warning: the "notFound" function ignores queued uploads...
   notFound <- function(BED)
-    zenbuUpload( "-list", "-filter", standardDescription(BED)) %>%
+    zenbuUpload( "-list", "-filter", sampleDescription(BED)) %>%
       tail(1) %>%
       grepl ("0 uploads --- 0 featuresources --- 0 experiments --- \\[0 total sources\\]", .)
   if(notFound(BED))
     zenbuUpload( "-file",        paste(MOIRAI_FRAGS, BED, sep="/")
                , "-name",        BED  %>% sub(".bed", "", .)
                , "-assembly",    ASSEMBLY
-               , "-desc",        standardDescription(BED)
+               , "-desc",        sampleDescription(BED)
                , "-collab_uuid", ZENBU_COLLAB
                , "-singletag_exp"
                , stdout="")
@@ -507,12 +507,12 @@ zenbuTag <- function (filter, key, value, mode='add', ...) {
 }
 
 tagError <- function(BED)
-  zenbuTag( standardDescription(BED)
+  zenbuTag( sampleDescription(BED)
           , 'cellomics'
           , libs[bedToSample(BED), "Error"] %>% as.character)
 
 tagMeta <- function(BED, TAG)
-  zenbuTag( standardDescription(BED)
+  zenbuTag( sampleDescription(BED)
           , TAG
           , libs[bedToSample(BED), TAG] %>% as.character)
 
