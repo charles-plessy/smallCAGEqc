@@ -4,6 +4,8 @@ NEW FEATURES
 
     o   Added the loadBED12 function to load CAGEscan fragment data,
         especially from multiple libraries processed separately.
+    o   Added the erccSpikeConcentration function to retreive concentration
+        of RNA spikes sold by Thermo Fisher.
 
 BUG FIXES
 
