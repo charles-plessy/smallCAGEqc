@@ -26,7 +26,8 @@ symbols.  Thus, a symbol can be found on multiple rows.  This is
 why this function is needed.
 }
 \examples{
-exp.tbl <- data.frame(sample1=c(1,2), sample2=c(1,0), row.names=c("A", "A,B"))
+exp.tbl <- data.frame( sample1=c(1,2), sample2=c(1,0), sample3=c(0,0)
+                     , row.names=c("A", "A,B"))
 countSymbols(exp.tbl)
 }
 \seealso{
