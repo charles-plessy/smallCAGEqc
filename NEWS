@@ -16,6 +16,7 @@ OTHER CHANGES
 
     o   After adding a "unmapped" category, the "qc" type in plotAnnot()
         now totals to 100 %.
+    o   TPM() now warns if it will produce NaN values.
 
 Changes in version 0.11.2
 
