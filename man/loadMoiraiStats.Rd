@@ -4,7 +4,7 @@
 \alias{loadMoiraiStats}
 \title{loadMoiraiStats}
 \usage{
-loadMoiraiStats(multiplex, summary, pipeline)
+loadMoiraiStats(multiplex, summary, pipeline, ercc = FALSE)
 }
 \arguments{
 \item{multiplex}{Optional. Path to a \sQuote{multiplex} file.}
@@ -12,6 +12,8 @@ loadMoiraiStats(multiplex, summary, pipeline)
 \item{summary}{Optional. Path to a \sQuote{summary} file.}
 
 \item{pipeline}{Optional. Version string identifying the pipeline used to process the data.}
+
+\item{ercc}{Optional. [Experimental] Return ERCC spike counts.}
 }
 \value{
 Returns a data frame with one row per sample, and the following columns (if the
@@ -24,6 +26,8 @@ corresponding data is available).
  \item{rdna} {Number of reads overlaping with the reference ribosomal DNA sequences}
  \item{mapped} {Number of reads aligned to the reference genome}
  }
+
+ Alternatively, returns ERCC spike counts when \sQuote{ercc} is set to \sQuote{TRUE}.
 }
 \description{
 Load mapping statistics from log files

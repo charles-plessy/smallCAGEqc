@@ -16,6 +16,7 @@
 #' @param multiplex Optional. Path to a \sQuote{multiplex} file.
 #' @param summary Optional. Path to a \sQuote{summary} file.
 #' @param pipeline Optional. Version string identifying the pipeline used to process the data.
+#' @param ercc Optional. [Experimental] Return ERCC spike counts.
 #' 
 #' @return Returns a data frame with one row per sample, and the following columns (if the
 #' corresponding data is available).
@@ -28,6 +29,8 @@
 #'  \item{mapped} {Number of reads aligned to the reference genome}
 #'  }
 #'  
+#'  Alternatively, returns ERCC spike counts when \sQuote{ercc} is set to \sQuote{TRUE}.
+#'  
 #' @seealso \code{\link{hierarchAnnot}}, code{\link{loadLogs}}, \code{\link{mapStats}}
 #' 
 #' @examples 
@@ -38,7 +41,7 @@
 #'         
 #' libs$group <- libs$samplename %>% sub("Run._", "", .) %>% substr(1,1) %>% factor
 
-loadMoiraiStats <- function(multiplex, summary, pipeline) {
+loadMoiraiStats <- function(multiplex, summary, pipeline, ercc = FALSE) {
 
   # Use heuristics if parameters are missing.
   
@@ -88,10 +91,23 @@ loadMoiraiStats <- function(multiplex, summary, pipeline) {
   
   moiraiToLibs <- function(COL) {
     if (! COL %in% colnames(moirai))
-      return(0)
+      return(rep(0, nrow(libs)))
     values <- moirai[rownames(libs), COL]
     values[is.na(values)] <- 0
     return(values)
+  }
+  
+  if (ercc == TRUE) {
+    if (file.exists("cms_095046.txt")) {
+      ercc <- erccSpikeConcentration("cms_095046.txt")
+    } else {
+      ercc <- erccSpikeConcentration()
+    }
+    colnames(moirai) %<>% sub("\\|.*", "", .)
+      ercc <- sapply(rownames(ercc), moiraiToLibs) %>%
+        as.data.frame
+      rownames(ercc) <- rownames(libs)
+      return(ercc)
   }
   
   if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.0', pipeline)) {
