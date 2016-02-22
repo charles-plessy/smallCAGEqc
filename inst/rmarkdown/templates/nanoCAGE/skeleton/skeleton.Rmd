@@ -14,10 +14,8 @@ ggplot2::theme_set(ggplot2::theme_bw())
 ```
 
 ```{r library_information_1}
-LIBRARY      <- "<Insert Run ID>"
+LIBRARY      <- "<Insert library ID>"  # For example, the sequencing run ID.
 ZENBU_COLLAB <- "<Insert Zenbu collaboration ID>"
-
-RUN_ID       <- LIBRARY
 WORKFLOW     <- "<Insert workflow ID>" # For example "OP-WORKFLOW-CAGEscan-short-reads-v2.0"
 MOIRAI_STAMP <- "<Insert Moirai run stamp>" # For example "20150803121351"
 MOIRAI_PROJ  <- "<Insert Moirai user name>" # For example "Charles"
@@ -68,14 +66,14 @@ Link files from MOIRAI.
 
 ```{r library_information_2}
 BASEDIR      <- "/osc-fs_home/scratch/moirai"
-MOIRAI_RUN   <- paste(RUN_ID, WORKFLOW, MOIRAI_STAMP, sep=".")
+MOIRAI_RUN   <- paste(LIBRARY, WORKFLOW, MOIRAI_STAMP, sep=".")
 MOIRAI_BASE  <- paste(BASEDIR, MOIRAI_USER, "project", MOIRAI_PROJ, MOIRAI_RUN, sep="/")
-MOIRAI_ID    <- paste(RUN_ID, WORKFLOW, MOIRAI_STAMP, sep=".")
+MOIRAI_ID    <- paste(LIBRARY, WORKFLOW, MOIRAI_STAMP, sep=".")
 MOIRAI_FRAGS <- paste0(MOIRAI_BASE, "/CAGEscan_fragments")
 MOIRAI_BAM   <- paste0(MOIRAI_BASE, "/genome_mapped")
 MOIRAI_URL   <- paste0("http://moirai.gsc.riken.jp/", MOIRAI_BASE, "/", MOIRAI_RUN, ".html")
 
-smallCAGEqc::exportInEnv("RUN_ID", "MOIRAI_BASE", "GENE_SYMBOLS", "ANNOTATION")
+smallCAGEqc::exportInEnv("LIBRARY", "MOIRAI_BASE", "GENE_SYMBOLS", "ANNOTATION")
 ```
 
  Intranet link: [`r MOIRAI_RUN`](`r MOIRAI_URL`)
@@ -83,8 +81,8 @@ smallCAGEqc::exportInEnv("RUN_ID", "MOIRAI_BASE", "GENE_SYMBOLS", "ANNOTATION")
 Create a symbolic link from Moirai results to the working directory.
 
 ```{r create_link, engine="bash"}
-[ -L $RUN_ID.l1.osc.gz ] ||
-  ln --symbolic $MOIRAI_BASE/$RUN_ID.l1.osc.gz
+[ -L $LIBRARY.l1.osc.gz ] ||
+  ln --symbolic $MOIRAI_BASE/$LIBRARY.l1.osc.gz
 ```
 
 Annotation and gene symbols.
@@ -110,8 +108,8 @@ function bed2symbols {
     bedtools groupby -g 1 -c 2 -o distinct
 }
 
-osc2bed $RUN_ID.l1.osc.gz | tee $RUN_ID.l1.bed | bed2annot - > $RUN_ID.l1.annot
-bed2symbols $RUN_ID.l1.bed > $RUN_ID.l1.genes
+osc2bed $LIBRARY.l1.osc.gz | tee $LIBRARY.l1.bed | bed2annot - > $LIBRARY.l1.annot
+bed2symbols $LIBRARY.l1.bed > $LIBRARY.l1.genes
 ```
 
 Data load and QC in R.
