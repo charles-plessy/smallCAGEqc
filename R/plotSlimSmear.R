@@ -1,10 +1,14 @@
 plotSlimSmear <- function(COMP, MAIN, ROUND=2, PCH=19, CEX=1) {
 
+  if (!requireNamespace("edgeR", quietly = TRUE))
+    stop( "edgeR is needed for this function to work. Please install it."
+        , call. = FALSE)
+  
   dgeTable <- COMP$table[,c('logCPM', 'logFC')]
 
   roundUnique <- function(TABLE) TABLE %>% round(ROUND) %>% unique
-  up          <- function (X)    rownames(X)[decideTestsDGE(X) > 0]
-  down        <- function (X)    rownames(X)[decideTestsDGE(X) < 0]
+  up          <- function (X)    rownames(X)[edgeR::decideTestsDGE(X) > 0]
+  down        <- function (X)    rownames(X)[edgeR::decideTestsDGE(X) < 0]
   subTable    <- function(LIST)  dgeTable[LIST, ] %>% roundUnique
 
   upList        <-   up(COMP)
