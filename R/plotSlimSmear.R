@@ -1,3 +1,33 @@
+#' plotSlimSmear
+#' 
+#' Slimmer plots with a bit of data loss
+#' 
+#' To reduce the size of SVG or PDF plots, this function rounds the data and
+#' remove the duplicate points at the same coordinates.
+#' 
+#' @param COMP A DGELRT object from edgeR.
+#' @param MAIN The title of the plot.
+#' @param ROUND The decimal for the rounding.
+#' @param PCH The \code{pch} arguments passed to the \code{points} function
+#' @param CEX The \code{cex} arguments passed to the \code{points} function
+#' 
+#' 
+#' Significantly over- and under-represented items are plotted in red and blue
+#' respectively.
+#' 
+#' Using this function creates data loss.  Try rounding at different decimals and
+#' pick one that do not change the visual appearance of the plot significantly.
+#' 
+#' @seealso 
+#' \code{\link[edgeR]{plotSmear}}
+#' 
+#' @examples
+#' \dontrun{
+#' plotSlimSmear(obj.comp, 'Here is the title')
+#' }
+#' 
+#' @export plotSlimSmear
+
 plotSlimSmear <- function(COMP, MAIN, ROUND=2, PCH=19, CEX=1) {
 
   if (!requireNamespace("edgeR", quietly = TRUE))
