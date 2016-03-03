@@ -20,6 +20,7 @@ OTHER CHANGES
         now totals to 100 %.
     o   TPM() now warns if it will produce NaN values.
     o   In the template, merged `LIBRARY` and `RUN_ID`, used for same purpose.
+    o   edgeR is only "Suggested": plotSlimSmear aborts if absent.
 
 Changes in version 0.11.2
 
