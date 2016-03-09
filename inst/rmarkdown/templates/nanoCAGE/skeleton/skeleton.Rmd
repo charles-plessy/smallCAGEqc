@@ -309,8 +309,33 @@ Correlation between runs
 ------------------------
 
 ```{r correlation-heatmap, dev=c('svg', 'png')}
-NMF::aheatmap( cor(genes[-1, ])
-             , annCol=list(Run=libs$Ru))
+library(dendextend)
+
+# Filtering genes with extraction count < nb.filter.extracted
+# Note that it can also remove negative controls
+nb.filter.extracted <- 10000
+# Possibility to color the clusters dendrogram if nb.clusters != 0
+nb.clusters <- 0
+# Please check that length(colors.dend) >= nb.clusters
+colors.dend = c("red", "darkgreen", "darkseagreen", "blue", "green", "darkorange3", "grey40", "darkorchid4", "pink3", "turquoise4", "black")
+
+# Implementing heatmap
+filter.extracted <- libs$samplename[libs$extracted > nb.filter.extracted]
+heatmap.genes <- NMF::aheatmap( cor(log(genes[-1, filter.extracted]+1))
+             , annCol=list(Run=libs$Ru[filter.extracted], Group=libs$group[filter.extracted]) )
+if(nb.clusters != 0) 
+  {
+       cor.dend <- heatmap.genes$Rowv %>%
+         set("branches_k_color", value = colors.dend[1:nb.clusters], k = nb.clusters) %>%
+         set("labels_colors", value = colors.dend[1:nb.clusters], k = nb.clusters) %>%
+         set("labels_cex", .6) %>%
+         ladderize(FALSE) # To ensure a reproducible visual order of the clusters
+       heatmap.genes <- NMF::aheatmap( cor(log(genes[-1, filter.extracted]+1)),
+              annCol=list(Run=libs$Run[filter.extracted], Group=libs$group[filter.extracted]),
+              Rowv = cor.dend, Colv = cor.dend )
+       # Displaying the dendrogram only
+       cor.dend %>% as.ggdend %>% ggplot(horiz = F)
+  }
 ```
 
 ```{r correlation-heatmap-noerrors, dev=c('svg', 'png')}
