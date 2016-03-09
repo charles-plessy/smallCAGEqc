@@ -334,7 +334,7 @@ if(nb.clusters != 0)
               annCol=list(Run=libs$Run[filter.extracted], Group=libs$group[filter.extracted]),
               Rowv = cor.dend, Colv = cor.dend )
        # Displaying the dendrogram only
-       cor.dend %>% as.ggdend %>% ggplot(horiz = F)
+       (cor.dend.gg <- cor.dend %>% as.ggdend %>% ggplot(horiz = F))
   }
 ```
 
@@ -343,6 +343,212 @@ if(nb.clusters != 0)
 #NMF::aheatmap( cor(genes[-1, libs$Error == "0-No Error"])
 #             , annCol=list(Run=libs[libs$Error == "0-No Error", "Run"]))
 ```
+
+```{r genes-dend-nb-clusters, dev=c('png','svg')}
+# Creating an hclust object
+genes.dend <- hclust(dist(cor(log(genes[-1, filter.extracted]+1))))
+# Ordering heights
+genes.dend.rev=rev(genes.dend$height)
+# Plotting the curve of height of the dendrogram
+plot(genes.dend.rev,
+     col = c(colors.dend[1:nb.clusters], rep("black", length(genes.dend.rev)-1)),
+     pch = 20, ylab = "Clusters height")
+abline(v = nb.clusters+0.5, col = "grey60", lty = 2)
+# Dividing into nb.clusters clusters
+genes.dend.clusters <- cutree(genes.dend, nb.clusters)
+```
+
+PCA analysis
+------------
+
+### PCA on Genes
+
+```{r genes-pca}
+library(ade4)
+library(adegraphics)
+library(dplyr)
+
+# Normalisation in tags per million and removing the • genes
+genes.tpm <- t(TPM(genes[, filter.extracted]))[, -1]
+# Setting the number of axis to keep in the PCA
+nb.pcaAxis <- 3
+# Running PCA
+genes.pca <- dudi.pca(genes.tpm, center = T, scale = F, scannf = F, nf = nb.pcaAxis)
+```
+
+```{r genes-pca-summary, dev=c('png','svg')}
+# Displaying information about the PCA
+barplot(genes.pca$eig, xlab = "Eigenvalues")
+summary(genes.pca)
+```
+
+```{r pca-functions}
+#
+# MAYBE SHOULD BE ADDED TO PACKAGE smallCAGEqc
+#
+
+# Returns TRUE if component is mostly oriented towards positive values
+# otherwise returns FALSE
+pcaCompOrientation <- function(compPCA){
+  ifelse(abs(range(compPCA)[1]) > abs(range(compPCA)[2]), FALSE, TRUE)
+}
+
+# Display ordered genes names for a designated component
+# For now works if nb.pcaAxis == 3
+pcaCompGenesList <- function(PCAADE4co, comp){
+  require(ade4)
+  stopifnot(nb.pcaAxis == 3)
+  genes.co <- PCAADE4co %>% 
+    mutate(., geneNames = rownames(.)) %>% 
+    select(geneNames, Comp1, Comp2, Comp3)
+  ifelse(pcaCompOrientation(genes.co[comp+1]),
+         genes.co %<>% setorderv(., colnames(.)[comp+1], order=-1),
+         genes.co %<>% setorderv(., colnames(.)[comp+1], order=1))
+  genes.co
+}
+
+# Barplots of head and tail genes for each component
+HTB <- function(orderedCompPCA, comp, nbDispGenes = 25){
+  par(mfrow=c(1,2))
+  
+  bp1h <- orderedCompPCA[,comp+1] %>% head(nbDispGenes) %>% barplot(. ,
+          ylim = c(min(orderedCompPCA[,comp+1]), max(orderedCompPCA[,comp+1])),
+          axes = FALSE, axisnames = FALSE, main = paste0("comp ", comp, " head"))
+  text(bp1h, par("usr")[3], labels = orderedCompPCA$geneNames %>% head(nbDispGenes),
+       srt = 90, adj = c(1.1,1.1), xpd = TRUE, cex=.6)
+  axis(2)
+
+  bp1t <- orderedCompPCA[,comp+1] %>% tail(nbDispGenes) %>% barplot(. ,
+          ylim = c(min(orderedCompPCA[,comp+1]), max(orderedCompPCA[,comp+1])),
+          axes = FALSE, axisnames = FALSE, main = paste0("comp ", comp, " tail"))
+  text(bp1t, par("usr")[3], labels = orderedCompPCA$geneNames %>% tail(nbDispGenes),
+       srt = 90, adj = c(1.1,1.1), xpd = TRUE, cex=.6)
+  axis(4)
+  
+  par(mfrow=c(1,1))
+}
+
+# Return lists of plots for genes and cells
+# For now works if nb.pcaAxis == 3
+PCAplots <- function(PCAADE4, cellcol, size = 1, transparency = 0.6){
+  require(ade4)
+  require(adegraphics)
+  stopifnot(PCAADE4$nf == 3)
+  if(nrow(PCAADE4$li) != length(cellcol))
+     return(paste0("Error: length(cellcol) [",length(cellcol),"] is not equal to the number of cells [",nrow(PCAADE4$li),"]"))
+  
+  genePlot <- function(absciss,ordinate){
+    if((absciss == 3) && (ordinate == 2)) {
+          # g32 seems more logical when displaying all 3 axes in the same plot
+          # so we need to inverse coordinates
+          g32df <- data.frame(-1*PCAADE4$co[,absciss], PCAADE4$co[,ordinate])
+          rownames(g32df) <- rownames(PCAADE4$co)
+          s.arrow(g32df,
+                  plabels = list(box = list(draw = F), optim = T, cex = size, alpha = transparency),
+                  main = paste0(absciss,",",ordinate),
+                  xlab = paste0("comp ",absciss),
+                  ylab = paste0("comp ",ordinate),
+                  plot = F)
+    }
+    else {
+          s.arrow(PCAADE4$co[,c(absciss,ordinate)],
+                  plabels = list(box = list(draw = F), optim = T, cex = size, alpha = transparency),
+                  main = paste0(absciss,",",ordinate),
+                  xlab = paste0("comp ",absciss),
+                  ylab = paste0("comp ",ordinate),
+                  plot = F)
+    }
+  }
+  
+  cellPlot <- function(absciss,ordinate){
+    if((absciss == 3) && (ordinate == 2)) {
+          # g32 seems more logical when displaying all 3 axes in the same plot
+          # so we need to inverse coordinates
+          h32df <- data.frame(-1*PCAADE4$li[,absciss], PCAADE4$li[,ordinate])
+          rownames(h32df) <- rownames(PCAADE4$li)
+          s.label(h32df,
+                  plabels = list(box = list(draw = F), optim = F, cex = size, alpha = transparency, col = cellcol),
+                  ppoints = list(col = cellcol, cex = size),
+                  main = paste0(absciss,",",ordinate),
+                  xlab = paste0("comp ",absciss),
+                  ylab = paste0("comp ",ordinate),
+                  plot = F)
+    }
+    else {
+      s.label(PCAADE4$li[,c(absciss,ordinate)], 
+              plabels = list(box = list(draw = F), optim = F, cex = size, alpha = transparency, col = cellcol),
+              ppoints = list(col = cellcol, cex = size),
+              main = paste0(absciss,",",ordinate),
+              xlab = paste0("comp ",absciss),
+              ylab = paste0("comp ",ordinate),
+              plot = F)
+    }
+  }
+
+  return(list(
+    genes = list(ax12 = genePlot(1,2), ax32 = genePlot(3,2), ax13 = genePlot(1,3), ax23 = genePlot(2,3)),
+    cells = list(ax12 = cellPlot(1,2), ax32 = cellPlot(3,2), ax13 = cellPlot(1,3), ax23 = cellPlot(2,3))
+  ))
+}
+```
+
+```{r genes-pca-list-barplot, dev=c('png','svg')}
+# Full list of genes ordered by components
+genes.co.comp1 <- pcaCompGenesList(genes.pca$co, 1)
+genes.co.comp2 <- pcaCompGenesList(genes.pca$co, 2)
+genes.co.comp3 <- pcaCompGenesList(genes.pca$co, 3)
+
+# How many genes to display ?
+nb.dispGenes <- 25
+
+# Listing the extremities
+genes.co.comp1 %>% head(nb.dispGenes) 
+genes.co.comp1 %>% tail(nb.dispGenes)
+genes.co.comp2 %>% head(nb.dispGenes) 
+genes.co.comp2 %>% tail(nb.dispGenes)
+genes.co.comp3 %>% head(nb.dispGenes) 
+genes.co.comp3 %>% tail(nb.dispGenes)
+
+# Head and Tail Barplots (HTB)
+HTB(genes.co.comp1, 1, nb.dispGenes)
+HTB(genes.co.comp2, 2, nb.dispGenes)
+HTB(genes.co.comp3, 3, nb.dispGenes)
+```
+
+```{r genes-pca-lico, dev=c('png','svg')}
+# Clusters colored according to the dendrogram
+# =========================================================
+# /!\ step to be automatised /!\ 
+#
+# but for now needs manual calibration
+# 1 - Display 'genes.dend.clusters'
+# 2 - Please match the cluster number and
+#     the position of the color in 'colors.pca$color'
+#     You can type 'cor.dend.gg' to display the dendrogram
+# 3 - Check that you have length(colors.pca) == nb.clusters
+# =========================================================
+
+colors.pca <- data_frame("group" = 1:nb.clusters,
+                         color = c("red", "darkgreen", "darkseagreen", "blue", "green", "darkorange3", "grey40", "darkorchid4", "pink3", "turquoise4", "black"))
+
+# Assignment of a color for each cell
+colors.pca.li <- sapply(genes.dend.clusters, function(x) colors.pca$color[x])
+
+# Size and transparency for genes and cells plots
+size <- 1
+transparency <- 0.6
+
+# Generating lists of graphs
+genes.plot <- PCAplots(genes.pca, colors.pca.li, size, transparency)
+
+# Display genes and cells
+ADEgS(list(genes.plot$genes$ax12, genes.plot$genes$ax32, genes.plot$genes$ax13,
+           genes.plot$cells$ax12, genes.plot$cells$ax32, genes.plot$cells$ax13),
+      layout = c(2,3))
+```
+
+
+### PCA on Libs
 
 Gene counts and TSS discovery
 -----------------------------
