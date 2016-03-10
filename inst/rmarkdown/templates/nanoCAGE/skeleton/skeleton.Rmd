@@ -396,7 +396,6 @@ pcaCompOrientation <- function(compPCA){
 # Display ordered genes names for a designated component
 # For now works if nb.pcaAxis == 3
 pcaCompGenesList <- function(PCAADE4co, comp){
-  require(ade4)
   stopifnot(nb.pcaAxis == 3)
   genes.co <- PCAADE4co %>% 
     mutate(., geneNames = rownames(.)) %>% 
@@ -546,6 +545,64 @@ ADEgS(list(genes.plot$genes$ax12, genes.plot$genes$ax32, genes.plot$genes$ax13,
            genes.plot$cells$ax12, genes.plot$cells$ax32, genes.plot$cells$ax13),
       layout = c(2,3))
 ```
+
+### Hints for the component biological interpretation
+
+#### Nuclear enrichment ?
+
+```{r nuclear-bash, engine="bash", eval=TRUE}
+# NOTICE that geneSymbolFDRBestScoreNuclear.dat could be made once for all ...
+
+bedtools intersect -a 2016.02.24.nuc.cyto.simon.bed.gz -b /osc-fs_home/scratch/gmtu/annotation/homo_sapiens/gencode-18/gencode.v18.annotation.genes.bed -s -loj | awk '{OFS="\t"}{print $1,$2,$3,$28,$5,$6,$7,$8}' | sort -k 4 | tee nuc.cyto.simon.annotated.bed | bedtools groupby -g 4 -c 5 -o max > listOfmaxValues.temp
+
+join -a1 -e1 -1 1 -2 4  listOfmaxValues.temp nuc.cyto.simon.annotated.bed | awk '{OFS="\t"}{ if ($2==$6) print($1, $9) }' > geneSymbolFDRBestScoreNuclear.dat
+```
+
+```{r nuclear, dev=c('svg', 'png')}
+library(gridExtra)
+library(tidyr)
+
+# nuclearFDR has 2 columns: geneName, FDR
+nuclearFDR <- read.table(file = "geneSymbolFDRBestScoreNuclear.dat", header = F)
+colnames(nuclearFDR) <- c("geneNames", "FDR")
+
+# Checking for duplicated genes
+if(length(nuclearFDR$geneNames[duplicated(nuclearFDR$geneNames)]) != 0) 
+  nuclearFDR %<>% group_by(geneNames) %>% summarise(FDR = min(FDR))
+
+## How many genes do we have in the reference ?
+paste("##", nrow(nuclearFDR), "genes are referenced in geneSymbolFDRBestScoreNuclear.dat", sep = " ")
+## How many genes are below the filter.nuclearFDR threshold ?
+filter.nuclearFDR <- 0.05
+paste("##", sum(nuclearFDR$FDR < filter.nuclearFDR), "genes are under the threshold (", filter.nuclearFDR, ")", sep = " ")
+
+# Genes names uniformisation
+genes.co.comp1$geneNames %<>% toupper()
+genes.co.comp2$geneNames %<>% toupper()
+genes.co.comp3$geneNames %<>% toupper()
+nuclearFDR$geneNames %<>% toupper()
+
+# Inner join the comp values and FDR values
+genes.co.comp1.FDR <- left_join(genes.co.comp1, nuclearFDR)[,-6] %>% replace_na(list(FDR = 1))
+genes.co.comp2.FDR <- left_join(genes.co.comp2, nuclearFDR)[,-6] %>% replace_na(list(FDR = 1))
+genes.co.comp3.FDR <- left_join(genes.co.comp3, nuclearFDR)[,-6] %>% replace_na(list(FDR = 1))
+
+# Adjusting the 'shape' argument (in figure '*' if not referenced)
+genes.co.comp1.FDR$Referenced <- sapply(genes.co.comp1.FDR$FDR, function(X) ifelse(X==1, return(FALSE), return(TRUE)))
+genes.co.comp2.FDR$Referenced <- sapply(genes.co.comp2.FDR$FDR, function(X) ifelse(X==1, return(FALSE), return(TRUE)))
+genes.co.comp3.FDR$Referenced <- sapply(genes.co.comp3.FDR$FDR, function(X) ifelse(X==1, return(FALSE), return(TRUE)))
+
+## How many genes did we lost during the left join ?
+paste("##", round(((nrow(genes.co.comp1) - nrow(genes.co.comp1.FDR %>% filter(Referenced==TRUE)))*100)/nrow(genes.co.comp1), 2), "% of the genes were not found in geneSymbolFDRBestScoreNuclear.dat", sep = " ")
+
+# Plotting the principal component against nuclearFDR values
+nuclearFDR.plot.comp1 <- ggplot(genes.co.comp1.FDR) + geom_point(aes(x=Comp1, y=log(FDR), colour = FDR, shape = Referenced)) + scale_shape_manual(values=c(8, 20)) + scale_color_continuous(low = "red", high = "black") + theme_classic() + geom_hline(aes(yintercept=log(filter.nuclearFDR)), col = "red")
+nuclearFDR.plot.comp2 <- ggplot(genes.co.comp2.FDR) + geom_point(aes(x=Comp2, y=log(FDR), colour = FDR, shape = Referenced)) + scale_shape_manual(values=c(8, 20)) + scale_color_continuous(low = "red", high = "black") + theme_classic() + geom_hline(aes(yintercept=log(filter.nuclearFDR)), col = "red")
+nuclearFDR.plot.comp3 <- ggplot(genes.co.comp3.FDR) + geom_point(aes(x=Comp3, y=log(FDR), colour = FDR, shape = Referenced)) + scale_shape_manual(values=c(8, 20)) + scale_color_continuous(low = "red", high = "black") + theme_classic() + geom_hline(aes(yintercept=log(filter.nuclearFDR)), col = "red")
+
+grid.arrange(nuclearFDR.plot.comp1, nuclearFDR.plot.comp2, nuclearFDR.plot.comp3)
+```
+
 
 
 ### PCA on Libs
