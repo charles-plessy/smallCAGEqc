@@ -311,31 +311,34 @@ Correlation between runs
 ```{r correlation-heatmap, dev=c('svg', 'png')}
 library(dendextend)
 
-# Filtering genes with extraction count < nb.filter.extracted
+# Filtering samples with extraction count < nbFilterExtracted
 # Note that it can also remove negative controls
-nb.filter.extracted <- 10000
-# Possibility to color the clusters dendrogram if nb.clusters != 0
-nb.clusters <- 0
-# Please check that length(colors.dend) >= nb.clusters
-colors.dend = c("red", "darkgreen", "darkseagreen", "blue", "green", "darkorange3", "grey40", "darkorchid4", "pink3", "turquoise4", "black")
+nbFilterExtracted <- 10000
 
-# Implementing heatmap
-filter.extracted <- libs$samplename[libs$extracted > nb.filter.extracted]
-heatmap.genes <- NMF::aheatmap( cor(log(genes[-1, filter.extracted]+1))
-             , annCol=list(Run=libs$Ru[filter.extracted], Group=libs$group[filter.extracted]) )
-if(nb.clusters != 0) 
-  {
-       cor.dend <- heatmap.genes$Rowv %>%
-         set("branches_k_color", value = colors.dend[1:nb.clusters], k = nb.clusters) %>%
-         set("labels_colors", value = colors.dend[1:nb.clusters], k = nb.clusters) %>%
-         set("labels_cex", .6) %>%
-         ladderize(FALSE) # To ensure a reproducible visual order of the clusters
-       heatmap.genes <- NMF::aheatmap( cor(log(genes[-1, filter.extracted]+1)),
-              annCol=list(Run=libs$Run[filter.extracted], Group=libs$group[filter.extracted]),
-              Rowv = cor.dend, Colv = cor.dend )
-       # Displaying the dendrogram only
-       (cor.dend.gg <- cor.dend %>% as.ggdend %>% ggplot(horiz = F))
-  }
+# Possibility to color the clusters dendrogram if nbClusters != 0
+nbClusters <- 7
+
+# Please check that length(colorsDend) >= nbClusters
+colorsDend = c("red", "darkgreen", "darkseagreen", "blue", "green", "darkorange3", "grey40", "darkorchid4", "pink3", "turquoise4", "black")
+
+filterExtracted <- libs$samplename[libs$extracted > nbFilterExtracted]
+heatmapGenes <- NMF::aheatmap(cor(log(genes[-1, filterExtracted]+1)),
+  annCol=list(Run=libs$Ru[filterExtracted], Group=libs$group[filterExtracted]))
+
+if (nbClusters != 0) {
+  corDend <- heatmapGenes$Rowv %>%
+    set("branches_k_color", value = colorsDend[1:nbClusters], k = nbClusters) %>%
+    set("labels_colors", value = colorsDend[1:nbClusters], k = nbClusters) %>%
+    set("labels_cex", .6) %>%
+    ladderize(FALSE) # To ensure a reproducible visual order of the clusters
+  
+  heatmapGenes <- NMF::aheatmap( cor(log(genes[-1, filterExtracted]+1)),
+    annCol=list(Run=libs$Run[filterExtracted], Group=libs$group[filterExtracted]),
+    Rowv = corDend, Colv = corDend )
+  
+  # Dendrogram only: for visual comfort
+  (corDendGg <- corDend %>% as.ggdend %>% ggplot(horiz = F))
+}
 ```
 
 ```{r correlation-heatmap-noerrors, dev=c('svg', 'png')}
@@ -345,82 +348,68 @@ if(nb.clusters != 0)
 ```
 
 ```{r genes-dend-nb-clusters, dev=c('png','svg')}
-# Creating an hclust object
-genes.dend <- hclust(dist(cor(log(genes[-1, filter.extracted]+1))))
-# Ordering heights
-genes.dend.rev=rev(genes.dend$height)
-# Plotting the curve of height of the dendrogram
-plot(genes.dend.rev,
-     col = c(colors.dend[1:nb.clusters], rep("black", length(genes.dend.rev)-1)),
-     pch = 20, ylab = "Clusters height")
-abline(v = nb.clusters+0.5, col = "grey60", lty = 2)
-# Dividing into nb.clusters clusters
-genes.dend.clusters <- cutree(genes.dend, nb.clusters)
+if (nbClusters != 0) {
+  # Need to create an hclust object to associate a cluster number to each cell
+  genesDend    <- hclust(dist(cor(log(genes[-1, filterExtracted]+1))))
+  genesDendRev <- rev(genesDend$height)
+  
+  # This plot can help user checking the number of clusters to choose
+  plot(genesDendRev,
+       col = c(colorsDend[1:nbClusters], rep("black", length(genesDendRev)-1)),
+       pch = 20, ylab = "Clusters height")
+  abline(v = nbClusters + 0.5, col = "grey60", lty = 2)
+  
+  # Dividing into nbClusters clusters
+  genesDendClusters <- cutree(genesDend, nbClusters)
+}
 ```
 
 PCA analysis
 ------------
 
-### PCA on Genes
-
-```{r genes-pca}
-library(ade4)
-library(adegraphics)
-library(dplyr)
-
-# Normalisation in tags per million and removing the • genes
-genes.tpm <- t(TPM(genes[, filter.extracted]))[, -1]
-# Setting the number of axis to keep in the PCA
-nb.pcaAxis <- 3
-# Running PCA
-genes.pca <- dudi.pca(genes.tpm, center = T, scale = F, scannf = F, nf = nb.pcaAxis)
-```
-
-```{r genes-pca-summary, dev=c('png','svg')}
-# Displaying information about the PCA
-barplot(genes.pca$eig, xlab = "Eigenvalues")
-summary(genes.pca)
-```
-
 ```{r pca-functions}
 #
-# MAYBE SHOULD BE ADDED TO PACKAGE smallCAGEqc
+# WILL BE ADDED TO PACKAGE smallCAGEqc
 #
 
 # Returns TRUE if component is mostly oriented towards positive values
 # otherwise returns FALSE
-pcaCompOrientation <- function(compPCA){
-  ifelse(abs(range(compPCA)[1]) > abs(range(compPCA)[2]), FALSE, TRUE)
+pcaCompOrientation <- function(compPca){
+  ifelse(abs(range(compPca)[1]) > abs(range(compPca)[2]), FALSE, TRUE)
 }
 
 # Display ordered genes names for a designated component
-# For now works if nb.pcaAxis == 3
-pcaCompGenesList <- function(PCAADE4co, comp){
-  stopifnot(nb.pcaAxis == 3)
-  genes.co <- PCAADE4co %>% 
+# For now works if nbPcaAxis == 3
+pcaCompGenesList <- function(pcaAde4co, comp){
+  stopifnot(nbPcaAxis == 3)
+  genesCo <- pcaAde4co %>% 
     mutate(., geneNames = rownames(.)) %>% 
     select(geneNames, Comp1, Comp2, Comp3)
-  ifelse(pcaCompOrientation(genes.co[comp+1]),
-         genes.co %<>% setorderv(., colnames(.)[comp+1], order=-1),
-         genes.co %<>% setorderv(., colnames(.)[comp+1], order=1))
-  genes.co
+  ifelse(pcaCompOrientation(genesCo[comp+1]),
+         genesCo %<>% setorderv(., colnames(.)[comp+1], order=-1),
+         genesCo %<>% setorderv(., colnames(.)[comp+1], order=1))
+  genesCo
 }
 
 # Barplots of head and tail genes for each component
-HTB <- function(orderedCompPCA, comp, nbDispGenes = 25){
+plotHTB <- function(orderedCompPca, comp, nbDispGenes = 25){
   par(mfrow=c(1,2))
   
-  bp1h <- orderedCompPCA[,comp+1] %>% head(nbDispGenes) %>% barplot(. ,
-          ylim = c(min(orderedCompPCA[,comp+1]), max(orderedCompPCA[,comp+1])),
+  bp1h <- orderedCompPca[,comp+1] %>% 
+    head(nbDispGenes) %>%
+    barplot(. ,
+          ylim = c(min(orderedCompPca[,comp+1]), max(orderedCompPca[,comp+1])),
           axes = FALSE, axisnames = FALSE, main = paste0("comp ", comp, " head"))
-  text(bp1h, par("usr")[3], labels = orderedCompPCA$geneNames %>% head(nbDispGenes),
+  text(bp1h, par("usr")[3], labels = orderedCompPca$geneNames %>% head(nbDispGenes),
        srt = 90, adj = c(1.1,1.1), xpd = TRUE, cex=.6)
   axis(2)
 
-  bp1t <- orderedCompPCA[,comp+1] %>% tail(nbDispGenes) %>% barplot(. ,
-          ylim = c(min(orderedCompPCA[,comp+1]), max(orderedCompPCA[,comp+1])),
+  bp1t <- orderedCompPca[,comp+1] %>%
+    tail(nbDispGenes) %>%
+    barplot(. ,
+          ylim = c(min(orderedCompPca[,comp+1]), max(orderedCompPca[,comp+1])),
           axes = FALSE, axisnames = FALSE, main = paste0("comp ", comp, " tail"))
-  text(bp1t, par("usr")[3], labels = orderedCompPCA$geneNames %>% tail(nbDispGenes),
+  text(bp1t, par("usr")[3], labels = orderedCompPca$geneNames %>% tail(nbDispGenes),
        srt = 90, adj = c(1.1,1.1), xpd = TRUE, cex=.6)
   axis(4)
   
@@ -428,20 +417,25 @@ HTB <- function(orderedCompPCA, comp, nbDispGenes = 25){
 }
 
 # Return lists of plots for genes and cells
-# For now works if nb.pcaAxis == 3
-PCAplots <- function(PCAADE4, cellcol, size = 1, transparency = 0.6){
-  require(ade4)
-  require(adegraphics)
-  stopifnot(PCAADE4$nf == 3)
-  if(nrow(PCAADE4$li) != length(cellcol))
-     return(paste0("Error: length(cellcol) [",length(cellcol),"] is not equal to the number of cells [",nrow(PCAADE4$li),"]"))
+# For now works if nbPcaAxis == 3
+pcaPlots <- function(pcaAde4, cellcol=NULL, size = 1, transparency = 0.6){
+#   require(ade4)
+#   require(adegraphics)
+  stopifnot(pcaAde4$nf == 3)
+  
+  # Need to check if cellcol is defined
+  if (is.null(cellcol))
+    cellcol <- rep("black", nrow(pcaAde4$li))
+  
+  if (nrow(pcaAde4$li) != length(cellcol))
+    paste0("Error: length(cellcol) [",length(cellcol),"] is not equal to the number of cells [",nrow(pcaAde4$li),"]")
   
   genePlot <- function(absciss,ordinate){
-    if((absciss == 3) && (ordinate == 2)) {
-          # g32 seems more logical when displaying all 3 axes in the same plot
+    if ((absciss == 3) && (ordinate == 2)) {
+          # g32 seems more practical when displaying all 3 axes in the same plot
           # so we need to inverse coordinates
-          g32df <- data.frame(-1*PCAADE4$co[,absciss], PCAADE4$co[,ordinate])
-          rownames(g32df) <- rownames(PCAADE4$co)
+          g32df <- data.frame(-1*pcaAde4$co[,absciss], pcaAde4$co[,ordinate])
+          rownames(g32df) <- rownames(pcaAde4$co)
           s.arrow(g32df,
                   plabels = list(box = list(draw = F), optim = T, cex = size, alpha = transparency),
                   main = paste0(absciss,",",ordinate),
@@ -450,7 +444,7 @@ PCAplots <- function(PCAADE4, cellcol, size = 1, transparency = 0.6){
                   plot = F)
     }
     else {
-          s.arrow(PCAADE4$co[,c(absciss,ordinate)],
+          s.arrow(pcaAde4$co[,c(absciss,ordinate)],
                   plabels = list(box = list(draw = F), optim = T, cex = size, alpha = transparency),
                   main = paste0(absciss,",",ordinate),
                   xlab = paste0("comp ",absciss),
@@ -460,12 +454,12 @@ PCAplots <- function(PCAADE4, cellcol, size = 1, transparency = 0.6){
   }
   
   cellPlot <- function(absciss,ordinate){
-    if((absciss == 3) && (ordinate == 2)) {
-          # g32 seems more logical when displaying all 3 axes in the same plot
+    if ((absciss == 3) && (ordinate == 2)) {
+          # g32 seems more practical when displaying all 3 axes in the same plot
           # so we need to inverse coordinates
-          h32df <- data.frame(-1*PCAADE4$li[,absciss], PCAADE4$li[,ordinate])
-          rownames(h32df) <- rownames(PCAADE4$li)
-          s.label(h32df,
+          c32df <- data.frame(-1*pcaAde4$li[,absciss], pcaAde4$li[,ordinate])
+          rownames(c32df) <- rownames(pcaAde4$li)
+          s.label(c32df,
                   plabels = list(box = list(draw = F), optim = F, cex = size, alpha = transparency, col = cellcol),
                   ppoints = list(col = cellcol, cex = size),
                   main = paste0(absciss,",",ordinate),
@@ -474,7 +468,7 @@ PCAplots <- function(PCAADE4, cellcol, size = 1, transparency = 0.6){
                   plot = F)
     }
     else {
-      s.label(PCAADE4$li[,c(absciss,ordinate)], 
+      s.label(pcaAde4$li[,c(absciss,ordinate)], 
               plabels = list(box = list(draw = F), optim = F, cex = size, alpha = transparency, col = cellcol),
               ppoints = list(col = cellcol, cex = size),
               main = paste0(absciss,",",ordinate),
@@ -485,65 +479,87 @@ PCAplots <- function(PCAADE4, cellcol, size = 1, transparency = 0.6){
   }
 
   return(list(
-    genes = list(ax12 = genePlot(1,2), ax32 = genePlot(3,2), ax13 = genePlot(1,3), ax23 = genePlot(2,3)),
-    cells = list(ax12 = cellPlot(1,2), ax32 = cellPlot(3,2), ax13 = cellPlot(1,3), ax23 = cellPlot(2,3))
+    genes = list(ax12 = genePlot(1, 2), ax32 = genePlot(3, 2), ax13 = genePlot(1, 3), ax23 = genePlot(2, 3)),
+    cells = list(ax12 = cellPlot(1, 2), ax32 = cellPlot(3, 2), ax13 = cellPlot(1, 3), ax23 = cellPlot(2, 3))
   ))
 }
 ```
 
+### PCA on Genes
+
+```{r genes-pca}
+library(ade4)
+library(adegraphics)
+library(dplyr)
+
+# Normalisation in tags per million and removing the • genes
+genesTpm <- t(TPM(genes[, filterExtracted]))[, -1]
+
+# User can choose the number of axis to keep in the PCA
+nbPcaAxis <- 3
+
+genesPca <- dudi.pca(genesTpm, center = T, scale = F, scannf = F, nf = nbPcaAxis)
+```
+
+```{r genes-pca-summary, dev=c('png','svg')}
+barplot(genesPca$eig, xlab = "Eigenvalues")
+summary(genesPca)
+```
+
 ```{r genes-pca-list-barplot, dev=c('png','svg')}
-# Full list of genes ordered by components
-genes.co.comp1 <- pcaCompGenesList(genes.pca$co, 1)
-genes.co.comp2 <- pcaCompGenesList(genes.pca$co, 2)
-genes.co.comp3 <- pcaCompGenesList(genes.pca$co, 3)
+# List of genes ordered by components keeping information on 3 components
+genesCoComp1 <- pcaCompGenesList(genesPca$co, 1)
+genesCoComp2 <- pcaCompGenesList(genesPca$co, 2)
+genesCoComp3 <- pcaCompGenesList(genesPca$co, 3)
 
-# How many genes to display ?
-nb.dispGenes <- 25
+# User can choose how many genes to display ?
+nbDispGenes <- 25
 
-# Listing the extremities
-genes.co.comp1 %>% head(nb.dispGenes) 
-genes.co.comp1 %>% tail(nb.dispGenes)
-genes.co.comp2 %>% head(nb.dispGenes) 
-genes.co.comp2 %>% tail(nb.dispGenes)
-genes.co.comp3 %>% head(nb.dispGenes) 
-genes.co.comp3 %>% tail(nb.dispGenes)
+genesCoComp1 %>% head(nbDispGenes) 
+genesCoComp1 %>% tail(nbDispGenes)
+genesCoComp2 %>% head(nbDispGenes) 
+genesCoComp2 %>% tail(nbDispGenes)
+genesCoComp3 %>% head(nbDispGenes) 
+genesCoComp3 %>% tail(nbDispGenes)
 
-# Head and Tail Barplots (HTB)
-HTB(genes.co.comp1, 1, nb.dispGenes)
-HTB(genes.co.comp2, 2, nb.dispGenes)
-HTB(genes.co.comp3, 3, nb.dispGenes)
+plotHTB(genesCoComp1, 1, nbDispGenes)
+plotHTB(genesCoComp2, 2, nbDispGenes)
+plotHTB(genesCoComp3, 3, nbDispGenes)
 ```
 
 ```{r genes-pca-lico, dev=c('png','svg')}
-# Clusters colored according to the dendrogram
-# =========================================================
+# ===========================================================
+#         Clusters colored according to the dendrogram
+# ===========================================================
 # /!\ step to be automatised /!\ 
 #
-# but for now needs manual calibration
-# 1 - Display 'genes.dend.clusters'
-# 2 - Please match the cluster number and
-#     the position of the color in 'colors.pca$color'
-#     You can type 'cor.dend.gg' to display the dendrogram
-# 3 - Check that you have length(colors.pca) == nb.clusters
-# =========================================================
+# But for now needs manual calibration:
+#
+#   1 - Display 'genesDendClusters'
+#   2 - Please match the cluster number and
+#     the position of the color in 'colorsPca$color' (below)
+#     You can type 'corDendGg' to display the dendrogram
+#   3 - Check that you have 'length(colorsPca) == nbClusters'
+#
+# ===========================================================
 
-colors.pca <- data_frame("group" = 1:nb.clusters,
-                         color = c("red", "darkgreen", "darkseagreen", "blue", "green", "darkorange3", "grey40", "darkorchid4", "pink3", "turquoise4", "black"))
-
-# Assignment of a color for each cell
-colors.pca.li <- sapply(genes.dend.clusters, function(x) colors.pca$color[x])
-
-# Size and transparency for genes and cells plots
-size <- 1
+# User can change plot specificities
+size         <- 1
 transparency <- 0.6
 
-# Generating lists of graphs
-genes.plot <- PCAplots(genes.pca, colors.pca.li, size, transparency)
+if (nbClusters != 0) {
+  colorsPca <- data_frame(group = 1:nbClusters,
+    color = c("red", "darkgreen", "darkseagreen", "blue", "green", "darkorange3", "grey40", "darkorchid4", "pink3", "turquoise4", "black"))
+  
+  colorsPcaLi <- sapply(genesDendClusters, function(X) colorsPca$color[X])
+  genesPlot <- pcaPlots(genesPca, colorsPcaLi, size, transparency)
+} else {
+  genesPlot <- pcaPlots(genesPca, size = size, transparency = transparency)
+}
 
-# Display genes and cells
-ADEgS(list(genes.plot$genes$ax12, genes.plot$genes$ax32, genes.plot$genes$ax13,
-           genes.plot$cells$ax12, genes.plot$cells$ax32, genes.plot$cells$ax13),
-      layout = c(2,3))
+ADEgS(list(genesPlot$genes$ax12, genesPlot$genes$ax32, genesPlot$genes$ax13,
+           genesPlot$cells$ax12, genesPlot$cells$ax32, genesPlot$cells$ax13),
+  layout = c(2,3))
 ```
 
 ### Hints for the component biological interpretation
@@ -562,47 +578,126 @@ join -a1 -e1 -1 1 -2 4  listOfmaxValues.temp nuc.cyto.simon.annotated.bed | awk 
 library(gridExtra)
 library(tidyr)
 
-# nuclearFDR has 2 columns: geneName, FDR
-nuclearFDR <- read.table(file = "geneSymbolFDRBestScoreNuclear.dat", header = F)
-colnames(nuclearFDR) <- c("geneNames", "FDR")
+# Need to load dataset with nuclear score
+nuclearFdr           <- read.table(file = "geneSymbolFDRBestScoreNuclear.dat", header = F)
+colnames(nuclearFdr) <- c("geneNames", "FDR")
 
-# Checking for duplicated genes
-if(length(nuclearFDR$geneNames[duplicated(nuclearFDR$geneNames)]) != 0) 
-  nuclearFDR %<>% group_by(geneNames) %>% summarise(FDR = min(FDR))
+# User should choose a proper threshold
+filterNuclearFdr <- 0.05
 
-## How many genes do we have in the reference ?
-paste("##", nrow(nuclearFDR), "genes are referenced in geneSymbolFDRBestScoreNuclear.dat", sep = " ")
-## How many genes are below the filter.nuclearFDR threshold ?
-filter.nuclearFDR <- 0.05
-paste("##", sum(nuclearFDR$FDR < filter.nuclearFDR), "genes are under the threshold (", filter.nuclearFDR, ")", sep = " ")
+# Checking for duplicated genes, correction if needed
+if (length(nuclearFdr$geneNames[duplicated(nuclearFdr$geneNames)]) != 0) 
+  nuclearFdr %<>% group_by(geneNames) %>% 
+                  summarise(FDR = min(FDR))
 
-# Genes names uniformisation
-genes.co.comp1$geneNames %<>% toupper()
-genes.co.comp2$geneNames %<>% toupper()
-genes.co.comp3$geneNames %<>% toupper()
-nuclearFDR$geneNames %<>% toupper()
+paste("##", nrow(nuclearFdr), "genes are referenced in geneSymbolFDRBestScoreNuclear.dat", sep = " ")
+paste("##", sum(nuclearFdr$FDR < filterNuclearFdr), "genes are under the nuclear FDR threshold (", filterNuclearFdr, ")", sep = " ")
 
-# Inner join the comp values and FDR values
-genes.co.comp1.FDR <- left_join(genes.co.comp1, nuclearFDR)[,-6] %>% replace_na(list(FDR = 1))
-genes.co.comp2.FDR <- left_join(genes.co.comp2, nuclearFDR)[,-6] %>% replace_na(list(FDR = 1))
-genes.co.comp3.FDR <- left_join(genes.co.comp3, nuclearFDR)[,-6] %>% replace_na(list(FDR = 1))
+# Uniformisation of gene names for a better matching when joining
+genesCoComp1$geneNames %<>% toupper()
+genesCoComp2$geneNames %<>% toupper()
+genesCoComp3$geneNames %<>% toupper()
+nuclearFdr$geneNames   %<>% toupper()
 
-# Adjusting the 'shape' argument (in figure '*' if not referenced)
-genes.co.comp1.FDR$Referenced <- sapply(genes.co.comp1.FDR$FDR, function(X) ifelse(X==1, return(FALSE), return(TRUE)))
-genes.co.comp2.FDR$Referenced <- sapply(genes.co.comp2.FDR$FDR, function(X) ifelse(X==1, return(FALSE), return(TRUE)))
-genes.co.comp3.FDR$Referenced <- sapply(genes.co.comp3.FDR$FDR, function(X) ifelse(X==1, return(FALSE), return(TRUE)))
+genesCoComp1Fdr <- left_join(genesCoComp1, nuclearFdr)[,-6] %>% replace_na(list(FDR = 1))
+genesCoComp2Fdr <- left_join(genesCoComp2, nuclearFdr)[,-6] %>% replace_na(list(FDR = 1))
+genesCoComp3Fdr <- left_join(genesCoComp3, nuclearFdr)[,-6] %>% replace_na(list(FDR = 1))
 
-## How many genes did we lost during the left join ?
-paste("##", round(((nrow(genes.co.comp1) - nrow(genes.co.comp1.FDR %>% filter(Referenced==TRUE)))*100)/nrow(genes.co.comp1), 2), "% of the genes were not found in geneSymbolFDRBestScoreNuclear.dat", sep = " ")
+# To recognize not referenced genes in nuclearPlot (*)
+genesCoComp1Fdr$Referenced <- sapply(genesCoComp1Fdr$FDR, 
+  function(X) ifelse(X==1, return(FALSE), return(TRUE)))
+genesCoComp2Fdr$Referenced <- sapply(genesCoComp2Fdr$FDR, 
+  function(X) ifelse(X==1, return(FALSE), return(TRUE)))
+genesCoComp3Fdr$Referenced <- sapply(genesCoComp3Fdr$FDR, 
+  function(X) ifelse(X==1, return(FALSE), return(TRUE)))
 
-# Plotting the principal component against nuclearFDR values
-nuclearFDR.plot.comp1 <- ggplot(genes.co.comp1.FDR) + geom_point(aes(x=Comp1, y=log(FDR), colour = FDR, shape = Referenced)) + scale_shape_manual(values=c(8, 20)) + scale_color_continuous(low = "red", high = "black") + theme_classic() + geom_hline(aes(yintercept=log(filter.nuclearFDR)), col = "red")
-nuclearFDR.plot.comp2 <- ggplot(genes.co.comp2.FDR) + geom_point(aes(x=Comp2, y=log(FDR), colour = FDR, shape = Referenced)) + scale_shape_manual(values=c(8, 20)) + scale_color_continuous(low = "red", high = "black") + theme_classic() + geom_hline(aes(yintercept=log(filter.nuclearFDR)), col = "red")
-nuclearFDR.plot.comp3 <- ggplot(genes.co.comp3.FDR) + geom_point(aes(x=Comp3, y=log(FDR), colour = FDR, shape = Referenced)) + scale_shape_manual(values=c(8, 20)) + scale_color_continuous(low = "red", high = "black") + theme_classic() + geom_hline(aes(yintercept=log(filter.nuclearFDR)), col = "red")
+paste("##", round((nrow(genesCoComp1) - sum(genesCoComp1Fdr$Referenced==TRUE)) * 100 / nrow(genesCoComp1), 2), "% of the genes were not found in geneSymbolFDRBestScoreNuclear.dat", sep = " ")
 
-grid.arrange(nuclearFDR.plot.comp1, nuclearFDR.plot.comp2, nuclearFDR.plot.comp3)
+nuclearPlotComp1 <- ggplot(genesCoComp1Fdr) + 
+  geom_point(aes(x=Comp1, y=log(FDR), colour = FDR, shape = Referenced)) +
+  scale_shape_manual(values=c(8, 20)) + 
+  scale_color_continuous(low = "red", high = "black") + theme_classic() +
+  geom_hline(aes(yintercept=log(filterNuclearFdr)), col = "red")
+nuclearPlotComp2 <- ggplot(genesCoComp2Fdr) + 
+  geom_point(aes(x=Comp2, y=log(FDR), colour = FDR, shape = Referenced)) +
+  scale_shape_manual(values=c(8, 20)) + 
+  scale_color_continuous(low = "red", high = "black") + theme_classic() +
+  geom_hline(aes(yintercept=log(filterNuclearFdr)), col = "red")
+nuclearPlotComp3 <- ggplot(genesCoComp3Fdr) +
+  geom_point(aes(x=Comp3, y=log(FDR), colour = FDR, shape = Referenced)) +
+  scale_shape_manual(values=c(8, 20)) + 
+  scale_color_continuous(low = "red", high = "black") + theme_classic() +
+  geom_hline(aes(yintercept=log(filterNuclearFdr)), col = "red")
+
+grid.arrange(nuclearPlotComp1, nuclearPlotComp2, nuclearPlotComp3)
 ```
 
+#### Bound to rough endoplasmic reticulum-associated ribosomes ?
+
+```{r rER, dev=c('svg', 'png')}
+# Loading and filtering supplemental material table S3
+# from http://genome.cshlp.org/content/24/8/1396/suppl/DC1
+ratRerSuppS3  <- read.csv(file = "Supplemental_Table.S3.csv", header = T)
+ratRer        <- ratRerSuppS3 %>% select(Symbol.mouse, logFC.mbcyt, FDR.mbcyt)
+names(ratRer) <- c("geneNames", "logFC", "FDR")
+
+# Copying because of an issue. Explained in 2 comments...
+ratRerOriginal <- ratRer
+
+# Checking for duplicated genes, correction if needed
+if (length(ratRer$geneNames[duplicated(ratRer$geneNames)]) != 0) 
+  ratRer %<>% group_by(geneNames) %>% 
+              summarise(FDR = min(FDR))
+
+# Loosing logFC column so we have to merge it with the previous table
+ratRer <- merge(ratRer, ratRerOriginal, by = c("geneNames", "FDR"))
+
+# User should choose proper thresholds
+filterLogFc  <- 3
+filterRerFdr <- 0.05
+
+ratRer$Filter <- sapply(ratRer$logFC, function(X) ifelse(X > filterLogFc, return(paste("logFC >", filterLogFc)), return(paste("logFC <", filterLogFc))))
+# there is still duplicates... for now I ignore them. It should take the first value
+
+paste("##", nrow(ratRer), "genes are referenced in Supplemental_Table.S3.csv", sep = " ")
+paste("##", sum(ratRer$FDR < filterRerFdr), "genes are under the rER FDR threshold (", filterRerFdr, ")", sep = " ")
+paste("##", sum(ratRer$logFC > filterLogFc), "genes are above the logFC threshold (", filterLogFc, ")", sep = " ")
+paste("##", sum(ratRer$FDR[ratRer$logFC > filterLogFc] < filterRerFdr), "genes are under the rER FDR threshold (", filterRerFdr, ") and are above the logFC threshold (", filterLogFc, ")", sep = " ")
+
+# Uniformisation of gene names for a better matching when joining
+genesCoComp1$geneNames %<>% toupper()
+genesCoComp2$geneNames %<>% toupper()
+genesCoComp3$geneNames %<>% toupper()
+ratRer$geneNames       %<>% toupper()
+
+genesCoComp1RerFdr <- left_join(genesCoComp1, ratRer) %>% replace_na(list(FDR = 1))
+genesCoComp2RerFdr <- left_join(genesCoComp2, ratRer) %>% replace_na(list(FDR = 1))
+genesCoComp3RerFdr <- left_join(genesCoComp3, ratRer) %>% replace_na(list(FDR = 1))
+
+# To recognize not referenced genes in rerPlot (*)
+genesCoComp1RerFdr$Referenced <- sapply(genesCoComp1RerFdr$FDR, function(X) ifelse(X==1, return(FALSE), return(TRUE)))
+genesCoComp2RerFdr$Referenced <- sapply(genesCoComp2RerFdr$FDR, function(X) ifelse(X==1, return(FALSE), return(TRUE)))
+genesCoComp3RerFdr$Referenced <- sapply(genesCoComp3RerFdr$FDR, function(X) ifelse(X==1, return(FALSE), return(TRUE)))
+
+paste("##", round((nrow(genesCoComp1) - sum(genesCoComp1RerFdr$Referenced==TRUE)) * 100 / nrow(genesCoComp1), 2), "% of the genes were not found in Supplemental_Table.S3.csv", sep = " ")
+
+rerPlotComp1 <- ggplot(genesCoComp1RerFdr) +
+  geom_point(aes(x=Comp1, y=log(FDR), colour = Filter, shape = Referenced)) +
+  scale_shape_manual(values=c(8, 20)) +
+  theme_classic() +
+  geom_hline(aes(yintercept=log(filterRerFdr)), col = "red")
+rerPlotComp2 <- ggplot(genesCoComp2RerFdr) +
+  geom_point(aes(x=Comp2, y=log(FDR), colour = Filter, shape = Referenced)) +
+  scale_shape_manual(values=c(8, 20)) + theme_classic() +
+  geom_hline(aes(yintercept=log(filterRerFdr)), col = "red")
+rerPlotComp3 <- ggplot(genesCoComp3RerFdr) +
+  geom_point(aes(x=Comp3, y=log(FDR), colour = Filter, shape = Referenced)) +
+  scale_shape_manual(values=c(8, 20)) +
+  theme_classic() +
+  geom_hline(aes(yintercept=log(filterRerFdr)), col = "red")
+
+grid.arrange(rerPlotComp1, rerPlotComp2, rerPlotComp3)
+```
 
 
 ### PCA on Libs
