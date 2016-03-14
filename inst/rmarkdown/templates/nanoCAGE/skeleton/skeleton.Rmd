@@ -702,7 +702,6 @@ rerPlotComp3 <- ggplot(genesCoComp3RerFdr) +
 grid.arrange(rerPlotComp1, rerPlotComp2, rerPlotComp3)
 ```
 
-
 ### PCA on Libs
 
 ```{r libs-pca}
@@ -733,6 +732,40 @@ ADEgS(list(libsPlot$genes$ax12, libsPlot$genes$ax32, libsPlot$genes$ax13,
            libsPlot$cells$ax12, libsPlot$cells$ax32, libsPlot$cells$ax13),
   layout = c(2,3))
 ```
+
+### Diversity among clusters
+
+### Effect of wells localisation ?
+
+```{r localisation-effect, dev=c('png','svg')}
+# User change the plaque specifications
+nbWell <- 96
+nbColPlaque <- 12
+
+
+plaqueWellNumber <- matrix(1:nbWell, ncol = nbColPlaque, byrow = T)
+coordX <- sapply(1:nbWell, function(X) which(plaqueWellNumber == X, arr.ind = T)[2])
+coordY <- sapply(1:nbWell, function(X) which(plaqueWellNumber == X, arr.ind = T)[1])
+plaque <- data.frame(wellNumber=c(1:nbWell), x=coordX, y=coordY)
+
+cellTypeNumber <- data.frame(fullName=rownames(genesPca$li), cellName=rownames(genesPca$li)) %>% separate(cellName, c("cellType", "cellNumber"), convert = T) %>% select(-cellType)
+cellTypeNumber$fullName %<>% as.character()
+
+plaque <- left_join(plaque, cellTypeNumber, by = c("wellNumber" = "cellNumber"))
+plaque %<>% replace_na(list(fullName = "none"))
+
+plaque <- left_join(plaque, data.frame(fullName=names(colorsPcaLi), color=colorsPcaLi), by = "fullName")
+plaque$color %<>% as.character()
+plaque %<>% replace_na(list(color = "black"))
+
+# Helping visual identification of empty or filtered wells
+plaque$pch <- rep(19, nrow(plaque))
+plaque$pch[plaque$color=="black"] <- 10
+
+plot(plaque$x, plaque$y, col = plaque$color, ylim = c(min(plaque$y)-0.5, max(plaque$y)+0.5), pch = plaque$pch, cex = 2, axes = F, xlab = "", ylab = "")
+text(plaque$x, plaque$y+0.25, labels = plaque$fullName, cex = 0.7, col = plaque$color)
+```
+
 
 Gene counts and TSS discovery
 -----------------------------
