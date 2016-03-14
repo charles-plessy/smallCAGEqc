@@ -579,7 +579,6 @@ join -a1 -e1 -1 1 -2 4  listOfmaxValues.temp nuc.cyto.simon.annotated.bed | awk 
 
 ```{r nuclear, dev=c('svg', 'png')}
 library(gridExtra)
-library(tidyr)
 
 # Need to load dataset with nuclear score
 nuclearFdr           <- read.table(file = "geneSymbolFDRBestScoreNuclear.dat", header = F)
