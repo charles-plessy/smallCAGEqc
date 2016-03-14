@@ -727,7 +727,7 @@ if (nbClusters != 0) {
   libsPlot <- pcaPlots(libsPca, size = size, transparency = transparency)
 }
 
-# ISSUE: it is called genes but in the case of libs it is variables
+# ISSUE: variable name: it is called genes but in the case of libs it is variables
 ADEgS(list(libsPlot$genes$ax12, libsPlot$genes$ax32, libsPlot$genes$ax13,
            libsPlot$cells$ax12, libsPlot$cells$ax32, libsPlot$cells$ax13),
   layout = c(2,3))
@@ -735,9 +735,22 @@ ADEgS(list(libsPlot$genes$ax12, libsPlot$genes$ax32, libsPlot$genes$ax13,
 
 ### Diversity among clusters
 
+```{r diversity, dev=c('svg', 'png')}
+if (nbClusters != 0) {
+  # User should choose which clusters (defined by their color) are to be grouped and compared
+  groupeDiversity <- colorsPcaLi %>%
+    sapply(function(X) ifelse(X=="grey40", "RightGroup", X)) %>% 
+    sapply(function(X) ifelse(X=="darkorange3" || X=="green", "LeftGroup", X)) %>%
+    sapply(function(X) ifelse(X=="RightGroup" || X=="LeftGroup", X, "Other")) %>% 
+    as.factor()
+  
+  boxplot(libs$r100l1[filterExtracted]~groupeDiversity)
+}
+```
+
 ### Effect of wells localisation ?
 
-```{r localisation-effect, dev=c('png','svg')}
+```{r localisation-effect, dev=c('svg','png')}
 # User change the plaque specifications
 nbWell <- 96
 nbColPlaque <- 12
@@ -765,7 +778,6 @@ plaque$pch[plaque$color=="black"] <- 10
 plot(plaque$x, plaque$y, col = plaque$color, ylim = c(min(plaque$y)-0.5, max(plaque$y)+0.5), pch = plaque$pch, cex = 2, axes = F, xlab = "", ylab = "")
 text(plaque$x, plaque$y+0.25, labels = plaque$fullName, cex = 0.7, col = plaque$color)
 ```
-
 
 Gene counts and TSS discovery
 -----------------------------
