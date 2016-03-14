@@ -705,6 +705,35 @@ grid.arrange(rerPlotComp1, rerPlotComp2, rerPlotComp3)
 
 ### PCA on Libs
 
+```{r libs-pca}
+# User can choose the number of axis to keep in the PCA
+nbPcaAxis <- 3
+
+# Can not perform PCA on qualitative values
+filterLibs <- !colnames(libs) %in% c("samplename", "group", "barcode", "index", "total", "spikes")
+
+libsForPca <- libs[filterExtracted, filterLibs]
+libsPca <- dudi.pca(libsForPca, center = T, scale = T, scannf = F, nf = nbPcaAxis)
+```
+
+```{r libs-pca-summary, dev=c('png', 'svg')}
+barplot(libsPca$eig, xlab = "Eigenvalues")
+summary(libsPca)
+```
+
+```{r libs-pca-lico, dev=c('png', 'svg')}
+if (nbClusters != 0) {
+  libsPlot <- pcaPlots(libsPca, colorsPcaLi, size, transparency)
+} else {
+  libsPlot <- pcaPlots(libsPca, size = size, transparency = transparency)
+}
+
+# ISSUE: it is called genes but in the case of libs it is variables
+ADEgS(list(libsPlot$genes$ax12, libsPlot$genes$ax32, libsPlot$genes$ax13,
+           libsPlot$cells$ax12, libsPlot$cells$ax32, libsPlot$cells$ax13),
+  layout = c(2,3))
+```
+
 Gene counts and TSS discovery
 -----------------------------
 
