@@ -57,7 +57,7 @@ pcaCompGenesList <- function(pcaAde4co, comp){
   stopifnot(ncol(pcaAde4co) == 3)
   
   genesCo <- pcaAde4co %>%
-    mutate(., geneNames = rownames(.)) %>% 
+    mutate(geneNames = rownames(.)) %>% 
     select(geneNames, Comp1, Comp2, Comp3)
   
   ifelse(pcaCompOrientation(genesCo[comp+1]),
@@ -159,13 +159,13 @@ pcaPlots <- function(pcaAde4, cellcol=NULL, size = 1, transparency = 0.6, optim 
     cellcol <- rep("black", nrow(pcaAde4$li))
   
   if (nrow(pcaAde4$li) != length(cellcol))
-    paste0("Error: length(cellcol) [",length(cellcol),"] is not equal to the number of cells [",nrow(pcaAde4$li),"]")
+    paste0("Error: length(cellcol) [", length(cellcol), "] is not equal to the number of cells [", nrow(pcaAde4$li), "]")
   
-  genePlot <- function(absciss,ordinate){
+  genePlot <- function(absciss, ordinate){
     if ((absciss == 3) && (ordinate == 2)) {
       # g32 seems more practical when displaying all 3 axes in the same plot
       # so we need to inverse coordinates
-      g32df <- data.frame(-1*pcaAde4$co[,absciss], pcaAde4$co[,ordinate])
+      g32df <- data.frame(-1*pcaAde4$co[, absciss], pcaAde4$co[, ordinate])
       rownames(g32df) <- rownames(pcaAde4$co)
       s.arrow(g32df,
         plabels = list(box = list(draw = F), optim = optim, cex = size, alpha = transparency),
@@ -175,36 +175,36 @@ pcaPlots <- function(pcaAde4, cellcol=NULL, size = 1, transparency = 0.6, optim 
         plot = F)
     }
     else {
-      s.arrow(pcaAde4$co[,c(absciss,ordinate)],
+      s.arrow(pcaAde4$co[, c(absciss, ordinate)],
         plabels = list(box = list(draw = F), optim = optim, cex = size, alpha = transparency),
-        main = paste0(absciss,",",ordinate),
-        xlab = paste0("comp ",absciss),
-        ylab = paste0("comp ",ordinate),
+        main = paste0(absciss, ",", ordinate),
+        xlab = paste0("comp ", absciss),
+        ylab = paste0("comp ", ordinate),
         plot = F)
     }
   }
   
-  cellPlot <- function(absciss,ordinate){
+  cellPlot <- function(absciss, ordinate){
     if ((absciss == 3) && (ordinate == 2)) {
       # g32 seems more practical when displaying all 3 axes in the same plot
       # so we need to inverse coordinates
-      c32df <- data.frame(-1*pcaAde4$li[,absciss], pcaAde4$li[,ordinate])
+      c32df <- data.frame(-1*pcaAde4$li[, absciss], pcaAde4$li[, ordinate])
       rownames(c32df) <- rownames(pcaAde4$li)
       s.label(c32df,
         plabels = list(box = list(draw = F), optim = optim, cex = size, alpha = transparency, col = cellcol),
         ppoints = list(col = cellcol, cex = size),
-        main = paste0(absciss,",",ordinate),
-        xlab = paste0("comp ",absciss),
-        ylab = paste0("comp ",ordinate),
+        main = paste0(absciss, ",", ordinate),
+        xlab = paste0("comp ", absciss),
+        ylab = paste0("comp ", ordinate),
         plot = F)
     }
     else {
-      s.label(pcaAde4$li[,c(absciss,ordinate)], 
+      s.label(pcaAde4$li[, c(absciss, ordinate)], 
         plabels = list(box = list(draw = F), optim = optim, cex = size, alpha = transparency, col = cellcol),
         ppoints = list(col = cellcol, cex = size),
-        main = paste0(absciss,",",ordinate),
-        xlab = paste0("comp ",absciss),
-        ylab = paste0("comp ",ordinate),
+        main = paste0(absciss, ",", ordinate),
+        xlab = paste0("comp ", absciss),
+        ylab = paste0("comp ", ordinate),
         plot = F)
     }
   }
