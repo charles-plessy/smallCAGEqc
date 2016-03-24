@@ -19,9 +19,8 @@ on principal component number \code{comp}. First column is the gene name. Second
 fourth columns are score values of the gene on each principal components.
 }
 \description{
-Returns \code{TRUE} if the principal component output from \code{dudi.pca} 
-object (package \sQuote{ade4}) is mostly oriented towards positive values ; 
-else returns \code{FALSE}.
+Return the genes sorted based on their score on a given principal component ; also returns 
+scores on the other components.
 }
 \details{
 Check if there are 3 principal components. If TRUE, then create a \sQuote{geneNames} column
@@ -30,7 +29,10 @@ for \sQuote{geneNames} to be at the beginning. Then order the current \code{data
 on column \code{comp}.
 }
 \examples{
-pcaCompGenesList(dudi.pca(dataFrame)$co, 1)
+library(ade4)
+data("doubs")
+pcaCompGenesList(dudi.pca(doubs$env, scannf = F, nf = 3)$co, 1)
+pcaCompGenesList(dudi.pca(doubs$env, scannf = F, nf = 3)$co, 3)
   
 }
 \seealso{

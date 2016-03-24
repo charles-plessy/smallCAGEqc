@@ -21,8 +21,11 @@ else returns \code{FALSE}.
 Take the principal component vector and check which extremity value is the farthest from 0.
 }
 \examples{
-pcaCompOrientation(dudi.pca(dataFrame)$co[,1])
-  
+library(ade4)
+data("doubs")
+pcaCompOrientation(dudi.pca(doubs$env, scannf = F, nf = 3)$co[, 1])
+pcaCompOrientation(dudi.pca(doubs$env, scannf = F, nf = 3)$co[, 3])
+
 }
 \seealso{
 \code{\link{ade4::dudi.pca}}

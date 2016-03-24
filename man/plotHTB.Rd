@@ -26,7 +26,10 @@ the same barplot, the \code{head(., nbDispGenes)} and \code{tail(., nbDispGenes)
 the gene names below each bar.
 }
 \examples{
-plotHTB(pcaCompGenesList(dudi.pca(dataFrame)$co, 1), 1, 10)
+library(ade4)
+data("doubs")
+plotHTB(pcaCompGenesList(dudi.pca(doubs$env, scannf = F, nf = 3)$co, 1), 1, 10)
+plotHTB(pcaCompGenesList(dudi.pca(doubs$env, scannf = F, nf = 3)$co, 3), 3, 10)
   
 }
 \seealso{

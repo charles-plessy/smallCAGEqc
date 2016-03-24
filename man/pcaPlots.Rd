@@ -4,7 +4,8 @@
 \alias{pcaPlots}
 \title{pcaPlots}
 \usage{
-pcaPlots(pcaAde4, cellcol = NULL, size = 1, transparency = 0.6)
+pcaPlots(pcaAde4, cellcol = NULL, size = 1, transparency = 0.6,
+  optim = T)
 }
 \arguments{
 \item{pcaAde4}{An object outputed from a \code{dudi.pca} object (package \sQuote{ade4}).}
@@ -16,7 +17,8 @@ pcaPlots(pcaAde4, cellcol = NULL, size = 1, transparency = 0.6)
 \item{transparency}{A numeric (0-1) designating the transparency of the text to display on plots.}
 }
 \value{
-A list of plots of \sQuote{genes} (at least variables in PCA) or \sQuote{cells} (at least individuals). Each element contains a list of plots of a variety of combination of axis
+A list of plots of \sQuote{genes} (variables in PCA) or \sQuote{cells} 
+(individuals or samples). Each element contains a list of plots of a variety of combination of axis.
 }
 \description{
 Take the object outputed from a \code{dudi.pca} object (package \sQuote{ade4}) and
@@ -31,8 +33,12 @@ a more visual configuration when plotting all 3 dimensions on three side-by-side
 For now can only process PCA with 3 axis (\code{nf=3} as argument of \code{dudi.pca}).
 }
 \examples{
-plotHTB(pcaCompGenesList(dudi.pca(dataFrame)$co, 1), 1, 10)
-  
+library(ade4)
+library(adegraphics)
+data("doubs")
+pcaPlots(dudi.pca(doubs$env, scannf = F, nf = 3))$genes$ax12
+pcaPlots(dudi.pca(doubs$env, scannf = F, nf = 3), cellcol = rainbow(nrow(doubs$env)))$cells$ax12
+
 }
 \seealso{
 \code{\link{ade4::dudi.pca}}
