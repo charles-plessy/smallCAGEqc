@@ -12,20 +12,22 @@
 #'   
 #' @seealso \code{\link{ade4::dudi.pca}}
 #'   
-#' @examples 
-#' pcaCompOrientation(dudi.pca(dataFrame)$co[,1])
-#'   
+#' @examples
+#' library(ade4)
+#' data("doubs")
+#' pcaCompOrientation(dudi.pca(doubs$env, scannf = F, nf = 3)$co[, 1])
+#' pcaCompOrientation(dudi.pca(doubs$env, scannf = F, nf = 3)$co[, 3])
+#' 
 #' @export pcaCompOrientation
 
 pcaCompOrientation <- function(compPca){
   ifelse(abs(range(compPca)[1]) > abs(range(compPca)[2]), FALSE, TRUE)
 }
 
-#' pcaCompGenesList
+#' pcaCompGenesList 
 #' 
-#' Returns \code{TRUE} if the principal component output from \code{dudi.pca} 
-#' object (package \sQuote{ade4}) is mostly oriented towards positive values ; 
-#' else returns \code{FALSE}.
+#' Return the genes sorted based on their score on a given principal component ; also returns 
+#' scores on the other components.
 #' 
 #' Check if there are 3 principal components. If TRUE, then create a \sQuote{geneNames} column
 #' based on the rownames of the \sQuote{pcaAde4co} \code{data.frame}. Then rearrange the column 
@@ -44,20 +46,23 @@ pcaCompOrientation <- function(compPca){
 #' @seealso \code{\link{ade4::dudi.pca}}
 #'   
 #' @examples 
-#' pcaCompGenesList(dudi.pca(dataFrame)$co, 1)
+#' library(ade4)
+#' data("doubs")
+#' pcaCompGenesList(dudi.pca(doubs$env, scannf = F, nf = 3)$co, 1)
+#' pcaCompGenesList(dudi.pca(doubs$env, scannf = F, nf = 3)$co, 3)
 #'   
 #' @export pcaCompGenesList
 
 pcaCompGenesList <- function(pcaAde4co, comp){
-  stopifnot(nbPcaAxis == 3)
+  stopifnot(ncol(pcaAde4co) == 3)
   
   genesCo <- pcaAde4co %>%
     mutate(., geneNames = rownames(.)) %>% 
     select(geneNames, Comp1, Comp2, Comp3)
   
   ifelse(pcaCompOrientation(genesCo[comp+1]),
-    genesCo %<>% setorderv(., colnames(.)[comp+1], order=-1),
-    genesCo %<>% setorderv(., colnames(.)[comp+1], order=1))
+    genesCo %<>% setorderv(colnames(.)[comp+1], order=-1),
+    genesCo %<>% setorderv(colnames(.)[comp+1], order=1))
   
   genesCo
 }
@@ -80,7 +85,10 @@ pcaCompGenesList <- function(pcaAde4co, comp){
 #' @seealso \code{\link{ade4::dudi.pca}} \code{\link{pcaCompGenesList}}
 #'   
 #' @examples 
-#' plotHTB(pcaCompGenesList(dudi.pca(dataFrame)$co, 1), 1, 10)
+#' library(ade4)
+#' data("doubs")
+#' plotHTB(pcaCompGenesList(dudi.pca(doubs$env, scannf = F, nf = 3)$co, 1), 1, 10)
+#' plotHTB(pcaCompGenesList(dudi.pca(doubs$env, scannf = F, nf = 3)$co, 3), 3, 10)
 #'   
 #' @export plotHTB
 
@@ -94,7 +102,7 @@ plotHTB <- function(orderedCompPca, comp, nbDispGenes = 25){
       ylim = c(min(orderedCompPca[, comp+1]), max(orderedCompPca[, comp+1])),
       axes = FALSE, axisnames = FALSE, main = paste0("comp ", comp, " head"))
   text(bp1h, par("usr")[3], labels = orderedCompPca$geneNames %>% head(nbDispGenes),
-    srt = 90, adj = c(1.1,1.1), xpd = TRUE, cex=.6)
+    srt = 90, adj = c(1.1,1.1), xpd = TRUE, cex=1)
   axis(2)
   
   bp1t <- orderedCompPca[, comp+1] %>%
@@ -103,10 +111,8 @@ plotHTB <- function(orderedCompPca, comp, nbDispGenes = 25){
       ylim = c(min(orderedCompPca[, comp+1]), max(orderedCompPca[, comp+1])),
       axes = FALSE, axisnames = FALSE, main = paste0("comp ", comp, " tail"))
   text(bp1t, par("usr")[3], labels = orderedCompPca$geneNames %>% tail(nbDispGenes),
-    srt = 90, adj = c(1.1,1.1), xpd = TRUE, cex=.6)
+    srt = 90, adj = c(1.1,1.1), xpd = TRUE, cex=1)
   axis(4)
-  
-  par(mfrow=c(1, 1))
 }
 
 #' pcaPlots
@@ -126,16 +132,21 @@ plotHTB <- function(orderedCompPca, comp, nbDispGenes = 25){
 #' @param size An integer designating the size of the text on the plots.
 #' @param transparency A numeric (0-1) designating the transparency of the text to display on plots.
 #'   
-#' @return A list of plots of \sQuote{genes} (at least variables in PCA) or \sQuote{cells} (at least individuals). Each element contains a list of plots of a variety of combination of axis
+#' @return A list of plots of \sQuote{genes} (variables in PCA) or \sQuote{cells} 
+#' (individuals or samples). Each element contains a list of plots of a variety of combination of axis.
 #'   
 #' @seealso \code{\link{ade4::dudi.pca}}
 #'   
 #' @examples 
-#' plotHTB(pcaCompGenesList(dudi.pca(dataFrame)$co, 1), 1, 10)
-#'   
+#' library(ade4)
+#' library(adegraphics)
+#' data("doubs")
+#' pcaPlots(dudi.pca(doubs$env, scannf = F, nf = 3))$genes$ax12
+#' pcaPlots(dudi.pca(doubs$env, scannf = F, nf = 3), cellcol = rainbow(nrow(doubs$env)))$cells$ax12
+#' 
 #' @export pcaPlots
 
-pcaPlots <- function(pcaAde4, cellcol=NULL, size = 1, transparency = 0.6){
+pcaPlots <- function(pcaAde4, cellcol=NULL, size = 1, transparency = 0.6, optim = T){
   stopifnot(pcaAde4$nf == 3)
   
   # Need to check if cellcol is defined
@@ -152,7 +163,7 @@ pcaPlots <- function(pcaAde4, cellcol=NULL, size = 1, transparency = 0.6){
       g32df <- data.frame(-1*pcaAde4$co[,absciss], pcaAde4$co[,ordinate])
       rownames(g32df) <- rownames(pcaAde4$co)
       s.arrow(g32df,
-        plabels = list(box = list(draw = F), optim = T, cex = size, alpha = transparency),
+        plabels = list(box = list(draw = F), optim = optim, cex = size, alpha = transparency),
         main = paste0(absciss,",",ordinate),
         xlab = paste0("comp ",absciss),
         ylab = paste0("comp ",ordinate),
@@ -160,7 +171,7 @@ pcaPlots <- function(pcaAde4, cellcol=NULL, size = 1, transparency = 0.6){
     }
     else {
       s.arrow(pcaAde4$co[,c(absciss,ordinate)],
-        plabels = list(box = list(draw = F), optim = T, cex = size, alpha = transparency),
+        plabels = list(box = list(draw = F), optim = optim, cex = size, alpha = transparency),
         main = paste0(absciss,",",ordinate),
         xlab = paste0("comp ",absciss),
         ylab = paste0("comp ",ordinate),
@@ -175,7 +186,7 @@ pcaPlots <- function(pcaAde4, cellcol=NULL, size = 1, transparency = 0.6){
       c32df <- data.frame(-1*pcaAde4$li[,absciss], pcaAde4$li[,ordinate])
       rownames(c32df) <- rownames(pcaAde4$li)
       s.label(c32df,
-        plabels = list(box = list(draw = F), optim = F, cex = size, alpha = transparency, col = cellcol),
+        plabels = list(box = list(draw = F), optim = optim, cex = size, alpha = transparency, col = cellcol),
         ppoints = list(col = cellcol, cex = size),
         main = paste0(absciss,",",ordinate),
         xlab = paste0("comp ",absciss),
@@ -184,7 +195,7 @@ pcaPlots <- function(pcaAde4, cellcol=NULL, size = 1, transparency = 0.6){
     }
     else {
       s.label(pcaAde4$li[,c(absciss,ordinate)], 
-        plabels = list(box = list(draw = F), optim = F, cex = size, alpha = transparency, col = cellcol),
+        plabels = list(box = list(draw = F), optim = optim, cex = size, alpha = transparency, col = cellcol),
         ppoints = list(col = cellcol, cex = size),
         main = paste0(absciss,",",ordinate),
         xlab = paste0("comp ",absciss),
