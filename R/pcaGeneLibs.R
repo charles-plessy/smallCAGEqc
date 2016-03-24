@@ -80,7 +80,7 @@ pcaCompGenesList <- function(pcaAde4co, comp){
 #' @param comp An integer designating the principal component we want to plot the barplot on.
 #' @param nbDispGenes An integer designating how many genes we want to display.
 #'   
-#' @return Display a barplot.
+#' @return Display a barplot. Invisibly returns names and values for head and tail.
 #'   
 #' @seealso \code{\link{ade4::dudi.pca}} \code{\link{pcaCompGenesList}}
 #'   
@@ -113,6 +113,11 @@ plotHTB <- function(orderedCompPca, comp, nbDispGenes = 25){
   text(bp1t, par("usr")[3], labels = orderedCompPca$geneNames %>% tail(nbDispGenes),
     srt = 90, adj = c(1.1,1.1), xpd = TRUE, cex=1)
   axis(4)
+  
+  invisible(list(headName = orderedCompPca$geneNames %>% head(nbDispGenes),
+    tailName = orderedCompPca$geneNames %>% tail(nbDispGenes),
+    headValues = orderedCompPca[, comp+1] %>% head(nbDispGenes),
+    tailValues = orderedCompPca[, comp+1] %>% tail(nbDispGenes)))
 }
 
 #' pcaPlots

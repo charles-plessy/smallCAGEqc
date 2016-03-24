@@ -14,7 +14,7 @@ plotHTB(orderedCompPca, comp, nbDispGenes = 25)
 \item{nbDispGenes}{An integer designating how many genes we want to display.}
 }
 \value{
-Display a barplot.
+Display a barplot. Invisibly returns names and values for head and tail.
 }
 \description{
 Return a barplot of the first and last genes revealed by the principal 
