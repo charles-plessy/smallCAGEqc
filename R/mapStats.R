@@ -95,8 +95,8 @@ mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"
   mapstats.sd       <- sapply(columns, doSd, simplify = FALSE)   %>% data.frame
   mapstats.sd$group <- rownames(mapstats.sd)
   
-  mapstats          <- reshape::melt(mapstats)
-  mapstats$sd       <- reshape::melt(mapstats.sd)$value
+  mapstats          <- reshape::melt(mapstats,    id.vars="group")
+  mapstats$sd       <- reshape::melt(mapstats.sd, id.vars="group")$value
   
   mapstats          <- plyr::ddply( mapstats
                                   , plyr::.(group)
