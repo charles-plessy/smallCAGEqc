@@ -4,7 +4,7 @@
 \alias{fldgmConcentrationPlot}
 \title{fldgmConcentrationPlot}
 \usage{
-fldgmConcentrationPlot(LIBS, scales = "fixed")
+fldgmConcentrationPlot(LIBS, scales = "fixed", group = ~Run)
 }
 \arguments{
 \item{LIBS}{A \sQuote{libs} table, that contains at least a
@@ -12,6 +12,9 @@ fldgmConcentrationPlot(LIBS, scales = "fixed")
 
 \item{scales}{The \sQuote{scales} argument for the plot.
 Default: \sQuote{fixed}.}
+
+\item{group}{A formula to be passed to \sQuote{ggplot2}'s
+       \sQuote{facet_wrap} function.}
 }
 \description{
 Plot histogram of cDNA concentrations after a C1 run
