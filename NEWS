@@ -8,6 +8,7 @@ NEW FEATURES
         of RNA spikes sold by Thermo Fisher.
     o   Added the plate96 function to generate coordinate ranges in 96-well
         plate format.
+    o   Added a "group" option for the function fldgmConcentrationPlot.
 
 BUG FIXES
 
