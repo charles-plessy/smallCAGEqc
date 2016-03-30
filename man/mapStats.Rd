@@ -20,8 +20,9 @@ and \dQuote{counts} on the transcript counts.}
        the \dQuote{group} column of the \dQuote{libs} table.}
 }
 \value{
-Returns mean and standard deviation of normalised mapping statistics, plus absolute
-positions for the error bars.
+Returns a data frame with mean and standard deviation of normalised mapping statistics,
+plus absolute positions for the error bars.  The first column, \code{group}, is
+a vector of factors sorted with the \code{gtools::mixedorder} function.
 }
 \description{
 Process mapping statistics

@@ -19,8 +19,9 @@
 #'        the \dQuote{group} column of the \dQuote{libs} table.
 #'
 #' @return
-#' Returns mean and standard deviation of normalised mapping statistics, plus absolute
-#' positions for the error bars.
+#' Returns a data frame with mean and standard deviation of normalised mapping statistics,
+#' plus absolute positions for the error bars.  The first column, \code{group}, is
+#' a vector of factors sorted with the \code{gtools::mixedorder} function.
 #' 
 #' @seealso \code{\link{hierarchAnnot}}, \code{\link{loadLogs}}, \code{\link{plotAnnot}}
 #' 
@@ -30,6 +31,7 @@
 #' mapStats(libs, "qc", libs$Error)
 #' 
 #' @importFrom magrittR '%>%' '%<>%' subtract
+#' @importFrom gtools mixedorder
 
 mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"), group="default") {
     
@@ -91,6 +93,8 @@ mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"
   # when the group contains only a single level.
   mapstats          <- sapply(columns, doMean, simplify = FALSE) %>% data.frame
   mapstats$group    <- rownames(mapstats)
+  mapstats[gtools::mixedorder(mapstats$group), ]
+    mapstats$group    %<>% factor(mapstats$group %>% unique)
   
   mapstats.sd       <- sapply(columns, doSd, simplify = FALSE)   %>% data.frame
   mapstats.sd$group <- rownames(mapstats.sd)
