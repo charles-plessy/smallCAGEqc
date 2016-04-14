@@ -82,7 +82,7 @@ loadMoiraiStats <- function(multiplex, summary, pipeline, ercc = FALSE) {
   
   # Load the "summary" file in a table called "moirai".  
   
-  moirai <- reshape::cast( data=read.table( summary, sep='\t')
+  moirai <- reshape::cast( data=read.table( summary, sep='\t', comment.char = '')
                          , value='V3'
                          , V1 ~ V2)
   moirai[is.na(moirai)] <- 0
