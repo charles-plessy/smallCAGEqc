@@ -105,7 +105,8 @@ setGeneric( "loadLogs"
     }
     libs <- readMultiplex(multiplex)
     moirai <- reshape::cast( data=read.table( summary
-                                   , sep='\t')
+                                   , sep='\t'
+                                   , comment.char='')
                   , value='V3'
                   , V1 ~ V2)
     moirai[is.na(moirai)] <- 0
