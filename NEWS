@@ -23,6 +23,7 @@ OTHER CHANGES
     o   In the template, merged `LIBRARY` and `RUN_ID`, used for same purpose.
     o   edgeR is only "Suggested": plotSlimSmear aborts if absent.
     o   Sort the groups in alphanumerical order in mapStats.
+    o   Rarefactions results are saved on the disk, since they take time to run
 
 Changes in version 0.11.2
 
