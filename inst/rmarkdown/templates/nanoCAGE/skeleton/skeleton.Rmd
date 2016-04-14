@@ -353,6 +353,9 @@ FIXME: dark orange !
 ### Rarefaction
 
 ```{r calculate-rarefactions}
+# If applicable, restore the previous computation with the command below:
+# load("rar.Rda")
+
 # Subsampling sizes: one point for each cell's sample size, plus a few
 # points for smaller values, to be able to plot smoothly.
 
@@ -384,6 +387,10 @@ rarefyLong <- function(TABLE, N)
   tapply(TABLE$score, TABLE$library, rarefy, N)
 
 rarU <- sapply(sampleSizePairs, function(N) rarefyLong(bed, N))
+
+# Save the result on the hard drive.  This way, if the commands have been run through knitr,
+# the long computations here can be skipped if needed again in an interactive session.
+save(rar1, rarg, rarU, file="rar.Rda")
 ```
 
 ### TSS discovery
