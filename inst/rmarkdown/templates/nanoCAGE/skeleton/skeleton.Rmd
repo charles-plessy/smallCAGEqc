@@ -323,7 +323,7 @@ nbClusters <- 0
 # Please check that length(colorsDend) >= nbClusters
 colorsDend = c("red", "darkgreen", "darkseagreen", "blue", "green", "darkorange3", "grey40", "darkorchid4", "pink3", "turquoise4", "black")
 
-filterExtracted <- libs$samplename[libs$counts > nbFilterExtracted]
+filterExtracted <- libs$counts > nbFilterExtracted
 heatmapGenes <- NMF::aheatmap(cor(log1p(genes[-1, filterExtracted])),
   annCol=list(Run=libs$Ru[filterExtracted], Group=libs$group[filterExtracted]))
 
