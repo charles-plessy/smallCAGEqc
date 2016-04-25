@@ -2,7 +2,7 @@ Package: smallCAGEqc
 Type: Package
 Title: ad-hoc QC functions for shallow-sequenced test CAGE libraries
 Version: 0.11.2.999
-Date: 2016-02-12
+Date: 2016-03-30
 Author: Charles Plessy <plessy@riken.jp>
 Maintainer: Charles Plessy <plessy@riken.jp>
 Description: Functions to quickly generate reports about CAGE libraries.
@@ -21,6 +21,7 @@ Imports:
     gdata,
     ggplot2 (>= 1.0.0),
     grid,
+    gtools,
     magrittr,
     plyr,
     reshape (>= 0.8.5),

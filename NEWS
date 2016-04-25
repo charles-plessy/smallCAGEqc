@@ -8,6 +8,7 @@ NEW FEATURES
         of RNA spikes sold by Thermo Fisher.
     o   Added the plate96 function to generate coordinate ranges in 96-well
         plate format.
+    o   Added a "group" option for the function fldgmConcentrationPlot.
 
 BUG FIXES
 
@@ -21,6 +22,8 @@ OTHER CHANGES
     o   TPM() now warns if it will produce NaN values.
     o   In the template, merged `LIBRARY` and `RUN_ID`, used for same purpose.
     o   edgeR is only "Suggested": plotSlimSmear aborts if absent.
+    o   Sort the groups in alphanumerical order in mapStats.
+    o   Rarefactions results are saved on the disk, since they take time to run
 
 Changes in version 0.11.2
 

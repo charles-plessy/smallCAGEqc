@@ -25,10 +25,6 @@
 
 hanabiPlot <- function (RAR, S, GROUP, ...) {
   
-  # Accessory function to define the range of the empty frame's axis.
-  minMax <- function (X) c( min(X, na.rm=TRUE)
-                          , max(X, na.rm=TRUE))
-  
   # Accessory function to make the lines a little transparent.
   # See https://gist.github.com/mages/5339689#file-add-alpha-r
   add.alpha <- function(col, alpha=1)
@@ -39,8 +35,8 @@ hanabiPlot <- function (RAR, S, GROUP, ...) {
   
   # Accessory function to prepare an empty frame.
   emptyFrame <- function ()
-    plot( minMax(S)
-          , minMax(RAR)
+    plot( range(S)
+          , range(RAR, na.rm = TRUE)
           , type='n'
           , ...)
   
