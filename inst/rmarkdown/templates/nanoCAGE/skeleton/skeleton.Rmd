@@ -325,7 +325,7 @@ colorsDend = c("red", "darkgreen", "darkseagreen", "blue", "green", "darkorange3
 
 filterExtracted <- libs$counts > nbFilterExtracted
 heatmapGenes <- NMF::aheatmap(cor(log1p(genes[-1, filterExtracted])),
-  annCol=list(Run=libs$Ru[filterExtracted], Group=libs$group[filterExtracted]))
+  annCol=list(Run=libs$Run[filterExtracted], Group=libs$group[filterExtracted]))
 
 if (nbClusters != 0) {
   corDend <- heatmapGenes$Rowv %>%
