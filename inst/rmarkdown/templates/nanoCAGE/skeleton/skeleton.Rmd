@@ -318,29 +318,27 @@ library(dendextend)
 nbFilterExtracted <- 10000
 
 # Possibility to color the clusters dendrogram if nbClusters != 0
-nbClusters <- 0
+nbClusters <- 1
 
 # Please check that length(colorsDend) >= nbClusters
-colorsDend = c("red", "darkgreen", "darkseagreen", "blue", "green", "darkorange3", "grey40", "darkorchid4", "pink3", "turquoise4", "black")
+colorsDend = c("black", "red", "darkgreen", "darkseagreen", "blue", "green", "darkorange3", "grey40", "darkorchid4", "pink3", "turquoise4")
 
 filterExtracted <- libs$counts > nbFilterExtracted
 heatmapGenes <- NMF::aheatmap(cor(log1p(genes[-1, filterExtracted])),
   annCol=with(libs[filterExtracted,], list(Run=Run, Group=group)))
 
-if (nbClusters != 0) {
-  corDend <- heatmapGenes$Rowv %>%
-    set("branches_k_color", value = colorsDend[1:nbClusters], k = nbClusters) %>%
-    set("labels_colors", value = colorsDend[1:nbClusters], k = nbClusters) %>%
-    set("labels_cex", .6) %>%
-    ladderize(FALSE) # To ensure a reproducible visual order of the clusters
-  
-  heatmapGenes <- NMF::aheatmap( cor(log(genes[-1, filterExtracted]+1)),
-    annCol=list(Run=libs$Run[filterExtracted], Group=libs$group[filterExtracted]),
-    Rowv = corDend, Colv = corDend )
-  
-  # Dendrogram only: for visual comfort
-  (corDendGg <- corDend %>% as.ggdend %>% ggplot(horiz = F))
-}
+corDend <- heatmapGenes$Rowv %>%
+  set("branches_k_color", value = colorsDend[1:nbClusters], k = nbClusters) %>%
+  set("labels_colors", value = colorsDend[1:nbClusters], k = nbClusters) %>%
+  set("labels_cex", .6) %>%
+  ladderize(FALSE) # To ensure a reproducible visual order of the clusters
+
+heatmapGenes <- NMF::aheatmap( cor(log(genes[-1, filterExtracted]+1)),
+  annCol=list(Run=libs$Run[filterExtracted], Group=libs$group[filterExtracted]),
+  Rowv = corDend, Colv = corDend )
+
+# Dendrogram only: for visual comfort
+(corDendGg <- corDend %>% as.ggdend %>% ggplot(horiz = F))
 ```
 
 ```{r correlation-heatmap-noerrors, dev=c('svg', 'png')}
