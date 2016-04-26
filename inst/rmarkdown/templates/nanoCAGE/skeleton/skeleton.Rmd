@@ -328,7 +328,7 @@ filterExtracted <- libs$counts > nbFilterExtracted
 
 corMat <- genes[-1, filterExtracted] %>% TPM %>% log1p %>% cor
 
-corDend <-
+genesDend <-
   corMat %>%
   subtract(1, .) %>%  # Otherwise it is not a mathematical distance !
   as.dist %>% hclust %>% as.dendrogram %>%
@@ -339,10 +339,10 @@ corDend <-
 
 heatmapGenes <- NMF::aheatmap( corMat,
   annCol=list(Run=libs$Run[filterExtracted], Group=libs$group[filterExtracted]),
-  Rowv = corDend, Colv = corDend )
+  Rowv = genesDend, Colv = genesDend )
 
 # Dendrogram only: for visual comfort
-(corDendGg <- corDend %>% as.ggdend %>% ggplot(horiz = F))
+(genesDendGg <- genesDend %>% as.ggdend %>% ggplot(horiz = F))
 ```
 
 ```{r correlation-heatmap-noerrors, dev=c('svg', 'png')}
@@ -352,7 +352,7 @@ heatmapGenes <- NMF::aheatmap( corMat,
 ```
 
 ```{r genes-dend-nb-clusters, dev=c('png','svg')}
-genesDendRev <- rev(as.hclust(corDend)$height)
+genesDendRev <- rev(as.hclust(genesDend)$height)
 
 # This plot can help user checking the number of clusters to choose
 plot(genesDendRev,
@@ -420,7 +420,7 @@ plotHTB(genesCoComp3, 3, nbDispGenes)
 #   1 - Display 'genesDendClusters'
 #   2 - Please match the cluster number and
 #     the position of the color in 'colorsPca$color' (below)
-#     You can type 'corDendGg' to display the dendrogram
+#     You can type 'genesDendGg' to display the dendrogram
 #   3 - Check that you have 'length(colorsPca$color) == nbClusters'
 #
 # =================================================================
