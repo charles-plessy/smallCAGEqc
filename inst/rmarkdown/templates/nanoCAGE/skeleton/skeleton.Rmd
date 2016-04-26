@@ -341,9 +341,7 @@ genesDend <-
 genesDendRev <- rev(as.hclust(genesDend)$height)
 
 # This plot can help user checking the number of clusters to choose
-plot(genesDendRev,
-     col = c(colorsDend[1:nbClusters], rep("black", length(genesDendRev)-1)),
-     pch = 20, ylab = "Clusters height")
+plot(genesDendRev, pch = 20, ylab = "Clusters height")
 abline(v = nbClusters + 0.5, col = "grey60", lty = 2)
 
 # Dividing into nbClusters clusters
