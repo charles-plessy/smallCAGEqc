@@ -351,9 +351,7 @@ heatmapGenes <- NMF::aheatmap( corMat,
 ```
 
 ```{r genes-dend-nb-clusters, dev=c('png','svg')}
-# Need to create an hclust object to associate a cluster number to each cell
-genesDend    <- hclust(dist(cor(log(genes[-1, filterExtracted]+1))))
-genesDendRev <- rev(genesDend$height)
+genesDendRev <- rev(as.hclust(corDend)$height)
 
 # This plot can help user checking the number of clusters to choose
 plot(genesDendRev,
