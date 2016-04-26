@@ -310,7 +310,9 @@ plotAnnot(libs, 'counts', LIBRARY, libs$Group)
 Correlation between runs
 ------------------------
 
-```{r correlation-heatmap, dev=c('svg', 'png')}
+### Hierarchical clustering of using Peason correlation
+
+```{r hierarchical clustering, dev=c('png','svg')}
 library(dendextend)
 
 # Filtering samples with extraction count < nbFilterExtracted
@@ -336,7 +338,19 @@ genesDend <-
   set("labels_colors", value = colorsDend[1:nbClusters], k = nbClusters) %>%
   set("labels_cex", .6) %>%
   ladderize(FALSE) # To ensure a reproducible visual order of the clusters
+genesDendRev <- rev(as.hclust(genesDend)$height)
 
+# This plot can help user checking the number of clusters to choose
+plot(genesDendRev,
+     col = c(colorsDend[1:nbClusters], rep("black", length(genesDendRev)-1)),
+     pch = 20, ylab = "Clusters height")
+abline(v = nbClusters + 0.5, col = "grey60", lty = 2)
+
+# Dividing into nbClusters clusters
+genesDendClusters <- cutree(genesDend, nbClusters)
+```
+
+```{r correlation-heatmap, dev=c('svg', 'png')}
 heatmapGenes <- NMF::aheatmap( corMat,
   annCol=list(Run=libs$Run[filterExtracted], Group=libs$group[filterExtracted]),
   Rowv = genesDend, Colv = genesDend )
@@ -349,19 +363,6 @@ heatmapGenes <- NMF::aheatmap( corMat,
 # Uncomment if you have a Error column
 #NMF::aheatmap( cor(genes[-1, libs$Error == "0-No Error"])
 #             , annCol=list(Run=libs[libs$Error == "0-No Error", "Run"]))
-```
-
-```{r genes-dend-nb-clusters, dev=c('png','svg')}
-genesDendRev <- rev(as.hclust(genesDend)$height)
-
-# This plot can help user checking the number of clusters to choose
-plot(genesDendRev,
-     col = c(colorsDend[1:nbClusters], rep("black", length(genesDendRev)-1)),
-     pch = 20, ylab = "Clusters height")
-abline(v = nbClusters + 0.5, col = "grey60", lty = 2)
-
-# Dividing into nbClusters clusters
-genesDendClusters <- cutree(genesDend, nbClusters)
 ```
 
 PCA analysis
