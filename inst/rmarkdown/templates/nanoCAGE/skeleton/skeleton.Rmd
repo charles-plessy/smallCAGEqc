@@ -50,10 +50,6 @@ ANNOTATION   <- paste0(GROUP_SHARED, "/annotation/homo_sapiens/gencode-23/gencod
 <!-- The lines about cellomics and controls below can be deleted if not using
      C1 CAGE -->
 
-- cellomics IDs:
-   - `r RunA`: <Insert short description of Run A>
-   - `r RunB`: <Insert short description of Run B>
-
  - Positive control (200 cells): `r ctrls$RunA$posi`, `r ctrls$RunB$posi`.
  - Negative control: `r ctrls$RunA$nega`, `r ctrls$RunB$nega`.
  
