@@ -184,7 +184,7 @@ Raw reads per molecule (BED12 data)
 -----------------------------------
 
 ```{r load_fragments}
-bed <- loadBED12( libs$samplename %>%
+bed <- loadBED12( libs[libs$counts > 0, "samplename"] %>%
              sub(RunA, "RunA", .) %>%
              sub(RunB, "RunB", .) %>%
              paste0(MOIRAI_FRAGS, "/", ., ".bed"))
