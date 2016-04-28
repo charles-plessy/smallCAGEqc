@@ -4,15 +4,19 @@
 \alias{TPM}
 \title{TPM}
 \usage{
-TPM(clusters)
+TPM(clusters, margin = 2)
 }
 \arguments{
 \item{clusters}{A data frame of tag counts, where each row is a cluster and each
-       column is a library.}
+column is a library.}
+
+\item{margin}{1 for rows and 2 for columns (default)}
 }
 \value{
 Returns a data frame expression values normalised in tags per million,
 where each row is a cluster and each column is a library.
+
+TPM uses prop.table() internally.
 }
 \description{
 Tags Per Million
@@ -24,8 +28,12 @@ Ensures that the column names of the returned data frame are identical to the in
 }
 \examples{
 TPM(data.frame(A=c(1,0,3), b=c(2,5,9)))
+TPM(data.frame(A=c(1,0,3), b=c(2,5,9)), margin = 1)
 
 # Should warn about NaN
 # TPM(data.frame(A=c(1,0,3), b=c(2,5,9), c=c(0,0,0)))
+}
+\seealso{
+prop.table
 }
 
