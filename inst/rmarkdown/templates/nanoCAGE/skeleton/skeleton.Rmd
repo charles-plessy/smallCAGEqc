@@ -33,10 +33,10 @@ ANNOTATION   <- paste0(GROUP_SHARED, "/annotation/homo_sapiens/gencode-23/gencod
 
 # In case of a pair of Fludigm C1 CAGE runs, uncomment the lines below and fill
 # insert missing information.  Otherwise, delete or leave as it is.
-#RunA         <- "<Insert ID of Run A>"
-#RunB         <- "<Insert ID of Run B>"
-#ctrls        <- list( RunA=list(posi="<Insert well ID>", nega="<Insert well ID>")
-#                    , RunB=list(posi="<Insert well ID>", nega="<Insert well ID>"))
+#RunA  <- "<Insert ID of Run A>"
+#RunB  <- "<Insert ID of Run B>"
+#ctrls <- list( RunA=list(posi="<Insert well ID>", nega="<Insert well ID>")
+#             , RunB=list(posi="<Insert well ID>", nega="<Insert well ID>"))
 ```
 
 <!-- Example title: MiSeq run `r LIBRARY` -->
@@ -49,10 +49,6 @@ ANNOTATION   <- paste0(GROUP_SHARED, "/annotation/homo_sapiens/gencode-23/gencod
  
 <!-- The lines about cellomics and controls below can be deleted if not using
      C1 CAGE -->
-
-- cellomics IDs:
-   - `r RunA`: <Insert short description of Run A>
-   - `r RunB`: <Insert short description of Run B>
 
  - Positive control (200 cells): `r ctrls$RunA$posi`, `r ctrls$RunB$posi`.
  - Negative control: `r ctrls$RunA$nega`, `r ctrls$RunB$nega`.
@@ -188,7 +184,7 @@ Raw reads per molecule (BED12 data)
 -----------------------------------
 
 ```{r load_fragments}
-bed <- loadBED12( libs$samplename %>%
+bed <- loadBED12( libs[libs$counts > 0, "samplename"] %>%
              sub(RunA, "RunA", .) %>%
              sub(RunB, "RunB", .) %>%
              paste0(MOIRAI_FRAGS, "/", ., ".bed"))
