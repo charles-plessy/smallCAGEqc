@@ -116,7 +116,7 @@ Data load and QC in R.
 Moirai metadata
 ---------------
 
-```{r load_libs_and_moirai, message=F}
+```{r load_R_libraries, message=F}
 library(oscR)
 library(smallCAGEqc)
 stopifnot(
@@ -129,7 +129,9 @@ library(reshape)
 library(ggplot2)
 library(vegan)
 library(plyr)
+```
 
+```{r load_libs_from_moirai}
 PROCESSED_DATA <- MOIRAI_BASE
 
 libs <- loadMoiraiStats() #  %>% llPostProcess('nano-fluidigm')
