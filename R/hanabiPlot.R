@@ -1,3 +1,121 @@
+#' hanabi
+#' 
+#' Rarefy data at multiple sample sizes, in preparation for plotting.
+#' 
+#' The computation can be long, so the steps of rarefaction and plotting
+#' are kept separate.
+#' 
+#' @param expr_data An expression table where columns are samples and rows
+#'        are features such as genes, TSS, etc.
+#' @param npoints The maximum number of rarefactions per sample.
+#' @param step Subsample sizes are calculated by taking the largest sample
+#'        and multiplying it by the step "npoints" times.
+#' @param from Add one sample size (typically "0") in order to extend the
+#'        plot on the left-hand side.
+#'
+#' @return A list-based object of class "hanabi".
+#'
+#' @seealso `[.hanabi`, as.list.hanabi, plot.hanabi, points.hanabi,
+#'          lines.hanabi, hanabiPlot and vegan::rarecurve.
+#' 
+#' @export hanabi
+
+hanabi <- function( expr_data
+                  , npoints = 20
+                  , step = 0.75
+                  , from = NULL) {
+  ns <- step ^ (0:npoints)
+  ns <- round(max(colSums(expr_data)) * ns)
+  if (! is.null(from))
+    ns <- c(ns, from)
+  nraref <- function(lib) {
+    ntags <- sum(lib)
+    ns <- c(ntags, ns[ns < ntags])
+    xy.coords( ns
+             , rarefy(lib, ns) %>% as.numeric)
+  }
+  x <- lapply(expr_data, nraref)
+  structure(x, class = "hanabi")
+}
+
+as.list.hanabi <- function(h)
+  unclass(h)
+
+`[.hanabi`  <- function(h, i)
+  structure(as.list(h)[i], class = "hanabi")
+
+#' Add a final point in hanabi plots.
+#' 
+#' Will only add a point for the final, non-subsampled value of each
+#' sample of in a hanabi object.
+#' 
+#' @param h The hanabi object.
+#' @param ... Other parameters passed to the generic points function
+#' 
+#' @seealso hanabi, plot.hanabi
+#' 
+#' @export plot.hanabi
+
+points.hanabi <- function(h, ...) {
+  xmax <- sapply(h, function(x) max(x$x))
+  ymax <- sapply(h, function(x) max(x$y))
+  points(xmax, ymax, ...)
+}
+
+lines.hanabi  <- function(h, ...) {
+  Map(lines, h, ...) %>% invisible
+}
+
+#' Plotting Hanabi objects
+#' 
+#' @param h The hanabi object to plot.
+#' @param alpha The alpha transparency of the plot lines.
+#' @param col A vector indicating a color per sample (or a vector that
+#'        can be recycled that way).
+#' @param xlab Horizontal axis label.
+#' @param ylab Vertical axis label.
+#' @param main Plot title.
+#' @param pch Plot character at the tip of the lines.
+#' @param ... other arguments passed to the generic plot function.
+#' 
+#' @seealso hanabi
+#' 
+#' @export plot.hanabi
+
+plot.hanabi <-
+  function( h
+          , alpha = 0.5
+          , col   = "black"
+          , xlab  = "Total counts"
+          , ylab  = "Unique features"
+          , main  = "Hanabi plot"
+          , pch   = 1
+          , ...) {
+  xmax <- sapply(h, function(x) max(x$x))
+  xmin <- sapply(h, function(x) min(x$x))
+  ymax <- sapply(h, function(x) max(x$y))
+  ymin <- sapply(h, function(x) min(x$y))
+  # Accessory function to make the lines a little transparent.
+  # See https://gist.github.com/mages/5339689#file-add-alpha-r
+  add.alpha <- function(col, alpha)
+    apply( sapply(col, col2rgb) / 255
+           , 2
+           , function(x)
+             rgb(x[1], x[2], x[3], alpha=alpha))
+  plot( c(min(xmin), max(xmax))
+      , c(min(ymin), max(ymax))
+      , type="n"
+      , xlab = xlab
+      , ylab = ylab
+      , main = main
+      , ...)
+  lines( h
+       , col = add.alpha(col, alpha))
+  points( h
+        , col = col
+        , pch = pch)
+}
+
 #' hanabiPlot
 #' 
 #' Plot feature discovery curves
@@ -17,21 +135,41 @@
 #' @param GROUP A vector of factors grouping the samples.
 #' @param ... Further arguments to be passed to the first plot function,
 #'  that plots the empty frame.
+#' @param pch Plot character at the tip of the lines.
 #' 
-#' @seealso vegan
+#' @seealso vegan, plot.hanabi, hanabi
 #' 
+#' @examples
+#' 
+#' \dontrun {
+#' hanabi(genes, npoints = 20, step = 0.8, from = 0) %>% hanabiPlot
+#' }
 #' @export hanabiPlot
 
-
-hanabiPlot <- function (RAR, S, GROUP, ...) {
+hanabiPlot <- function ( RAR, S, GROUP=NULL
+                       , legend.pos = "topleft", pch = 1, ...) {
   
   # Accessory function to make the lines a little transparent.
   # See https://gist.github.com/mages/5339689#file-add-alpha-r
   add.alpha <- function(col, alpha=1)
-    apply( sapply(col, col2rgb)/255
+    apply( sapply(col, col2rgb) / 255
            , 2
            , function(x)
              rgb(x[1], x[2], x[3], alpha=alpha))
+
+  if (class(RAR) == "hanabi") {
+    if (! is.null(GROUP)) {
+      col <- as.numeric(GROUP)
+      plot(RAR, col = col, pch = pch, ...)
+      legend( x = legend.pos
+            , legend = levels(GROUP)
+            , col = 1:nlevels(GROUP)
+            , pch = pch)
+    } else {
+        plot(RAR, pch = pch, ...)
+    }
+    return(invisible())
+  }
   
   # Accessory function to prepare an empty frame.
   emptyFrame <- function ()

@@ -4,7 +4,7 @@
 \alias{hanabiPlot}
 \title{hanabiPlot}
 \usage{
-hanabiPlot(RAR, S, GROUP, ...)
+hanabiPlot(RAR, S, GROUP = NULL, legend.pos = "topleft", pch = 1, ...)
 }
 \arguments{
 \item{RAR}{A rarefaction table.}
@@ -13,8 +13,10 @@ hanabiPlot(RAR, S, GROUP, ...)
 
 \item{GROUP}{A vector of factors grouping the samples.}
 
+\item{pch}{Plot character at the tip of the lines.}
+
 \item{...}{Further arguments to be passed to the first plot function,
- that plots the empty frame.}
+that plots the empty frame.}
 }
 \description{
 Plot feature discovery curves
@@ -30,7 +32,12 @@ Japanese.
 The rarefactions take time to do, so this step is done by a separate
 function, so that the result is easily cached.
 }
+\examples{
+\dontrun {
+hanabi(genes, npoints = 20, step = 0.8, from = 0) \%>\% hanabiPlot
+}
+}
 \seealso{
-vegan
+vegan, plot.hanabi, hanabi
 }
 
