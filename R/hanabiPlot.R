@@ -148,6 +148,7 @@ plot.hanabi <-
 #' }
 #' 
 #' @importFrom gdata drop.levels
+#' @importFrom vegan rarefy
 #' @export hanabiPlot
 
 hanabiPlot <- function ( RAR, S, GROUP=NULL
