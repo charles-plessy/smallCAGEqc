@@ -2,7 +2,7 @@
 % Please edit documentation in R/hanabiPlot.R
 \name{plot.hanabi}
 \alias{plot.hanabi}
-\title{Plotting Hanabi objects}
+\title{plot.hanabi}
 \usage{
 \method{plot}{hanabi}(h, alpha = 0.5, col = "black",
   xlab = "Total counts", ylab = "Unique features", main = "Hanabi plot",
@@ -31,5 +31,8 @@ Plotting Hanabi objects
 }
 \seealso{
 hanabi
+
+Other Hanabi.functions: \code{\link{hanabiPlot}},
+  \code{\link{hanabi}}, \code{\link{points.hanabi}}
 }
 

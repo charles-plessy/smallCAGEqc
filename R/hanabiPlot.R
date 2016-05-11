@@ -15,9 +15,10 @@
 #'
 #' @return A list-based object of class "hanabi".
 #'
-#' @seealso `[.hanabi`, as.list.hanabi, plot.hanabi, points.hanabi,
-#'          lines.hanabi, hanabiPlot and vegan::rarecurve.
+#' @family Hanabi functions
+#' @seealso `[.hanabi`, as.list.hanabi, and vegan::rarecurve.
 #' 
+#' @importFrom vegan rarefy
 #' @export hanabi
 
 hanabi <- function( expr_data
@@ -44,6 +45,8 @@ as.list.hanabi <- function(h)
 `[.hanabi`  <- function(h, i)
   structure(as.list(h)[i], class = "hanabi")
 
+#' points.hanabi
+#' 
 #' Add a final point in hanabi plots.
 #' 
 #' Will only add a point for the final, non-subsampled value of each
@@ -52,6 +55,7 @@ as.list.hanabi <- function(h)
 #' @param h The hanabi object.
 #' @param ... Other parameters passed to the generic points function
 #' 
+#' @family Hanabi functions
 #' @seealso hanabi, plot.hanabi
 #' 
 #' @export plot.hanabi
@@ -66,6 +70,8 @@ lines.hanabi  <- function(h, ...) {
   Map(lines, h, ...) %>% invisible
 }
 
+#' plot.hanabi
+#' 
 #' Plotting Hanabi objects
 #' 
 #' @param h The hanabi object to plot.
@@ -78,6 +84,7 @@ lines.hanabi  <- function(h, ...) {
 #' @param pch Plot character at the tip of the lines.
 #' @param ... other arguments passed to the generic plot function.
 #' 
+#' @family Hanabi functions
 #' @seealso hanabi
 #' 
 #' @export plot.hanabi
@@ -146,6 +153,8 @@ plot.hanabi <-
 #' hanabi(genes, npoints = 20, step = 0.8, from = 0) %>% hanabiPlot
 #' hanabi(genes, npoints = 20, step = 0.9) %>% hanabiPlot
 #' }
+#' 
+#' @family Hanabi functions
 #' 
 #' @importFrom gdata drop.levels
 #' @importFrom vegan rarefy

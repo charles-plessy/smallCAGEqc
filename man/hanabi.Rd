@@ -29,7 +29,9 @@ The computation can be long, so the steps of rarefaction and plotting
 are kept separate.
 }
 \seealso{
-`[.hanabi`, as.list.hanabi, plot.hanabi, points.hanabi,
-         lines.hanabi, hanabiPlot and vegan::rarecurve.
+`[.hanabi`, as.list.hanabi, and vegan::rarecurve.
+
+Other Hanabi.functions: \code{\link{hanabiPlot}},
+  \code{\link{plot.hanabi}}, \code{\link{points.hanabi}}
 }
 

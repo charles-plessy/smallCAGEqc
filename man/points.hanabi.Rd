@@ -2,7 +2,7 @@
 % Please edit documentation in R/hanabiPlot.R
 \name{points.hanabi}
 \alias{points.hanabi}
-\title{Add a final point in hanabi plots.}
+\title{points.hanabi}
 \usage{
 \method{points}{hanabi}(h, ...)
 }
@@ -12,10 +12,16 @@
 \item{...}{Other parameters passed to the generic points function}
 }
 \description{
+Add a final point in hanabi plots.
+}
+\details{
 Will only add a point for the final, non-subsampled value of each
 sample of in a hanabi object.
 }
 \seealso{
 hanabi, plot.hanabi
+
+Other Hanabi.functions: \code{\link{hanabiPlot}},
+  \code{\link{hanabi}}, \code{\link{plot.hanabi}}
 }
 
