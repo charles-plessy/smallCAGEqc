@@ -7,9 +7,9 @@
 plotAnnot(LIBS, SCOPE, TITLE, GROUP = "default")
 }
 \arguments{
-\item{LIBS}{A data frame with columns named \code{promoter}, \code{exon}, \code{intron}
-\code{mapped}, \code{extracted}, \code{rdna}, and \code{tagdust}, that will be
-passed to the \code{mapStats} function.}
+\item{LIBS}{A data frame with columns named \code{promoter}, \code{exon},
+\code{intron}, \code{mapped}, \code{extracted}, \code{rdna}, and
+\code{tagdust}, that will be passed to the \code{mapStats} function.}
 
 \item{SCOPE}{The value on which to normalise (see \code{mapStats}).}
 

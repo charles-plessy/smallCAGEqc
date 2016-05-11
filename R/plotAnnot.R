@@ -9,18 +9,17 @@
 #' <http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2>.
 #' See <http://www.biomedcentral.com/1471-2164/14/665/figure/F1> for example.
 #' 
-#' @param LIBS A data frame with columns named \code{promoter}, \code{exon}, \code{intron}
-#' \code{mapped}, \code{extracted}, \code{rdna}, and \code{tagdust}, that will be
-#' passed to the \code{mapStats} function.
-#' 
+#' @param LIBS A data frame with columns named \code{promoter}, \code{exon},
+#'        \code{intron}, \code{mapped}, \code{extracted}, \code{rdna}, and
+#'        \code{tagdust}, that will be passed to the \code{mapStats} function.
 #' @param SCOPE The value on which to normalise (see \code{mapStats}).
-#' 
 #' @param TITLE The title of the plot.
 #' 
 #' @family smallCAGEqc annotation functions
 #' @seealso \code{\link{loadLogs}}
 #' 
 #' @import ggplot2
+#' @export plotAnnot
 #' 
 #' @examples
 #' libs <- read.csv( system.file("extdata", "libs.csv", package = "smallCAGEqc")
