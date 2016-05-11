@@ -33,11 +33,14 @@
 #' then the reported one will be \sQuote{snoRNA}.
 #' 
 #' @examples
-#' 
 #' x <- c('exon,sense|foo', 'foo', 'antisense of bar', 'intron,sense|bar'
 #'       , 'antisense of baz;snoRNA|SNORA70')
 #' hannot(x)
 #' cbind(x, as.character(hannot(x)))
+#' 
+#' @family smallCAGEqc annotation functions
+#' 
+#' @export hannot
 
 hannot <- function (annot, hierarchy="default") {
 

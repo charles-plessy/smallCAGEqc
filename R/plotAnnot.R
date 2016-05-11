@@ -17,7 +17,8 @@
 #' 
 #' @param TITLE The title of the plot.
 #' 
-#' @seealso \code{\link{hierarchAnnot}}, \code{\link{loadLogs}}, \code{\link{mapStats}}
+#' @family smallCAGEqc annotation functions
+#' @seealso \code{\link{loadLogs}}
 #' 
 #' @import ggplot2
 #' 

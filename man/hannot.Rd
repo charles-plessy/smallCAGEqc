@@ -44,10 +44,14 @@ annotations as factors, where one single keyword has been selected from a
 provided list or the default list (see below).
 }
 \examples{
-
 x <- c('exon,sense|foo', 'foo', 'antisense of bar', 'intron,sense|bar'
       , 'antisense of baz;snoRNA|SNORA70')
 hannot(x)
 cbind(x, as.character(hannot(x)))
+
+}
+\seealso{
+Other smallCAGEqc.annotation.functions: \code{\link{hierarchAnnot}},
+  \code{\link{mapStats}}, \code{\link{plotAnnot}}
 }
 

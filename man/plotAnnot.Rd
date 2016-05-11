@@ -35,6 +35,9 @@ ggplot2::theme_set(ggplot2::theme_bw()) ; p
 }
 }
 \seealso{
-\code{\link{hierarchAnnot}}, \code{\link{loadLogs}}, \code{\link{mapStats}}
+\code{\link{loadLogs}}
+
+Other smallCAGEqc.annotation.functions: \code{\link{hannot}},
+  \code{\link{hierarchAnnot}}, \code{\link{mapStats}}
 }
 

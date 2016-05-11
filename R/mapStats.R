@@ -23,7 +23,8 @@
 #' plus absolute positions for the error bars.  The first column, \code{group}, is
 #' a vector of factors sorted with the \code{gtools::mixedorder} function.
 #' 
-#' @seealso \code{\link{hierarchAnnot}}, \code{\link{loadLogs}}, \code{\link{plotAnnot}}
+#' @family smallCAGEqc annotation functions
+#' @seealso \code{\link{loadLogs}}
 #' 
 #' @examples
 #' libs <- read.csv( system.file("extdata", "libs.csv", package = "smallCAGEqc")

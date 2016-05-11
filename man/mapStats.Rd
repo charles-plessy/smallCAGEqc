@@ -42,6 +42,9 @@ mapStats(libs, "qc", libs$Error)
 
 }
 \seealso{
-\code{\link{hierarchAnnot}}, \code{\link{loadLogs}}, \code{\link{plotAnnot}}
+\code{\link{loadLogs}}
+
+Other smallCAGEqc.annotation.functions: \code{\link{hannot}},
+  \code{\link{hierarchAnnot}}, \code{\link{plotAnnot}}
 }
 
