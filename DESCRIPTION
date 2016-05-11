@@ -6,16 +6,16 @@ Date: 2016-05-11
 Author: Charles Plessy <plessy@riken.jp>
 Maintainer: Charles Plessy <plessy@riken.jp>
 Description: Functions to quickly generate reports about CAGE libraries.
-    WARNING: this package is available to the public, but at the moment it
-    is strongly tied to our work environment at RIKEN, so there is no
-    guarantee that you will not waste your time with it.  In addition, some
-    of the code here was not written to be durable, but rather to quickly
-    produce results.
-    .
-    We use this package to analyse libraries that are prepared to test and
-    develop our CAGE protocols.  It assume a depth of sequencing typical of
-    the MiSeq instrument, and is guaranteed to work harmless on bigger data
-    produced by HiSeqs.
+ WARNING: this package is available to the public, but at the moment it
+ is strongly tied to our work environment at RIKEN, so there is no
+ guarantee that you will not waste your time with it.  In addition, some
+ of the code here was not written to be durable, but rather to quickly
+ produce results.
+ .
+ We use this package to analyse libraries that are prepared to test and
+ develop our CAGE protocols.  It assume a depth of sequencing typical of
+ the MiSeq instrument, and is guaranteed to work harmless on bigger data
+ produced by HiSeqs.
 License: file LICENSE
 Imports:
     gdata,
@@ -30,4 +30,4 @@ Suggests:
     edgeR,
     knitr
 VignetteBuilder: knitr
-RoxygenNote: 5.0.1.9000
+RoxygenNote: 5.0.1

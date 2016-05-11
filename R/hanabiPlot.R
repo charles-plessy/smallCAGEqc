@@ -142,7 +142,7 @@ plot.hanabi <-
 #' @seealso vegan, plot.hanabi, hanabi
 #' 
 #' @examples
-#' \dontrun {
+#' \dontrun{
 #' hanabi(genes, npoints = 20, step = 0.8, from = 0) %>% hanabiPlot
 #' hanabi(genes, npoints = 20, step = 0.9) %>% hanabiPlot
 #' }
