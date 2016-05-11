@@ -44,8 +44,7 @@ plotAnnot <- function(LIBS, SCOPE, TITLE, GROUP="default") {
                     , yend = yend)) +
     geom_point( aes( x = group
                    , y = yend)
-              , shape = "|"
-              , show_guide = FALSE) +
+              , shape = "|") +
     coord_flip() +
     ggtitle(TITLE)
 }
