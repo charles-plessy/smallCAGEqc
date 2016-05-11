@@ -9,6 +9,7 @@ NEW FEATURES
     o   Added the plate96 function to generate coordinate ranges in 96-well
         plate format.
     o   Added a "group" option for the function fldgmConcentrationPlot.
+    o   New "hanabi" objects to ease the production of hanabi plots.
 
 BUG FIXES
 
