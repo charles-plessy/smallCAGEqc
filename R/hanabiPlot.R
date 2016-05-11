@@ -130,20 +130,24 @@ plot.hanabi <-
 #' The rarefactions take time to do, so this step is done by a separate
 #' function, so that the result is easily cached.
 #' 
-#' @param RAR A rarefaction table.
+#' @param RAR A rarefaction table, or a hanabi object.
 #' @param S A vector of subsample sizes.
 #' @param GROUP A vector of factors grouping the samples.
 #' @param ... Further arguments to be passed to the first plot function,
 #'  that plots the empty frame.
+#' @param legend.pos Position of the legend, passed as "x" parameter to the
+#'        "legend" function.
 #' @param pch Plot character at the tip of the lines.
 #' 
 #' @seealso vegan, plot.hanabi, hanabi
 #' 
 #' @examples
-#' 
 #' \dontrun {
 #' hanabi(genes, npoints = 20, step = 0.8, from = 0) %>% hanabiPlot
+#' hanabi(genes, npoints = 20, step = 0.9) %>% hanabiPlot
 #' }
+#' 
+#' @importFrom gdata drop.levels
 #' @export hanabiPlot
 
 hanabiPlot <- function ( RAR, S, GROUP=NULL
@@ -159,6 +163,7 @@ hanabiPlot <- function ( RAR, S, GROUP=NULL
 
   if (class(RAR) == "hanabi") {
     if (! is.null(GROUP)) {
+      GROUP %<>% drop.levels
       col <- as.numeric(GROUP)
       plot(RAR, col = col, pch = pch, ...)
       legend( x = legend.pos

@@ -7,11 +7,14 @@
 hanabiPlot(RAR, S, GROUP = NULL, legend.pos = "topleft", pch = 1, ...)
 }
 \arguments{
-\item{RAR}{A rarefaction table.}
+\item{RAR}{A rarefaction table, or a hanabi object.}
 
 \item{S}{A vector of subsample sizes.}
 
 \item{GROUP}{A vector of factors grouping the samples.}
+
+\item{legend.pos}{Position of the legend, passed as "x" parameter to the
+"legend" function.}
 
 \item{pch}{Plot character at the tip of the lines.}
 
@@ -35,6 +38,7 @@ function, so that the result is easily cached.
 \examples{
 \dontrun {
 hanabi(genes, npoints = 20, step = 0.8, from = 0) \%>\% hanabiPlot
+hanabi(genes, npoints = 20, step = 0.9) \%>\% hanabiPlot
 }
 }
 \seealso{
