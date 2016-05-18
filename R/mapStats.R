@@ -77,12 +77,10 @@ mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"
     group <- libs$group
   }
   
-  totalIs <- function(what) {
-    if (is.numeric(libs[,what])) {
-      total <<- libs[,what]
-    } else {
-      stop(paste0("libs$", what, " missing or not numeric")) }
-  }
+  totalIs <- function(what)
+    if (is.numeric(libs[, what])) {
+      total <<- libs[, what]
+    } else stop(paste0("libs$", what, " missing or not numeric"))
     
   if (scope == 'all')        totalIs("extracted")
   if (scope == "qc")         totalIs("extracted")
