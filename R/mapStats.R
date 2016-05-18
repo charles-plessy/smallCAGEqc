@@ -82,14 +82,15 @@ mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"
       total <<- libs[, what]
     } else stop(paste0("libs$", what, " missing or not numeric"))
     
-  if (scope == 'all')        totalIs("extracted")
-  if (scope == "qc")         totalIs("extracted")
-  if (scope == 'annotation') totalIs("mapped")
-  if (scope == 'mapped')     totalIs("mapped")
-  if (scope == 'counts')     totalIs("counts")
+  if (scope %in% c("all", "qc"))            totalIs("extracted")
+  if (scope %in% c("annotation", "mapped")) totalIs("mapped")
+  if (scope %in% c("counts"))               totalIs("counts")
   
-  if (! ("tagdust" %in% colnames(libs)))
-    libs$tagdust <- 0
+  defaultToZero <- function(what)
+    if (! (what %in% colnames(libs)))
+      libs[, what] <<- 0
+  
+  defaultToZero("tagdust")
   
   if (scope == "counts") {
     libs$intergenic = with(libs, counts - promoter - intron - exon)
