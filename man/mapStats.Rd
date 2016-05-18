@@ -4,8 +4,8 @@
 \alias{mapStats}
 \title{mapStats}
 \usage{
-mapStats(libs, scope = c("all", "annotation", "counts", "mapped", "qc"),
-  group = "default")
+mapStats(libs, scope = c("all", "annotation", "counts", "mapped", "qc",
+  "steps"), group = "default")
 }
 \arguments{
 \item{libs}{A data frame with columns named \code{promoter}, \code{exon}, \code{intron}
@@ -66,6 +66,21 @@ step of the processing.
   \item{unmapped}{The number of non-mapped pairs.}
   \item{non-proper}{The number of non-properly mapped pairs.}
   \item{duplicates}{The number of pairs that do not add a molecule count.}
+}
+
+Here is a description of each scope.
+
+\describe{
+  \item{all}{Reads are categorised by extraction step and genome
+  annotation.}
+  \item{steps}{Reads are catetorised by the extraction steps described
+  above (Total, Extracted, Cleaned, Mapped and Counts).}
+  \item{qc}{"counts", "properpairs", "mapped", "unmapped", "spikes", "rdna", "tagdust"}
+  \item{mapped}{"promoter","exon","intron","intergenic", "duplicates"}
+  \item{counts}{The unique molecule counts are grouped in
+  annotation categories ("promoter", "exon", "intron" and "intergenic")}
+  \item{annotation}{Same as \sQuote{all} except that normalisation is
+  relative to the number of mapped reads.}
 }
 }
 \examples{
