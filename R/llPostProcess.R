@@ -16,7 +16,7 @@
 #' \sQuote{column} accordingly.
 #' 
 #' If the TYPE is \sQuote{nano-fluidigm}, the generic \sQuote{RunA} and
-#' \sQuote {RunB} names are replaced with the C1 run IDs found in the
+#' \sQuote{RunB} names are replaced with the C1 run IDs found in the
 #' \code{RunA} and \code{RunB} variables, which must exist.  These new sample
 #' names are then parsed like in the \sQuote{C1 CAGE} type.
 #' 
