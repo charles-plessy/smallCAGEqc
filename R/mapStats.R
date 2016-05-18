@@ -66,6 +66,7 @@
 #' 
 #' @importFrom magrittR '%>%' '%<>%' subtract
 #' @importFrom gtools mixedorder
+#' @importFrom reshape melt
 
 mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"), group="default") {
     
@@ -122,8 +123,8 @@ mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"
   mapstats.sd       <- sapply(columns, doSd, simplify = FALSE)   %>% data.frame
   mapstats.sd$group <- rownames(mapstats.sd)
   
-  mapstats          <- reshape::melt(mapstats,    id.vars="group")
-  mapstats$sd       <- reshape::melt(mapstats.sd, id.vars="group")$value
+  mapstats          <- melt(mapstats,    id.vars="group")
+  mapstats$sd       <- melt(mapstats.sd, id.vars="group")$value
   
   mapstats          <- plyr::ddply( mapstats
                                   , plyr::.(group)
