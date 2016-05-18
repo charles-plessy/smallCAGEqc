@@ -20,7 +20,9 @@ Returns a data frame with one row per sample, and the following columns (if the
 corresponding data is available).
 \enumerate{
  \item{samplename} {Sample identifier (factor)}
+ \item{total} {Number of demultiplexed reads (if available).}
  \item{extracted} {Number of extracted reads}
+ \item{cleaned} {Numbers of reads after removing spikes, rRNA, and other artefacts}
  \item{tagdust} {Number of reads containing oligonucleotide artefacts}
  \item{spikes} {Number of reads overlaping with the reference spike sequences}
  \item{rdna} {Number of reads overlaping with the reference ribosomal DNA sequences}
@@ -45,7 +47,7 @@ user, the samples are sorted by numbers and associated to sorted well names, fro
 A01, A02, ..., to H11 and H12.
 }
 \examples{
-loadMoiraiStats(
+libs <- loadMoiraiStats(
     summary   = system.file("extdata/summary.txt", package="smallCAGEqc")
   , multiplex = system.file("extdata/samplename_to_sampleid.txt", package="smallCAGEqc")
   , pipeline  = "OP-WORKFLOW-CAGEscan-short-reads-v2.0" )
