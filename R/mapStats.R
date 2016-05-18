@@ -112,9 +112,12 @@ mapStats <- function( libs
   
   if (scope == "counts") {
     totalIs("counts")
-    columns <- c("promoter","exon","intron","intergenic")
+    columns <- c("Promoter", "Exon", "Intron", "Intergenic")
     libs %<>% within({
-      intergenic = counts - promoter - intron - exon
+      Promoter   <- promoter
+      Exon       <- exon
+      Intron     <- intron
+      Intergenic <- counts - promoter - intron - exon
     })
   } else if (scope == "mapped") {
     totalIs("mapped")
