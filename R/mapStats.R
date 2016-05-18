@@ -127,15 +127,17 @@ mapStats <- function( libs
     columns <- c("counts", "properpairs", "mapped", "unmapped", "spikes", "rdna", "tagdust")
    } else if (scope == "steps") {
     totalIs("extracted")
-    columns <- c("Extracted", "Cleaned", "Mapped", "Counts")
-    libs$Extracted <- libs$extracted - libs$cleaned
-    libs$Cleaned   <- libs$cleaned   - libs$mapped
-    libs$Mapped    <- libs$mapped    - libs$counts
-    libs$Counts    <- libs$counts
+    columns <- c("Cleaning", "Mapping", "Deduplication", "Counts")
+    libs %<>% within({
+      Cleaning      <- extracted - cleaned
+      Mapping       <- cleaned   - mapped
+      Deduplication <- mapped    - counts
+      Counts        <- counts
+    })
     if ("total" %in% colnames(libs)) {
       totalIs("total")
-      libs$Total <- libs$total - libs$extracted
-      columns <- c("Total", columns)
+      libs$Extraction <- libs$total - libs$extracted
+      columns <- c("Extraction", columns)
     }
    } else {
     if (scope == "all")        totalIs("extracted")
