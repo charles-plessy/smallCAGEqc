@@ -3,6 +3,11 @@ Changes in version 0.12.1
 BUG FIXES
 
     o Properly import gdata::drop.levels() and vegan::rarefy().
+    o Added "simple" and "C1 CAGE" types to llPostProcess().
+
+OTHER CHANGES
+
+    o Reduced output width to 100 in the Rmarkdown template.
 
 Changes in version 0.12.0
 

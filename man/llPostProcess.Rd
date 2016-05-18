@@ -15,13 +15,31 @@ llPostProcess(TABLE, TYPE = "")
 Post-process the output of loadLogs.
 }
 \details{
-If the TYPE is "nano-fluidigm", the generic "RunA" and "RunB" names are
-replaced with the C1 run IDs found in the "RunA" and "RunB" variables,
-which must exist.  These new sample names are then used are row names.
-They are parsed to produce new columns for "Well", "row" and "column"
-IDs in the 96-well plate format.
+If the TYPE is \sQuote{C1 CAGE}, the sample names are assumed to be made
+of a run name, followed by an underscore, followed by a coordinate in
+96-well plate format.  These sample names are parsed to parsed to produce
+new columns for \sQuote{Run}, \sQuote{Well}, \sQuote{row} and
+\sQuote{column} accordingly.
+
+If the TYPE is \sQuote{nano-fluidigm}, the generic \sQuote{RunA} and
+\sQuote {RunB} names are replaced with the C1 run IDs found in the
+\code{RunA} and \code{RunB} variables, which must exist.  These new sample
+names are then parsed like in the \sQuote{C1 CAGE} type.
+}
+\examples{
+libs <-
+loadMoiraiStats(
+    summary   = system.file("extdata/summary.txt", package="smallCAGEqc")
+  , multiplex = system.file("extdata/samplename_to_sampleid.txt", package="smallCAGEqc")
+  , pipeline  = "OP-WORKFLOW-CAGEscan-short-reads-v2.0" )
+  
+ libs \%>\% head
+ libs \%>\% llPostProcess("nano-fluidigm") \%>\% head
+
 }
 \seealso{
 loadLogs
+
+Other smallCAGEqc metadata functions: \code{\link{loadMoiraiStats}}
 }
 
