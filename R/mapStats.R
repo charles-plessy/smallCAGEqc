@@ -68,8 +68,15 @@
 #' @importFrom gtools mixedorder
 #' @importFrom reshape melt
 
-mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"), group="default") {
-    
+mapStats <- function( libs
+                    , scope = c( "all"
+                               , "annotation"
+                               , "counts"
+                               , "mapped"
+                               , "qc"
+                               , "steps")
+                    , group="default")
+{
   scope <- match.arg(scope)
   if (identical(group, "default")) {
     if (! "group" %in% colnames(libs))
@@ -82,10 +89,6 @@ mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"
       total <<- libs[, what]
     } else stop(paste0("libs$", what, " missing or not numeric"))
     
-  if (scope %in% c("all", "qc"))            totalIs("extracted")
-  if (scope %in% c("annotation", "mapped")) totalIs("mapped")
-  if (scope %in% c("counts"))               totalIs("counts")
-  
   defaultToZero <- function(what)
     if (! (what %in% colnames(libs)))
       libs[, what] <<- 0
@@ -93,18 +96,35 @@ mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"
   defaultToZero("tagdust")
   
   if (scope == "counts") {
+    totalIs("counts")
     libs$intergenic = with(libs, counts - promoter - intron - exon)
     columns <- c("promoter","exon","intron","intergenic")
   } else if (scope == "mapped") {
+    totalIs("mapped")
     libs$intergenic = with(libs, counts - promoter - intron - exon)
     libs$duplicates = with(libs, mapped - counts)
     columns <- c("promoter","exon","intron","intergenic", "duplicates")
   } else if (scope == "qc") {
+    totalIs("extracted")
     libs$unmapped <- libs$extracted - libs$tagdust - libs$rdna - libs$spikes - libs$mapped
     libs$mapped %<>% subtract(libs$properpairs)
     libs$properpairs %<>% subtract(libs$counts)
     columns <- c("counts", "properpairs", "mapped", "unmapped", "spikes", "rdna", "tagdust")
-  } else {
+   } else if (scope == "steps") {
+    totalIs("extracted")
+    columns <- c("Extracted", "Cleaned", "Mapped", "Counts")
+    libs$Extracted <- libs$extracted - libs$cleaned
+    libs$Cleaned   <- libs$cleaned   - libs$mapped
+    libs$Mapped    <- libs$mapped    - libs$counts
+    libs$Counts    <- libs$counts
+    if ("total" %in% colnames(libs)) {
+      totalIs("total")
+      libs$Total <- libs$total - libs$extracted
+      columns <- c("Total", columns)
+    }
+   } else {
+    if (scope == "all")        totalIs("extracted")
+    if (scope == "annotation") totalIs("mapped")
     libs$mapped <- with(libs, mapped  - promoter - intron - exon)
     columns <- c("promoter","exon","intron","mapped","rdna", "tagdust")
   }
