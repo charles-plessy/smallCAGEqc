@@ -21,7 +21,7 @@ sample of in a hanabi object.
 \seealso{
 hanabi, plot.hanabi
 
-Other Hanabi.functions: \code{\link{hanabiPlot}},
+Other Hanabi functions: \code{\link{hanabiPlot}},
   \code{\link{hanabi}}, \code{\link{plot.hanabi}}
 }
 

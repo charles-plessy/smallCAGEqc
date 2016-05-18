@@ -31,6 +31,7 @@
 #'  
 #'  Alternatively, returns ERCC spike counts when \sQuote{ercc} is set to \sQuote{TRUE}.
 #'  
+#' @family smallCAGEqc metadata functions
 #' @seealso \code{\link{hierarchAnnot}}, code{\link{loadLogs}}, \code{\link{mapStats}}
 #' 
 #' @examples 

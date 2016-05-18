@@ -31,7 +31,7 @@ are kept separate.
 \seealso{
 `[.hanabi`, as.list.hanabi, and vegan::rarecurve.
 
-Other Hanabi.functions: \code{\link{hanabiPlot}},
+Other Hanabi functions: \code{\link{hanabiPlot}},
   \code{\link{plot.hanabi}}, \code{\link{points.hanabi}}
 }
 

@@ -51,7 +51,7 @@ cbind(x, as.character(hannot(x)))
 
 }
 \seealso{
-Other smallCAGEqc.annotation.functions: \code{\link{hierarchAnnot}},
+Other smallCAGEqc annotation functions: \code{\link{hierarchAnnot}},
   \code{\link{mapStats}}, \code{\link{plotAnnot}}
 }
 

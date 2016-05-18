@@ -32,7 +32,7 @@ Plotting Hanabi objects
 \seealso{
 hanabi
 
-Other Hanabi.functions: \code{\link{hanabiPlot}},
+Other Hanabi functions: \code{\link{hanabiPlot}},
   \code{\link{hanabi}}, \code{\link{points.hanabi}}
 }
 

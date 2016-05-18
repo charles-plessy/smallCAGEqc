@@ -45,7 +45,7 @@ hanabi(genes, npoints = 20, step = 0.9) \%>\% hanabiPlot
 \seealso{
 vegan, plot.hanabi, hanabi
 
-Other Hanabi.functions: \code{\link{hanabi}},
+Other Hanabi functions: \code{\link{hanabi}},
   \code{\link{plot.hanabi}}, \code{\link{points.hanabi}}
 }
 

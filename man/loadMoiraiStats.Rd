@@ -54,5 +54,7 @@ libs$group <- libs$samplename \%>\% sub("Run._", "", .) \%>\% substr(1,1) \%>\% 
 }
 \seealso{
 \code{\link{hierarchAnnot}}, code{\link{loadLogs}}, \code{\link{mapStats}}
+
+Other smallCAGEqc metadata functions: \code{\link{llPostProcess}}
 }
 

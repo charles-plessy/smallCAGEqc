@@ -21,7 +21,7 @@ and \sQuote{unknown}.
 \seealso{
 \code{\link{loadLogs}}
 
-Other smallCAGEqc.annotation.functions: \code{\link{hannot}},
+Other smallCAGEqc annotation functions: \code{\link{hannot}},
   \code{\link{mapStats}}, \code{\link{plotAnnot}}
 }
 
