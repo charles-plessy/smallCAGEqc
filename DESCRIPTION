@@ -1,8 +1,8 @@
 Package: smallCAGEqc
 Type: Package
 Title: ad-hoc QC functions for shallow-sequenced test CAGE libraries
-Version: 0.12.0.9
-Date: 2016-05-11
+Version: 0.12.1
+Date: 2016-05-18
 Author: Charles Plessy <plessy@riken.jp>
 Maintainer: Charles Plessy <plessy@riken.jp>
 Description: Functions to quickly generate reports about CAGE libraries.
