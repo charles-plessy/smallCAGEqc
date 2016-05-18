@@ -27,6 +27,7 @@
 #'  bedtools intersect -a $LIBRARY.l2.bed -b 100712hg19.annot -s -loj |
 #'    awk '{OFS="\t"}{print $1":"$2"-"$3$6,$10}' | 
 #'    bedtools groupby -g 1 -c 2 -o collapse > $LIBRARY.l2.annot
+#' }
 #' 
 #' @return The annotation table with the hierarchical annotation in a column
 #' called \code{class}.
