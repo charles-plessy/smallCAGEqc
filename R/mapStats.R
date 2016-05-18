@@ -59,14 +59,16 @@
 #' Here is a description of each scope.
 #' 
 #' \describe{
-#'   \item{all}{Reads are categorised by extraction step and genome
+#'   \item{all}{Pairs are categorised by extraction step and genome
 #'   annotation.}
-#'   \item{steps}{Reads are catetorised by the extraction steps described
+#'   \item{steps}{Pairs are categorised by the extraction steps described
 #'   above (Total, Extracted, Cleaned, Mapped and Counts).}
-#'   \item{qc}{"counts", "properpairs", "mapped", "unmapped", "spikes", "rdna", "tagdust"}
+#'   \item{qc}{Pairs are categorised as counts, duplicates, non-proper pairs,
+#'   unmapped, spikes, rRNA or tag dust, and normalised by the total number
+#'   of extracted pairs.  Non-extracted pairs are ignored.}
 #'   \item{mapped}{"promoter","exon","intron","intergenic", "duplicates"}
 #'   \item{counts}{The unique molecule counts are grouped in
-#'   annotation categories ("promoter", "exon", "intron" and "intergenic")}
+#'   annotation categories ("promoter", "exon", "intron" and "intergenic").}
 #'   \item{annotation}{Same as \sQuote{all} except that normalisation is
 #'   relative to the number of mapped reads.}
 #' }
@@ -128,12 +130,16 @@ mapStats <- function( libs
     })
   } else if (scope == "qc") {
     totalIs("extracted")
-    columns <- c( "counts", "properpairs", "mapped", "unmapped"
-                , "spikes", "rdna", "tagdust")
+    columns <- c( "Counts", "Duplicates", "Non_proper", "Unmapped"
+                , "Spikes", "rDNA", "Tag_dust")
     libs %<>% within({
-      unmapped    <- extracted   - tagdust - rdna - spikes - mapped
-      mapped      <- mapped      - properpairs
-      properpairs <- properpairs - counts
+      Tag_dust     <- extracted   - rdna - spikes - cleaned
+      rDNA         <- rdna
+      Spikes       <- spikes
+      Unmapped     <- cleaned     - mapped
+      Non_proper   <- mapped      - properpairs
+      Duplicates   <- properpairs - counts
+      Counts       <- counts
     })
    } else if (scope == "steps") {
     totalIs("extracted")
