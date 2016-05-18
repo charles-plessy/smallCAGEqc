@@ -1,9 +1,23 @@
+Changes in version 0.12.2
+
+NEW FEATURES
+
+    o Added a "steps" scope in mapStats().
+    o loadMoiraiStats creates a "cleaned" column when possible.
+
+OTHER CHANGES
+
+    o Reworded category names in the "qc" scope in mapStats().
+
 Changes in version 0.12.1
+
+NEW FEATURES
+
+    o Added a "C1 CAGE" type to llPostProcess().
 
 BUG FIXES
 
     o Properly import gdata::drop.levels() and vegan::rarefy().
-    o Added a "C1 CAGE" type to llPostProcess().
 
 OTHER CHANGES
 
