@@ -23,8 +23,41 @@
 #' plus absolute positions for the error bars.  The first column, \code{group}, is
 #' a vector of factors sorted with the \code{gtools::mixedorder} function.
 #' 
+#' @details 
+#' 
+#' The following categories describe the total remaining pairs after each
+#' step of the processing.
+#' 
+#' \describe{
+#'   \item{total}{The total number of pairs before tag extraction.  In some
+#'   cases this number is not available per sample, for example when
+#'   demultiplexing and tag extraction are performed at the same stage.}
+#'   \item{extracted}{The number of pairs where the linkers and unique
+#'   molecular identifier (if present) were succesfully extracted.}
+#'   \item{cleaned}{The number of pairs remaining after filtering out spike,
+#'   rRNA, low-complexity, primer artefact and other unwanted sequences.}
+#'   \item{mapped}{The number of pairs with at least one successful
+#'   alignment.}
+#'   \item{counts}{The number of unique molecules counted after alignment.}
+#' }
+#' 
+#' The following categories describe the number of pairs removed at each
+#' step of the processing.
+#' 
+#' \describe{
+#'   \item{unextracted}{The total number of pairs where a tag could not
+#'   be extracted.}
+#'   \item{spikes, rRNA}{The number of pairs removed because they matched
+#'   spikes or rRNA reference sequences, respectively.}
+#'   \item{tagdust}{The number of pairs removed because of low-complexity
+#'   or similarity to primer artefacts.}
+#'   \item{unmapped}{The number of non-mapped pairs.}
+#'   \item{non-proper}{The number of non-properly mapped pairs.}
+#'   \item{duplicates}{The number of pairs that do not add a molecule count.}
+#' }
+#' 
 #' @family smallCAGEqc annotation functions
-#' @seealso \code{\link{loadLogs}}
+#' @seealso \code{\link{loadLogs}}, \code{\link{loadMoiraiStats}}
 #' 
 #' @examples
 #' libs <- read.csv( system.file("extdata", "libs.csv", package = "smallCAGEqc")
