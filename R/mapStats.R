@@ -76,29 +76,18 @@ mapStats <- function(libs, scope=c("all", "annotation", "counts", "mapped", "qc"
     group <- libs$group
   }
   
-  if (scope == 'all') {
-    if (is.numeric(libs$extracted)){
-      total <- libs$extracted
+  totalIs <- function(what) {
+    if (is.numeric(libs[,what])) {
+      total <<- libs[,what]
     } else {
-      stop("libs$extracted missing or erroneous.") }
-  } else if (scope == 'annotation') {
-    if (is.numeric(libs$mapped)) {
-      total <- libs$mapped
-    } else {
-      stop("libs$mapped missing or erroneous.") }
-  } else if (scope == 'counts') {
-    if (is.numeric(libs$counts)) {
-      total <- libs$counts
-    } else {
-      stop("libs$counts missing or erroneous.") }
-  } else if (scope == 'mapped') {
-    if (is.numeric(libs$mapped)) {
-      total <- libs$mapped
-    } else {
-      stop("libs$mapped missing or erroneous.") }
-  } else if (scope == "qc") {
-    total <- libs$extracted
+      stop(paste0("libs$", what, " missing or not numeric")) }
   }
+    
+  if (scope == 'all')        totalIs("extracted")
+  if (scope == "qc")         totalIs("extracted")
+  if (scope == 'annotation') totalIs("mapped")
+  if (scope == 'mapped')     totalIs("mapped")
+  if (scope == 'counts')     totalIs("counts")
   
   if (! ("tagdust" %in% colnames(libs)))
     libs$tagdust <- 0
