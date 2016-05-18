@@ -112,19 +112,26 @@ mapStats <- function( libs
   
   if (scope == "counts") {
     totalIs("counts")
-    libs$intergenic = with(libs, counts - promoter - intron - exon)
     columns <- c("promoter","exon","intron","intergenic")
+    libs %<>% within({
+      intergenic = counts - promoter - intron - exon
+    })
   } else if (scope == "mapped") {
     totalIs("mapped")
-    libs$intergenic = with(libs, counts - promoter - intron - exon)
-    libs$duplicates = with(libs, mapped - counts)
     columns <- c("promoter","exon","intron","intergenic", "duplicates")
+    libs %<>% within({
+      intergenic = counts - promoter - intron - exon
+      duplicates = mapped - counts
+    })
   } else if (scope == "qc") {
     totalIs("extracted")
-    libs$unmapped <- libs$extracted - libs$tagdust - libs$rdna - libs$spikes - libs$mapped
-    libs$mapped %<>% subtract(libs$properpairs)
-    libs$properpairs %<>% subtract(libs$counts)
-    columns <- c("counts", "properpairs", "mapped", "unmapped", "spikes", "rdna", "tagdust")
+    columns <- c( "counts", "properpairs", "mapped", "unmapped"
+                , "spikes", "rdna", "tagdust")
+    libs %<>% within({
+      unmapped    <- extracted   - tagdust - rdna - spikes - mapped
+      mapped      <- mapped      - properpairs
+      properpairs <- properpairs - counts
+    })
    } else if (scope == "steps") {
     totalIs("extracted")
     columns <- c("Cleaning", "Mapping", "Deduplication", "Counts")
@@ -136,14 +143,16 @@ mapStats <- function( libs
     })
     if ("total" %in% colnames(libs)) {
       totalIs("total")
-      libs$Extraction <- libs$total - libs$extracted
+      libs$Extraction <- with(libs, total - extracted)
       columns <- c("Extraction", columns)
     }
    } else {
     if (scope == "all")        totalIs("extracted")
     if (scope == "annotation") totalIs("mapped")
-    libs$mapped <- with(libs, mapped  - promoter - intron - exon)
     columns <- c("promoter","exon","intron","mapped","rdna", "tagdust")
+    libs %<>% within({
+       mapped <- mapped - promoter - intron - exon
+    })
   }
   
   doMean <- function (X) tapply(libs[,X] / total, group, mean)
