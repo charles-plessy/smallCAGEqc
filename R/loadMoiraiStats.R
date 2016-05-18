@@ -22,7 +22,9 @@
 #' corresponding data is available).
 #' \enumerate{
 #'  \item{samplename} {Sample identifier (factor)}
+#'  \item{total} {Number of demultiplexed reads (if available).}
 #'  \item{extracted} {Number of extracted reads}
+#'  \item{cleaned} {Numbers of reads after removing spikes, rRNA, and other artefacts}
 #'  \item{tagdust} {Number of reads containing oligonucleotide artefacts}
 #'  \item{spikes} {Number of reads overlaping with the reference spike sequences}
 #'  \item{rdna} {Number of reads overlaping with the reference ribosomal DNA sequences}
@@ -114,6 +116,7 @@ loadMoiraiStats <- function(multiplex, summary, pipeline, ercc = FALSE) {
   if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.0', pipeline)) {
       libs$total       <- moiraiToLibs('raw')
       libs$extracted   <- moiraiToLibs('extracted')
+      libs$cleaned     <- moiraiToLibs('non_reference_extracted')
       libs$tagdust     <- moiraiToLibs('filtered_for_artefact')
       libs$rdna        <- moiraiToLibs('filtered_for_rrna')
       libs$spikes      <- moiraiToLibs('filtered_for_spikes')
