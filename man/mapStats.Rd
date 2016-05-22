@@ -75,8 +75,8 @@ Here is a description of each scope.
   annotation.}
   \item{steps}{Pairs are categorised by the extraction steps described
   above (Total, Extracted, Cleaned, Mapped and Counts).}
-  \item{qc}{Pairs are categorised as counts, duplicates, non-proper pairs,
-  unmapped, spikes, rRNA or tag dust, and normalised by the total number
+  \item{qc}{Pairs are categorised as tag dust, rDNA, unmapped, spikes,
+  non-proper, duplicates and counts, and normalised by the total number
   of extracted pairs.  Non-extracted pairs are ignored.}
   \item{mapped}{"promoter","exon","intron","intergenic", "duplicates"}
   \item{counts}{The unique molecule counts are grouped in
