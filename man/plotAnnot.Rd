@@ -25,14 +25,11 @@ Stacked barplots with error bars inspired from
 See <http://www.biomedcentral.com/1471-2164/14/665/figure/F1> for example.
 }
 \examples{
-libs <- read.csv( system.file("extdata", "libs.csv", package = "smallCAGEqc")
-                , row.names = 1)
-p <- plotAnnot(libs, 'qc', 'Here is the title', libs$Error)
-\dontrun{
+example(loadMoiraiStats)
+p <- plotAnnot(libs, 'qc', 'Here is the title')
 print(p)
 p + ggplot2::theme_bw()
 ggplot2::theme_set(ggplot2::theme_bw()) ; p
-}
 }
 \seealso{
 \code{\link{loadLogs}}

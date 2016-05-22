@@ -86,9 +86,8 @@ Here is a description of each scope.
 }
 }
 \examples{
-libs <- read.csv( system.file("extdata", "libs.csv", package = "smallCAGEqc")
-                , row.names = 1)
-mapStats(libs, "qc", libs$Error)
+example(loadMoiraiStats)
+mapStats(libs, "qc")
 
 }
 \seealso{

@@ -77,10 +77,10 @@
 #' @seealso \code{\link{loadLogs}}, \code{\link{loadMoiraiStats}}
 #' 
 #' @examples
-#' libs <- read.csv( system.file("extdata", "libs.csv", package = "smallCAGEqc")
-#'                 , row.names = 1)
-#' mapStats(libs, "qc", libs$Error)
+#' example(loadMoiraiStats)
+#' mapStats(libs, "qc")
 #' 
+#' @export mapStats
 #' @importFrom magrittr '%>%' '%<>%' subtract
 #' @importFrom gtools mixedorder
 #' @importFrom reshape melt
