@@ -29,5 +29,6 @@ friendly for automation.
 foo <- "bar"
 toto <- "tata"
 exportInEnv("foo", "toto")
+
 }
 

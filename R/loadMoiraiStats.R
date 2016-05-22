@@ -43,6 +43,8 @@
 #'   , pipeline  = "OP-WORKFLOW-CAGEscan-short-reads-v2.0" )
 #'         
 #' libs$group <- libs$samplename %>% sub("Run._", "", .) %>% substr(1,1) %>% factor
+#' 
+#' @export loadMoiraiStats
 
 loadMoiraiStats <- function(multiplex, summary, pipeline, ercc = FALSE) {
 

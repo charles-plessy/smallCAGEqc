@@ -20,6 +20,9 @@
 #' foo <- "bar"
 #' toto <- "tata"
 #' exportInEnv("foo", "toto")
+#' 
+#' @importFrom plyr l_ply
+#' @export exportInEnv
 
 exportInEnv <- function(...) {
 

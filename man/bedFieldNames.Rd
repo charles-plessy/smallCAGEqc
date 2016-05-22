@@ -17,5 +17,6 @@ See \url{http://www.genome.ucsc.edu/FAQ/FAQformat.html#format1 for details}.
 }
 \examples{
 bedFieldNames(6)
+
 }
 

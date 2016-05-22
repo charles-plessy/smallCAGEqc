@@ -26,5 +26,7 @@ fldgmArrayQCplot <- function(RUN) fldgmArrayQC(libs[libs$Run==RUN,], RUN)
 \dontrun{
 fldgmArrayQCplot(RunB)
 }
+
+export fldgmArrayQC
 }
 

@@ -13,7 +13,7 @@
 #' plate96("A01", "B08")
 #' plate96("C01", "B08")
 #' 
-#' @export plate69
+#' @export plate96
 
 plate96 <- function(from, to, by="row") {
   by <- match.arg(by)

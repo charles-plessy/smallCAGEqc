@@ -13,6 +13,8 @@
 #' ## With a file called "1772-064-102.picogreen.xlsx":
 #' ##
 #' ## fldgmPicoGreenStdCurve(FILE="1772-064-102.picogreen.xlsx")
+#' 
+#' @export fldgmPicoGreenStdCurve
 
 fldgmPicoGreenStdCurve <- function(FILE) {
   sc <- gdata::read.xls( FILE

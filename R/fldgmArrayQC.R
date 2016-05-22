@@ -16,6 +16,8 @@
 #' \dontrun{
 #' fldgmArrayQCplot(RunB)
 #' }
+#' 
+#' export fldgmArrayQC
 
 fldgmArrayQC <- function(LIBS, title='') {
 

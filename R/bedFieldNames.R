@@ -8,6 +8,8 @@
 #' 
 #' @examples 
 #' bedFieldNames(6)
+#'
+#' @export bedFieldNames
 
 bedFieldNames <- function(n=12)
   c( "chrom"

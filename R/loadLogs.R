@@ -49,6 +49,8 @@
 #'         , pipeline="OP-WORKFLOW-CAGEscan-short-reads-v2.0")
 #'         
 #' libs$group <- libs$samplename %>% sub("Run._", "", .) %>% substr(1,1) %>% factor
+#'
+#' @export loadLogs
 
 setGeneric( "loadLogs"
             , function(source, multiplex, summary, pipeline)

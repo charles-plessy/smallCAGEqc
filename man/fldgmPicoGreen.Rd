@@ -43,12 +43,13 @@ frame. Only the templates PN 100-6260 and PN 100-6160 are supported, other
 templates (if any) were not tested.
 }
 \examples{
-## With a file called "1772-064-102.picogreen.xlsx":
-##
-## fldgmPicoGreen(FILE="1772-064-102.picogreen.xlsx"
-##
-## In command line:
-##
-## Rscript -e 'smallCAGEqc::fldgmPicoGreen(FILE="1772-064-102.picogreen.xlsx", TEMPLATE="PN 100-6260", RUN="1772-064-102")
+\dontrun{
+# With a file called "1772-064-102.picogreen.xlsx":
+fldgmPicoGreen(FILE="1772-064-102.picogreen.xlsx"
+
+# In command line:
+# Rscript -e 'smallCAGEqc::fldgmPicoGreen(FILE="1772-064-102.picogreen.xlsx", TEMPLATE="PN 100-6260", RUN="1772-064-102")
+}
+
 }
 

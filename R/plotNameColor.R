@@ -13,7 +13,8 @@
 #' @param Y Coordinates on the vertical axis.
 #' @param GROUP Factors indicating now to group the cells.
 #' @param LABELS Labels to plot.
-
+#'
+#' @export plotNameColor
 
 plotNameColor <- function(X, Y, GROUP, LABELS, LegendPos="topleft") {
 

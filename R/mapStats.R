@@ -81,7 +81,7 @@
 #'                 , row.names = 1)
 #' mapStats(libs, "qc", libs$Error)
 #' 
-#' @importFrom magrittR '%>%' '%<>%' subtract
+#' @importFrom magrittr '%>%' '%<>%' subtract
 #' @importFrom gtools mixedorder
 #' @importFrom reshape melt
 

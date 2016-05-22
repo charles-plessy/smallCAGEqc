@@ -1,3 +1,33 @@
+#' VennAB
+#' 
+#' Venn diagram beween two sets A and B
+#' 
+#' This is a simple function wrapping \code{venn.diagram()} function from
+#' the VennDiagram package, with a standard arbitrary look and feel.
+#' 
+#' @param A_NAME The name of the first set (character string).
+#' @param A The first set (vector).
+#' @param B_NAME The name of the second set (character string).
+#' @param B The second set (vector).
+#' @param MAIN The main title (character string).
+#' @param SUB The subtitle under the main title (character string).
+#' 
+#' The venn diagram is plotted in grid.draw().
+#' 
+#' @return Plots the diagram without returning a value.
+#' 
+#' @examples 
+#' \dontrun{
+#' VennAB( "Name of group A", groupA
+#'       , "Name of group B", groupB
+#'       , "Main title"
+#'       , "subtitle")
+#' }
+#' 
+#' @importFrom grid grid.draw
+#' @importFrom VennDiagram venn.diagram
+#' @export VennAB
+
 VennAB <- function( A_NAME
                   , A
                   , B_NAME
