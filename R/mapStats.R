@@ -63,7 +63,7 @@
 #'   annotation.}
 #'   \item{steps}{Pairs are categorised by the extraction steps described
 #'   above (Total, Extracted, Cleaned, Mapped and Counts).}
-#'   \item{qc}{Pairs are categorised as tag dust, rDNA, unmapped, spikes,
+#'   \item{qc}{Pairs are categorised as tag dust, rDNA, spikes, unmapped,
 #'   non-proper, duplicates and counts, and normalised by the total number
 #'   of extracted pairs.  Non-extracted pairs are ignored.}
 #'   \item{mapped}{"promoter","exon","intron","intergenic", "duplicates"}
@@ -129,7 +129,7 @@ mapStats <- function( libs
     })
   } else if (scope == "qc") {
     totalIs("extracted")
-    columns <- c( "Tag_dust", "rDNA", "Unmapped", "Spikes"
+    columns <- c( "Tag_dust", "rDNA", "Spikes", "Unmapped"
                 , "Non_proper", "Duplicates", "Counts")
     libs %<>% within({
       Tag_dust     <- extracted   - rdna - spikes - cleaned
