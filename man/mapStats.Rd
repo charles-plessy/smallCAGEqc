@@ -50,6 +50,8 @@ step of the processing.
   rRNA, low-complexity, primer artefact and other unwanted sequences.}
   \item{mapped}{The number of pairs with at least one successful
   alignment.}
+  \item{properpairs}{The number or pair remaining after filtering out
+  the non-proper alignments.}
   \item{counts}{The number of unique molecules counted after alignment.}
 }
 
@@ -73,8 +75,9 @@ Here is a description of each scope.
 \describe{
   \item{all}{Pairs are categorised by extraction step and genome
   annotation.}
-  \item{steps}{Pairs are categorised by the extraction steps described
-  above (Total, Extracted, Cleaned, Mapped and Counts).}
+  \item{steps}{Shows how many pairs are removed by the extraction,
+  cleaning, mapping (proper pairs) and transcript counting steps described
+  above.}
   \item{qc}{Pairs are categorised as tag dust, rDNA, spikes, unmapped,
   non-proper, duplicates and counts, and normalised by the total number
   of extracted pairs.  Non-extracted pairs are ignored.}
