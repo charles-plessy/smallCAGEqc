@@ -23,7 +23,6 @@
 #'                      , row.names=c("A", "A,B"))
 #' countSymbols(exp.tbl)
 #' 
-#' @importFrom magrittr '%>%'
 #' @export countSymbols
 
 countSymbols <- function(TABLE) {

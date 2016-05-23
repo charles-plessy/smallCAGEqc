@@ -9,7 +9,7 @@
 #' @param group A formula to be passed to \sQuote{ggplot2}'s
 #'        \sQuote{facet_wrap} function.
 #' 
-#' @importFrom ggplot2 qplot facet_wrap
+#' @import ggplot2
 #' @export fldgmConcentrationPlot
 
 fldgmConcentrationPlot <- function ( LIBS

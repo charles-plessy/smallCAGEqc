@@ -81,7 +81,6 @@
 #' mapStats(libs, "qc")
 #' 
 #' @export mapStats
-#' @importFrom magrittr '%>%' '%<>%' subtract
 #' @importFrom gtools mixedorder
 #' @importFrom reshape melt
 

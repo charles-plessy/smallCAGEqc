@@ -32,7 +32,6 @@
 #'  libs %>% head
 #'  libs %>% llPostProcess("nano-fluidigm") %>% head
 #' 
-#' @importFrom magrittr '%<>%'
 #' @export llPostProcess
 
 llPostProcess <- function (TABLE, TYPE='') {

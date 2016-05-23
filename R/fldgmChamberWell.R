@@ -5,8 +5,6 @@
 #' @param ... Either chamber numbers (nummeric format) or 96-well
 #'        names (character format)
 #'
-#' @importFrom magrittr '%>%'
-#'
 #' @examples
 #' fldgmChamberWell("E04")
 #' fldgmChamberWell(c("E04", "A01"))

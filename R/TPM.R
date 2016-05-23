@@ -24,7 +24,6 @@
 #' # Should warn about NaN
 #' # TPM(data.frame(A=c(1,0,3), b=c(2,5,9), c=c(0,0,0)))
 #' 
-#' @importFrom magrittr "%>%" multiply_by
 #' @export TPM
 
 TPM <- function(clusters, margin = 2){
