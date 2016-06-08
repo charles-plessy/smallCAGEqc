@@ -348,6 +348,8 @@ with(libs, plotNameColor(genes, counts, Run, Well))
 Rarefaction (hanabi plot).
 --------------------------
 
+The purpose of these plots is to ease the comparison of the libraries given that they do not have exactly the same sequencing depth, and to evaluate if extra sequencing depth would be useful.
+
 FIXME: dark orange !
 
 ### Rarefaction
@@ -404,7 +406,7 @@ hanabiPlot( rarg
           , GROUP=libs$group)
 ```
 
-### Molecule discovery (with raw reads)
+### Transcript discovery (with raw reads)
 
 ````{r hanabi-UMI, dev=c('svg', 'png')}
 hanabiPlot(rarU, sampleSizePairs, ylab='number of molecules detected', xlab='number of properly mapped reads', main=paste("Transcript discovery for", LIBRARY), GROUP=libs$Group)
@@ -421,6 +423,12 @@ legend('topleft',legend=levels(libs$Group), col=1:length(levels(libs$Group)), pc
 
 #legend('topleft',legend=levels(libs[libs$Error=="0-No Error", "Run"]), col=1:length(levels(libs[libs$Error=="0-No Error", "Run"])), pch=1)
 ```
+
+Note that the horizontal axis is not the same in every plot:
+
+- For _TSS_ or _Gene discovery_, the horizontal axis is unique molecule counts, that is, transcripts. The purpose of these plots is to show how easy it would be to detect more TSS or genes if we would sequence more transcripts.
+
+- For _Transcript discovery_, the horizontal axis is number of raw reads. The purpose of this plot is to show how possible it is to sequence more transcripts by increasing the number of raw reads.
 
 
 Data load on Zenbu.
