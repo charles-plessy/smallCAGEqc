@@ -5,8 +5,10 @@ _smallCAGEqc is a R package collecting scripts for the analysis of transcriptome
 libraries at RIKEN CLST/DGT ex-OSC.  It makes strong assumptions on our
 infrastructure and hardcodes paths for key files, therefore, although it
 shared on GitHub, there is really no guaranty that it will be useful to
-you if we are not working together already._
+you if we are not working together already.  It installs a Rmarkdown
+[template][] for analyses on Rstudio._
 
+  [template]: https://raw.githubusercontent.com/charles-plessy/smallCAGEqc/master/inst/rmarkdown/templates/nanoCAGE/skeleton/skeleton.Rmd
 
 Installation on Linux computers
 -------------------------------
