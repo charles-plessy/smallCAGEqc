@@ -1,14 +1,12 @@
-Changes in version 0.12.4
-
-BUG FIXES
-
-   o loadMoiraiStats: Better handle the case of 96-sample runs.
-
 Changes in version 0.12.3
 
 NEW FEATURES
 
-   o Depens on the magrittr package.
+   o Depends on the magrittr package.
+
+BUG FIXES
+
+   o loadMoiraiStats: Better handle the case of 96-sample runs.
 
 Changes in version 0.12.2
 
