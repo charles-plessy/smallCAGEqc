@@ -92,7 +92,8 @@ loadMoiraiStats <- function(multiplex, summary, pipeline, ercc = FALSE) {
                          , V1 ~ V2)
   moirai[is.na(moirai)] <- 0
   rownames(moirai) <- moirai$V1
-  if(nrow(moirai) == 96) libs <- libs[1:96,]
+  # If no rown name contains "RunB", then it is an experiment with 96 samples only.
+  if( ! any(grepl("RunB", rownames(moirai)))) libs <- libs[1:96,]
   
   moiraiToLibs <- function(COL) {
     if (! COL %in% colnames(moirai))
