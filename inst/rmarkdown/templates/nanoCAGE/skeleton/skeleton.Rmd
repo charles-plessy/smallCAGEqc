@@ -462,21 +462,18 @@ zenbuUpload <- function ( ...
 }
 ```
 
-To transform a file name in a sample identifier.
+Helper functions
 
-```{r define_bedToSample}
+```{r define_helperFunctions}
 bedToSample <- function(BED)
   BED %>%
     sub("RunA", RunA, .) %>%
     sub("RunB", RunB, .) %>%
     sub(".bed", "", .)
-```
 
-To produce a string of keywords that will uniquely identify a sample.
+# To produce a string of keywords that will uniquely identify a sample.
+# TODO: move keywords to the top.
 
-TODO: move keywords to the top.
-
-```{r define_sampleDescription}
 sampleDescription <- function(BED)
   paste( MOIRAI_FRAGS
        , bedToSample(BED)
@@ -484,9 +481,32 @@ sampleDescription <- function(BED)
        , "a keyword for easy retrieval" # For instance "KnitrUpload"
          # add more keywords as needed
        )
+
+CSfragmentLocation <- function(BED)
+  paste0(MOIRAI_FRAGS, "/", BED, ".bed")
+
+CSuploadCommand <- function(BED)
+  paste( CSfragmentLocation(BED)
+       , bedToSample(BED)
+       , sampleDescription(BED)
+       , ""
+       , sep = "\t")
+```
+
+```{r createUploadFile}
+levels(bed$library) %>%
+  CSuploadCommand %>%
+  writeLines(paste0(LIBRARY, ".zUpload.tsv"))
 ```
 
 To upload CAGEscan fragments, only if they have not yet been uploaded.
+
+```{r zenbuFileListUpload}
+zenbuUpload( "-assembly", ASSEMBLY
+           , "-filelist", paste0(LIBRARY, ".zUpload.tsv")
+           , "-collab_uuid", ZENBU_COLLAB
+           , "-singletag_exp")
+```
 
 Functions to add metadata tags.
 
