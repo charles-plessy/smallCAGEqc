@@ -488,24 +488,6 @@ sampleDescription <- function(BED)
 
 To upload CAGEscan fragments, only if they have not yet been uploaded.
 
-```{r define_safeZupload}
-safeZupload <- function (BED) {
-  # Warning: the "notFound" function ignores queued uploads...
-  notFound <- function(BED)
-    zenbuUpload( "-list", "-filter", sampleDescription(BED)) %>%
-      tail(1) %>%
-      grepl ("0 uploads --- 0 featuresources --- 0 experiments --- \\[0 total sources\\]", .)
-  if(notFound(BED))
-    zenbuUpload( "-file",        paste(MOIRAI_FRAGS, BED, sep="/")
-               , "-name",        BED  %>% sub(".bed", "", .)
-               , "-assembly",    ASSEMBLY
-               , "-desc",        sampleDescription(BED)
-               , "-collab_uuid", ZENBU_COLLAB
-               , "-singletag_exp"
-               , stdout="")
-}
-```
-
 Functions to add metadata tags.
 
 ```{r tag-in-zenbu}
@@ -543,7 +525,6 @@ samplesToUpload <- subset(libs, properpairs > 0, "samplename", drop=T) %>%
   sub(RunB, "RunB", .) %>%
   sub("$", ".bed", .)
 
-sapply(samplesToUpload, safeZupload)
 sapply(samplesToUpload, tagError)
 sapply(samplesToUpload, tagMeta, TAG="Group")
 sapply(samplesToUpload, tagMeta, TAG="Run")
