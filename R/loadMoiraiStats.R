@@ -48,6 +48,10 @@
 
 loadMoiraiStats <- function(multiplex, summary, pipeline, ercc = FALSE) {
 
+  # Guess if it is a nano-fluidigm run
+  nanoFluidigm <- FALSE
+  nanoFluidigm <- if (exists("PROCESSED_DATA")) grepl('nano-fluidigm', PROCESSED_DATA)
+
   # Use heuristics if parameters are missing.
   
   if (missing(pipeline)) {
@@ -65,7 +69,7 @@ loadMoiraiStats <- function(multiplex, summary, pipeline, ercc = FALSE) {
                          , '.multiplex.txt')
     } else if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.0', PROCESSED_DATA)) {
       multiplex <- '/osc-fs_home/scratch/moirai/nano-fluidigm/input/samplename_to_sampleid.txt'
-    } else if (grepl('nano-fluidigm', PROCESSED_DATA)) {
+    } else if (nanoFluidigm) {
       multiplex <- '/osc-fs_home/scratch/moirai/nano-fluidigm/input/default.multiplex.txt'
     } else {
       stop('Could not dectect a known Moirai user in PROCESSED_DATA')
@@ -92,8 +96,9 @@ loadMoiraiStats <- function(multiplex, summary, pipeline, ercc = FALSE) {
                          , V1 ~ V2)
   moirai[is.na(moirai)] <- 0
   rownames(moirai) <- moirai$V1
-  # If no rown name contains "RunB", then it is an experiment with 96 samples only.
-  if( ! any(grepl("RunB", rownames(moirai)))) libs <- libs[1:96,]
+  # In the nano-fluidigm workflow, if no rown name contains "RunB",
+  # then it is an experiment with 96 samples only.
+  if( nanoFluidigm & ! any(grepl("RunB", rownames(moirai)))) libs <- libs[1:96,]
   
   moiraiToLibs <- function(COL) {
     if (! COL %in% colnames(moirai))
