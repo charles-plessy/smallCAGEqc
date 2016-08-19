@@ -31,6 +31,9 @@ TPM <- function(clusters, margin = 2){
   if (! is.data.frame(clusters))
     stop("Input must be a data frame.")
   
+  if (any(clusters < 0))
+    stop("All expression values must be positive.")
+  
   if (any(colSums(clusters) == 0))
     warning("Some samples have no counts; NaN values will be returned.")
 
