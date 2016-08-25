@@ -3,6 +3,7 @@ Unreleased changes
 OTHER CHANGES
 
    o hanabi() accepts a single vector as input.
+   o hanabiPlot() will coerce GROUP in a factor instead of making an error.
    o TPM() checks that no expression value is negative.
    o The smallCAGEqc Rmarkdown template now uses hanabi() everywhere.
 
