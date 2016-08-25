@@ -20,11 +20,22 @@
 #' 
 #' @importFrom vegan rarefy
 #' @export hanabi
+#' 
+#' @examples
+#' 
+#' bedFiles <- system.file(package = "smallCAGEqc", "extdata") %>%
+#'               list.files("*BED", full.names = TRUE)
+#' bed <- loadBED12(bedFiles)
+#' rar <- tapply(bed$score, bed$library, hanabi)
+#' class(rar) <- "hanabi"
+#' hanabiPlot(rar, GROUP = levels(bed$library) %>% factor)
 
 hanabi <- function( expr_data
                   , npoints = 20
                   , step = 0.75
                   , from = NULL) {
+  if (is.null(dim(expr_data)) & is.integer(expr_data))
+    expr_data %<>% data.frame
   ns <- step ^ (0:npoints)
   ns <- round(max(colSums(expr_data)) * ns)
   if (! is.null(from))
