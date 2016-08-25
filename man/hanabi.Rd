@@ -28,6 +28,15 @@ Rarefy data at multiple sample sizes, in preparation for plotting.
 The computation can be long, so the steps of rarefaction and plotting
 are kept separate.
 }
+\examples{
+
+bedFiles <- system.file(package = "smallCAGEqc", "extdata") \%>\%
+              list.files("*BED", full.names = TRUE)
+bed <- loadBED12(bedFiles)
+rar <- tapply(bed$score, bed$library, hanabi, from = 0) \%>\%
+         structure(class = "hanabi")  # tapply discards the class !
+hanabiPlot(rar, GROUP = levels(bed$library))
+}
 \seealso{
 `[.hanabi`, as.list.hanabi, and vegan::rarecurve.
 

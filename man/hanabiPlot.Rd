@@ -40,6 +40,12 @@ function, so that the result is easily cached.
 hanabi(genes, npoints = 20, step = 0.8, from = 0) \%>\% hanabiPlot
 hanabi(genes, npoints = 20, step = 0.9) \%>\% hanabiPlot
 }
+bedFiles <- system.file(package = "smallCAGEqc", "extdata") \%>\%
+              list.files("*BED", full.names = TRUE)
+bed <- loadBED12(bedFiles)
+rar <- tapply(bed$score, bed$library, hanabi, from = 0) \%>\%
+         structure(class = "hanabi")  # tapply discards the class !
+hanabiPlot(rar, GROUP = levels(bed$library))
 
 }
 \seealso{

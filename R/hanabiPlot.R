@@ -163,20 +163,17 @@ plot.hanabi <-
 #' hanabi(genes, npoints = 20, step = 0.8, from = 0) %>% hanabiPlot
 #' hanabi(genes, npoints = 20, step = 0.9) %>% hanabiPlot
 #' }
-#' 
-#' @family Hanabi functions
-#' 
-#' @importFrom vegan rarefy
-#' @export hanabiPlot
-#' 
-#' @examples
-#' 
 #' bedFiles <- system.file(package = "smallCAGEqc", "extdata") %>%
 #'               list.files("*BED", full.names = TRUE)
 #' bed <- loadBED12(bedFiles)
 #' rar <- tapply(bed$score, bed$library, hanabi, from = 0) %>%
 #'          structure(class = "hanabi")  # tapply discards the class !
 #' hanabiPlot(rar, GROUP = levels(bed$library))
+#' 
+#' @family Hanabi functions
+#' 
+#' @importFrom vegan rarefy
+#' @export hanabiPlot
 
 hanabiPlot <- function ( RAR, S, GROUP=NULL
                        , legend.pos = "topleft", pch = 1, ...) {
