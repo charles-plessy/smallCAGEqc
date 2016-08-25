@@ -26,8 +26,8 @@
 #' bedFiles <- system.file(package = "smallCAGEqc", "extdata") %>%
 #'               list.files("*BED", full.names = TRUE)
 #' bed <- loadBED12(bedFiles)
-#' rar <- tapply(bed$score, bed$library, hanabi)
-#' class(rar) <- "hanabi"
+#' rar <- tapply(bed$score, bed$library, hanabi, from = 0) %>%
+#'          structure(class = "hanabi")  # tapply discards the class !
 #' hanabiPlot(rar, GROUP = levels(bed$library) %>% factor)
 
 hanabi <- function( expr_data
