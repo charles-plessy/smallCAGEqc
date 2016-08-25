@@ -43,8 +43,7 @@ hanabi <- function( expr_data
   nraref <- function(lib) {
     ntags <- sum(lib)
     ns <- c(ntags, ns[ns < ntags])
-    xy.coords( ns
-             , rarefy(lib, ns) %>% as.numeric)
+    rarefy(lib, ns) %>% xy.coords(x = ns)
   }
   x <- lapply(expr_data, nraref)
   structure(x, class = "hanabi")
