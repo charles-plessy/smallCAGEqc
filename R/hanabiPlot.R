@@ -28,7 +28,7 @@
 #' bed <- loadBED12(bedFiles)
 #' rar <- tapply(bed$score, bed$library, hanabi, from = 0) %>%
 #'          structure(class = "hanabi")  # tapply discards the class !
-#' hanabiPlot(rar, GROUP = levels(bed$library) %>% factor)
+#' hanabiPlot(rar, GROUP = levels(bed$library))
 
 hanabi <- function( expr_data
                   , npoints = 20
@@ -166,9 +166,17 @@ plot.hanabi <-
 #' 
 #' @family Hanabi functions
 #' 
-#' @importFrom gdata drop.levels
 #' @importFrom vegan rarefy
 #' @export hanabiPlot
+#' 
+#' @examples
+#' 
+#' bedFiles <- system.file(package = "smallCAGEqc", "extdata") %>%
+#'               list.files("*BED", full.names = TRUE)
+#' bed <- loadBED12(bedFiles)
+#' rar <- tapply(bed$score, bed$library, hanabi, from = 0) %>%
+#'          structure(class = "hanabi")  # tapply discards the class !
+#' hanabiPlot(rar, GROUP = levels(bed$library))
 
 hanabiPlot <- function ( RAR, S, GROUP=NULL
                        , legend.pos = "topleft", pch = 1, ...) {
@@ -183,7 +191,7 @@ hanabiPlot <- function ( RAR, S, GROUP=NULL
 
   if (class(RAR) == "hanabi") {
     if (! is.null(GROUP)) {
-      GROUP %<>% drop.levels
+      GROUP %<>% factor
       col <- as.numeric(GROUP)
       plot(RAR, col = col, pch = pch, ...)
       legend( x = legend.pos
