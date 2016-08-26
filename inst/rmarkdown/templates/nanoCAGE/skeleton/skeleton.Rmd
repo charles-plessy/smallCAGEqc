@@ -129,6 +129,9 @@ l1Coords <-
     GRanges( x$chr
            , IRanges(x$pos, x$pos)
            , x$strand))
+
+# Reorder l1 like libs
+l1 <- l1[, rownames(libs)]
 ```
 
 Annotation
