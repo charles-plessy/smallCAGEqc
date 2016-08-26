@@ -132,9 +132,8 @@ library(plyr)
 ```
 
 ```{r load_libs_from_moirai}
-PROCESSED_DATA <- MOIRAI_BASE
-
-libs <- loadMoiraiStats() #  %>% llPostProcess('nano-fluidigm')
+libs <- loadMoiraiStats(processed_data = MOIRAI_BASE)
+# Pipe (%>%) to llPostProcess('nano-fluidigm') if appropriate
 ```
 
 Transcript counts (properly paired)

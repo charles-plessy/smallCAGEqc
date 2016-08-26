@@ -6,7 +6,8 @@
 #' function deprecates \code{loadLogs("moirai")}.  It loads data from a summary file
 #' and a multiplex file.  When their path is not given by \code{multiplex} and
 #' \code{summary}, they will be searched at fixed locations in the
-#' \code{PROCESSED_DATA} directory using the \code{LIBRARY} variable.
+#' \code{PROCESSED_DATA} directory using the \code{LIBRARY} variable (this
+#' behaviour is deprecated and now triggers a warning).
 #' 
 #' \code{loadMoiraiStats} will recognise the \sQuote{nano-fluidigm}
 #' or the \sQuote{nanoCAGE2} Moirai users, or fail.  For the \sQuote{nano-fluidigm}
@@ -17,6 +18,7 @@
 #' @param summary Optional. Path to a \sQuote{summary} file.
 #' @param pipeline Optional. Version string identifying the pipeline used to process the data.
 #' @param ercc Optional. [Experimental] Return ERCC spike counts.
+#' @param processed_data Optional. Path to the Moirai base directory.
 #' 
 #' @return Returns a data frame with one row per sample, and the following columns (if the
 #' corresponding data is available).
@@ -46,7 +48,18 @@
 #' 
 #' @export loadMoiraiStats
 
-loadMoiraiStats <- function(multiplex, summary, pipeline, ercc = FALSE) {
+loadMoiraiStats <- function( multiplex
+                           , summary
+                           , pipeline
+                           , ercc = FALSE
+                           , processed_data = NULL) {
+  
+  if(exists("PROCESSED_DATA"))
+    warning( "Calling loadMoiraiStats() without arguments is deprecated.\n"
+           , "Please use the processed_data option instead.")
+  
+  if (! is.null(processed_data))
+    PROCESSED_DATA <- processed_data
 
   # Guess if it is a nano-fluidigm run
   nanoFluidigm <- FALSE

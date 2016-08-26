@@ -4,6 +4,11 @@ NEW FEATURES
 
    o Supports the OP-WORKFLOW-CAGEscan-short-reads-v2.1 pipeline.
 
+DEPRECATED FEATURES
+
+   o Running loadMoiraiStats() without option (relying on PROCESSED_DATA
+     to be present) now triggers a warning of deprecation.
+
 OTHER CHANGES
 
    o hanabi() accepts a single vector as input.
