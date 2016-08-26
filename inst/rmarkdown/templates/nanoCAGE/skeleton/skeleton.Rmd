@@ -363,8 +363,8 @@ FIXME: dark orange !
 
 rar1 <- hanabi(l1, from = 0)
 rarg <- hanabi(genes, from = 0)
-rarU <- tapply(bed$score, bed$library, hanabi, from = 0)
-          %>% structure(class = "hanabi") # tapply discards the class !
+rarU <- tapply(bed$score, bed$library, hanabi, from = 0) %>% 
+          structure(class = "hanabi") # tapply discards the class !
 
 # Save the result on the hard drive.  This way, if the commands have been run
 # through knitr, the long computations here can be skipped if needed again in
