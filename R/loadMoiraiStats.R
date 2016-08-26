@@ -67,7 +67,7 @@ loadMoiraiStats <- function(multiplex, summary, pipeline, ercc = FALSE) {
       multiplex <- paste0( '/osc-fs_home/scratch/moirai/nanoCAGE2/input/'
                          , LIBRARY
                          , '.multiplex.txt')
-    } else if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.0', PROCESSED_DATA)) {
+    } else if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.[01]', PROCESSED_DATA)) {
       multiplex <- '/osc-fs_home/scratch/moirai/nano-fluidigm/input/samplename_to_sampleid.txt'
     } else if (nanoFluidigm) {
       multiplex <- '/osc-fs_home/scratch/moirai/nano-fluidigm/input/default.multiplex.txt'
@@ -121,7 +121,7 @@ loadMoiraiStats <- function(multiplex, summary, pipeline, ercc = FALSE) {
       return(ercc)
   }
   
-  if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.0', pipeline)) {
+  if (grepl('OP-WORKFLOW-CAGEscan-short-reads-v2.[01]', pipeline)) {
       libs$total       <- moiraiToLibs('raw')
       libs$extracted   <- moiraiToLibs('extracted')
       libs$cleaned     <- moiraiToLibs('non_reference_extracted')

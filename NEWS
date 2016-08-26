@@ -1,5 +1,9 @@
 Unreleased changes
 
+NEW FEATURES
+
+   o Supports the OP-WORKFLOW-CAGEscan-short-reads-v2.1 pipeline.
+
 OTHER CHANGES
 
    o hanabi() accepts a single vector as input.
