@@ -15,6 +15,8 @@ options(width = 100)
 ggplot2::theme_set(ggplot2::theme_bw())
 ```
 
+Metadata that varies from run to run:
+
 ```{r library_information_1}
 LIBRARY      <- "<Insert library ID>"  # For example, the sequencing run ID.
 ZENBU_COLLAB <- "<Insert Zenbu collaboration ID>"
@@ -23,13 +25,11 @@ MOIRAI_STAMP <- "<Insert Moirai run stamp>" # For example "20150803121351"
 MOIRAI_PROJ  <- "<Insert Moirai user name>" # For example "Charles"
 MOIRAI_USER  <- "<Insert Moirai user name>" # For example "nano-fluidigm"
 ASSEMBLY     <- "<Insert name of genome assembly>" # For example "hg38"
+BS_GENOME    <- "<Insert name of a BSGenome>" # For example "BSgenome.Hsapiens.UCSC.hg38"
 
-# The following is still hardcoded...
+# Promoter/Exon annotation made by hand.
 # See https://gist.github.com/charles-plessy/9dbc8bc98fb773bf71b6 for hints
-
-GROUP_SHARED <- "/osc-fs_home/scratch/gmtu"
-GENE_SYMBOLS <- paste0(GROUP_SHARED, "/annotation/homo_sapiens/gencode-23/gencode.v23.annotation.genes.bed")
-ANNOTATION   <- paste0(GROUP_SHARED, "/annotation/homo_sapiens/gencode-23/gencode.v23.annotation.bed")
+ANNOTATION   <- "/osc-fs_home/scratch/gmtu/annotation/homo_sapiens/gencode-23/gencode.v23.annotation.bed"
 
 # In case of a pair of Fludigm C1 CAGE runs, uncomment the lines below and fill
 # insert missing information.  Otherwise, delete or leave as it is.
@@ -37,6 +37,18 @@ ANNOTATION   <- paste0(GROUP_SHARED, "/annotation/homo_sapiens/gencode-23/gencod
 #RunB  <- "<Insert ID of Run B>"
 #ctrls <- list( RunA=list(posi="<Insert well ID>", nega="<Insert well ID>")
 #             , RunB=list(posi="<Insert well ID>", nega="<Insert well ID>"))
+```
+
+Metadata infered from the above:
+
+```{r library_information_2}
+BASEDIR      <- "/osc-fs_home/scratch/moirai"
+MOIRAI_RUN   <- paste(LIBRARY, WORKFLOW, MOIRAI_STAMP, sep=".")
+MOIRAI_BASE  <- paste(BASEDIR, MOIRAI_USER, "project", MOIRAI_PROJ, MOIRAI_RUN, sep="/")
+MOIRAI_ID    <- paste(LIBRARY, WORKFLOW, MOIRAI_STAMP, sep=".")
+MOIRAI_FRAGS <- paste0(MOIRAI_BASE, "/CAGEscan_fragments")
+MOIRAI_BAM   <- paste0(MOIRAI_BASE, "/genome_mapped")
+MOIRAI_URL   <- paste0("http://moirai.gsc.riken.jp/", MOIRAI_BASE, "/", MOIRAI_RUN, ".html")
 ```
 
 <!-- Example title: MiSeq run `r LIBRARY` -->
@@ -62,15 +74,7 @@ Data Processing
 Link files from MOIRAI.
 -----------------------
 
-```{r library_information_2}
-BASEDIR      <- "/osc-fs_home/scratch/moirai"
-MOIRAI_RUN   <- paste(LIBRARY, WORKFLOW, MOIRAI_STAMP, sep=".")
-MOIRAI_BASE  <- paste(BASEDIR, MOIRAI_USER, "project", MOIRAI_PROJ, MOIRAI_RUN, sep="/")
-MOIRAI_ID    <- paste(LIBRARY, WORKFLOW, MOIRAI_STAMP, sep=".")
-MOIRAI_FRAGS <- paste0(MOIRAI_BASE, "/CAGEscan_fragments")
-MOIRAI_BAM   <- paste0(MOIRAI_BASE, "/genome_mapped")
-MOIRAI_URL   <- paste0("http://moirai.gsc.riken.jp/", MOIRAI_BASE, "/", MOIRAI_RUN, ".html")
-
+```{r library_information_3}
 smallCAGEqc::exportInEnv("LIBRARY", "MOIRAI_BASE", "GENE_SYMBOLS", "ANNOTATION")
 ```
 
