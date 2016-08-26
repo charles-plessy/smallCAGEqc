@@ -68,122 +68,113 @@ MOIRAI_URL   <- paste0("http://moirai.gsc.riken.jp/", MOIRAI_BASE, "/", MOIRAI_R
 Jump directly to the [Analysis](#analysis) section if you are not interested in the details of the data processing.
 
 
-Data Processing
-===============
-
-Link files from MOIRAI.
------------------------
-
-```{r library_information_3}
-smallCAGEqc::exportInEnv("LIBRARY", "MOIRAI_BASE", "GENE_SYMBOLS", "ANNOTATION")
-```
-
- Intranet link: [`r MOIRAI_RUN`](`r MOIRAI_URL`)
-
-Create a symbolic link from Moirai results to the working directory.
-
-```{r create_link, engine="bash"}
-[ -L $LIBRARY.l1.osc.gz ] ||
-  ln --symbolic $MOIRAI_BASE/$LIBRARY.l1.osc.gz
-```
-
-Annotation and gene symbols.
-----------------------------
-
-```{r annotate_bed, engine="bash"}
-function osc2bed {
-  zcat $1 |
-    grep -v \# |
-    sed 1d |
-    awk '{OFS="\t"}{print $2, $3, $4, "l1", "1000", $5}'
-}
-
-function bed2annot {
-  bedtools intersect -a $1 -b $ANNOTATION -s -loj |
-    awk '{OFS="\t"}{print $1":"$2"-"$3$6,$10}' | 
-    bedtools groupby -g 1 -c 2 -o collapse
-}
-
-function bed2symbols {
-  bedtools intersect -a $1 -b $GENE_SYMBOLS -s -loj |
-    awk '{OFS="\t"}{print $1":"$2"-"$3$6,$10}' | 
-    bedtools groupby -g 1 -c 2 -o distinct
-}
-
-osc2bed $LIBRARY.l1.osc.gz | tee $LIBRARY.l1.bed | bed2annot - > $LIBRARY.l1.annot
-bed2symbols $LIBRARY.l1.bed > $LIBRARY.l1.genes
-```
-
-Data load and QC in R.
-======================
-
-Moirai metadata
----------------
+Data load and QC in R
+=====================
 
 ```{r load_R_libraries, message=F}
+library(AnnotationHub)
+library(BS_GENOME, character.only = T)
+library(CAGEr)
+library(data.table)
+library(ggplot2)
+library(magrittr)
 library(oscR)
+library(plyr)
 library(smallCAGEqc)
 stopifnot(
     packageVersion("oscR") >= "0.2.0"
-  , packageVersion("smallCAGEqc") > "0.11.2"
+  , packageVersion("smallCAGEqc") >= "1"
 )
-library(data.table)
-library(magrittr)
 library(reshape)
-library(ggplot2)
 library(vegan)
-library(plyr)
 ```
 
+MOIRAI metadata
+---------------
+
 ```{r load_libs_from_moirai}
-libs <- loadMoiraiStats(processed_data = MOIRAI_BASE)
+libs <- loadMoiraiStats(processed_data=MOIRAI_BASE)
 # Pipe (%>%) to llPostProcess('nano-fluidigm') if appropriate
+libs %>% summary
 ```
+
+Intranet link: [`r MOIRAI_RUN`](`r MOIRAI_URL`)
+
 
 Transcript counts (properly paired)
 -----------------------------------
 
-Note that `fread` needs to temporarly save an uncompressed copy of the file
-that is being read.  If there is not enough space in the temporary directory
-(often `\tmp`),  either uncompress the file first, or point to a larger
-directory to contain the temporary files (for example, run `R` with `TMPDIR=.
-R`).
+```{r load-ctss-from-bed-files}
+pathsToInputFiles <- list.files(MOIRAI_FRAGS, "*.bed", full.names = TRUE)
+samplenames <- basename(pathsToInputFiles) %>% sub(".bed", "", .)
+myCAGEset <- new( "CAGEset"
+                , genomeName = BS_GENOME
+                , inputFiles = pathsToInputFiles
+                , inputFilesType = "bed"
+                , sampleLabels = samplenames)
+getCTSS(myCAGEset)
 
-Note that _data.tables_ seem to be saved as simple _data frames_ when
-closing a session.  After restoring a workspace, one needs to re-convert with the `data.table` command.
+# I prefer to have the coordinates as row names.
+myCTSStagCount <- function(CAGEset) {
+  ctss <- CTSStagCount(CAGEset)
+  rownames(ctss) <- ctss %>% (function(X) do.call("sprintf", c(fmt="%s:%s%s", as.list(X))))
+  ctss[,-1:-3]
+}
 
-```{r load_osc_data}
-l1 <- fread.osc(paste0(LIBRARY, ".l1.osc.gz"), dropIdCoords=TRUE)
+l1 <- myCTSStagCount(myCAGEset)
 
-setnames(l1, colnames(l1) %>% sub('raw.', '', .) %>% sub('.None', '', .) %>% sub('RunA',RunA,.) %>% sub('RunB',RunB,.))
-
-# Be sure that the "libs" and "l1" tables have matching names.
-stopifnot(all(colnames(l1) == rownames(libs)))
+l1Coords <-
+  CTSScoordinates(myCAGEset) %>%
+  (function (x)
+    GRanges( x$chr
+           , IRanges(x$pos, x$pos)
+           , x$strand))
 ```
 
 Annotation
 ----------
 
-```{r annotate_l1}
-annot.l1 <- read.table(paste(LIBRARY,'l1','annot',sep='.'), head=F, col.names=c('id', 'feature'), row.names=1)
-annot.l1 <- hierarchAnnot(annot.l1)
+### Promoter, Exon, Intron, ...
+
+```{r annotation}
+AnnotGRanges <- import.bed(ANNOTATION)
+annot.l1 <- findOverlaps(l1Coords, AnnotGRanges) %>%
+                as(., "List") %>%
+                extractList(mcols(AnnotGRanges)$name, .) %>%
+                unique %>%
+                unstrsplit(",")
+annot.l1 <- data.frame(feature=annot.l1) %>% hierarchAnnot
+annot.l1 %>% summary
 
 libs <- cbind(libs, t(rowsum(l1,  annot.l1[,'class']))[rownames(libs),])
+```
+
+
+### GENCODE
+
+```{r expression-per-gene}
+ah <- AnnotationHub()
+query(ah, c("Gencode", "gff", "human"))
+ah["AH49556"]
+gff <- ah[["AH49556"]]
+head(gff)
+
+genes <- findOverlaps(l1Coords, gff) %>%
+           as(., "List") %>%
+           extractList(mcols(gff)$gene_name, .) %>%
+           unique %>%
+           unstrsplit(",")
+
+genes <- rowsum(l1, genes)
 ```
 
 Gene count
 ----------
 
 ```{r genesymbols_l1}
-genesymbols <- read.table(paste(LIBRARY,'l1','genes',sep='.'), col.names=c("cluster","symbol"), stringsAsFactors=FALSE)
-rownames(genesymbols) <- genesymbols$cluster
-
-genes <- rowsum(l1, genesymbols$symbol)
-
 libs$genes       <- colSums(genes > 0)
 libs$geneSymbols <- countSymbols(genes) # Not the same!
 ```
-
 
 Raw reads per molecule (BED12 data)
 -----------------------------------
