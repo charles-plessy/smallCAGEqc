@@ -4,7 +4,8 @@
 \alias{loadMoiraiStats}
 \title{loadMoiraiStats}
 \usage{
-loadMoiraiStats(multiplex, summary, pipeline, ercc = FALSE)
+loadMoiraiStats(multiplex, summary, pipeline, ercc = FALSE,
+  processed_data = NULL)
 }
 \arguments{
 \item{multiplex}{Optional. Path to a \sQuote{multiplex} file.}
@@ -14,6 +15,8 @@ loadMoiraiStats(multiplex, summary, pipeline, ercc = FALSE)
 \item{pipeline}{Optional. Version string identifying the pipeline used to process the data.}
 
 \item{ercc}{Optional. [Experimental] Return ERCC spike counts.}
+
+\item{processed_data}{Optional. Path to the Moirai base directory.}
 }
 \value{
 Returns a data frame with one row per sample, and the following columns (if the
@@ -39,7 +42,8 @@ Loads mapping counts and other statistics produced during processing. This
 function deprecates \code{loadLogs("moirai")}.  It loads data from a summary file
 and a multiplex file.  When their path is not given by \code{multiplex} and
 \code{summary}, they will be searched at fixed locations in the
-\code{PROCESSED_DATA} directory using the \code{LIBRARY} variable.
+\code{PROCESSED_DATA} directory using the \code{LIBRARY} variable (this
+behaviour is deprecated and now triggers a warning).
 
 \code{loadMoiraiStats} will recognise the \sQuote{nano-fluidigm}
 or the \sQuote{nanoCAGE2} Moirai users, or fail.  For the \sQuote{nano-fluidigm}
@@ -56,7 +60,7 @@ libs$group <- libs$samplename \%>\% sub("Run._", "", .) \%>\% substr(1,1) \%>\% 
 
 }
 \seealso{
-\code{\link{hierarchAnnot}}, code{\link{loadLogs}}, \code{\link{mapStats}}
+\code{\link{hierarchAnnot}}, \code{\link{loadLogs}}, \code{\link{mapStats}}
 
 Other smallCAGEqc metadata functions: \code{\link{llPostProcess}}
 }
