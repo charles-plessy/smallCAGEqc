@@ -2,7 +2,12 @@
 title: "Annotation plots with smallCAGEqc"
 author: "Charles Plessy"
 date: "`r Sys.Date()`"
-output:  rmarkdown::html_vignette
+output:
+  html_document: 
+    keep_md: yes
+    toc: yes
+  rmarkdown::html_vignette:
+    toc: yes
 vignette: >
   %\VignetteIndexEntry{Annotation plots with smallCAGEqc}
   %\VignetteEngine{knitr::rmarkdown}

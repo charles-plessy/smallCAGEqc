@@ -3,3 +3,7 @@
 ^\.Rproj\.user$
 .Rproj.user
 .Rhistory
+vignettes/plotAnnot.html
+vignettes/plotAnnot.md
+vignettes/plotAnnot.R
+vignettes/plotAnnot_files
