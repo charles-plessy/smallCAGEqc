@@ -63,7 +63,8 @@ loadMoiraiStats <- function( multiplex
 
   # Guess if it is a nano-fluidigm run
   nanoFluidigm <- FALSE
-  nanoFluidigm <- if (exists("PROCESSED_DATA")) grepl('nano-fluidigm', PROCESSED_DATA)
+  if (exists("PROCESSED_DATA"))
+    nanoFluidigm <- grepl('nano-fluidigm', PROCESSED_DATA)
 
   # Use heuristics if parameters are missing.
   
