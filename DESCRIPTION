@@ -26,7 +26,8 @@ Imports:
     magrittr,
     plyr,
     reshape (>= 0.8.5),
-    VennDiagram
+    VennDiagram,
+    vegan
 Suggests:
     edgeR,
     knitr,
