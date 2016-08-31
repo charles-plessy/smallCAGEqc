@@ -1,0 +1,148 @@
+---
+title: "Annotation plots with smallCAGEqc"
+output: 
+  html_document: 
+    keep_md: yes
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+R commands
+==========
+
+The main command to produce annotation plots in _smallCAGEqc_ is called
+`plotAnnot`.  It takes a table containing the sample metadata, a _scope_,
+a title and optionally a factor to group similar plots together.
+
+Here, we will use some of the example data that is distributed in _smallCAGEqc_.
+The commands below load the R package and load the example data in a data frame
+called `libs`.
+
+```{r libs, message = FALSE}
+library(smallCAGEqc)
+libs <- read.table(system.file("extdata/libs-with-all-metadata.tsv", package="smallCAGEqc"))
+```
+
+The _scopes_ determine what data is plotted and how it is normalised.
+
+Data categories
+---------------
+
+The following categories describe the total remaining pairs after each step of
+the processing.
+
+
+ - **total**: The total number of pairs before tag extraction.  In some cases this
+   number is not available per sample, for example when demultiplexing and tag
+   extraction are performed at the same stage.
+
+ - **extracted**: The number of pairs where the linkers and unique molecular
+   identifier (if present) were succesfully extracted. 
+   
+ - **cleaned**: The number of pairs remaining after filtering out spike, rRNA,
+   low-complexity, primer artefact and other unwanted sequences.
+   
+ - **mapped**: The number of pairs with at least one successful alignment.
+ 
+ - **properpairs**: The number or pair remaining after filtering out the
+   non-proper alignments.
+ 
+ - **counts**: The number of unique molecules counted after alignment.
+ 
+The following categories describe the number of pairs removed at each step of
+the processing.
+
+
+ - **unextracted**: The total number of pairs where a tag could not be extracted.
+ 
+ - **spikes**, **rRNA**: The number of pairs removed because they matched
+   spikes or rRNA reference sequences, respectively.
+  
+ - **tagdust**: The number of pairs removed because of low-complexity or
+   similarity to primer artefacts.}
+   
+ - **unmapped**: The number of non-mapped pairs.
+ 
+ - **non-proper**: The number of non-properly mapped pairs.
+ 
+ - **duplicates**: The number of pairs that do not add a molecule count.
+ 
+
+Different types of scopes
+=========================
+
+Step-by-step extraction
+-----------------------
+
+Shows how many pairs are removed by the extraction, cleaning, mapping
+(proper pairs) and transcript counting steps described above.
+
+```{r steps}
+plotAnnot(libs, "steps", "steps")
+```
+
+QC report
+---------
+
+Pairs are categorised as tag dust, rDNA, spikes, unmapped, non-proper,
+duplicates and counts, and normalised by the total number of extracted pairs.
+Non-extracted pairs are ignored.
+
+```{r qc}
+plotAnnot(libs, "qc", "qc")
+```
+
+Annotation of the transcript or tag counts
+------------------------------------------
+
+The unique molecule counts are grouped in annotation categories
+("promoter", "exon", "intron" and "intergenic").
+
+```{r counts}
+plotAnnot(libs, "counts", "counts")
+```
+
+Annotation of the mapped reads
+------------------------------
+
+"promoter","exon","intron","intergenic", "duplicates"
+
+```{r mapped}
+plotAnnot(libs, "mapped", "counts")
+```
+
+QC including annotations
+------------------------
+
+Pairs are categorised by extraction step and genome annotation.
+
+```{r all}
+plotAnnot(libs[libs$counts > 0,], "all", "counts")
+```
+
+Annotation, normalised by mapped reads
+--------------------------------------
+
+Same as `all` except that normalisation is relative to the number of mapped reads
+
+```{r annotation}
+plotAnnot(libs, "annotation", "counts")
+```
+
+
+Contents of the `libs` table
+============================
+
+```{r show-libs}
+libs
+```
+
+R session info
+==============
+
+```{r session-info}
+sessionInfo()
+```
