@@ -3,6 +3,8 @@ Unreleased changes
 NEW FEATURES
 
    o Supports the OP-WORKFLOW-CAGEscan-short-reads-v2.1 pipeline.
+   o Annotation is done with GRanges in R instead of with bedtools in shell.
+   o Expression table is generated with CAGEr instead of loaded from a OSCTable.
 
 DEPRECATED FEATURES
 
