@@ -37,56 +37,7 @@ The \dQuote{mapped} and \dQuote{counts} scopes assume that transcript counts are
 
 
 
-The following categories describe the total remaining pairs after each
-step of the processing.
-
-\describe{
-  \item{total}{The total number of pairs before tag extraction.  In some
-  cases this number is not available per sample, for example when
-  demultiplexing and tag extraction are performed at the same stage.}
-  \item{extracted}{The number of pairs where the linkers and unique
-  molecular identifier (if present) were succesfully extracted.}
-  \item{cleaned}{The number of pairs remaining after filtering out spike,
-  rRNA, low-complexity, primer artefact and other unwanted sequences.}
-  \item{mapped}{The number of pairs with at least one successful
-  alignment.}
-  \item{properpairs}{The number or pair remaining after filtering out
-  the non-proper alignments.}
-  \item{counts}{The number of unique molecules counted after alignment.}
-}
-
-The following categories describe the number of pairs removed at each
-step of the processing.
-
-\describe{
-  \item{unextracted}{The total number of pairs where a tag could not
-  be extracted.}
-  \item{spikes, rRNA}{The number of pairs removed because they matched
-  spikes or rRNA reference sequences, respectively.}
-  \item{tagdust}{The number of pairs removed because of low-complexity
-  or similarity to primer artefacts.}
-  \item{unmapped}{The number of non-mapped pairs.}
-  \item{non-proper}{The number of non-properly mapped pairs.}
-  \item{duplicates}{The number of pairs that do not add a molecule count.}
-}
-
-Here is a description of each scope.
-
-\describe{
-  \item{all}{Pairs are categorised by extraction step and genome
-  annotation.}
-  \item{steps}{Shows how many pairs are removed by the extraction,
-  cleaning, mapping (proper pairs) and transcript counting steps described
-  above.}
-  \item{qc}{Pairs are categorised as tag dust, rDNA, spikes, unmapped,
-  non-proper, duplicates and counts, and normalised by the total number
-  of extracted pairs.  Non-extracted pairs are ignored.}
-  \item{mapped}{"promoter","exon","intron","intergenic", "duplicates"}
-  \item{counts}{The unique molecule counts are grouped in
-  annotation categories ("promoter", "exon", "intron" and "intergenic").}
-  \item{annotation}{Same as \sQuote{all} except that normalisation is
-  relative to the number of mapped reads.}
-}
+See the plotAnnot vignette for details on what the scopes are.
 }
 \examples{
 example(loadMoiraiStats)

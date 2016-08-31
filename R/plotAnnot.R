@@ -12,7 +12,7 @@
 #' @param LIBS A data frame with columns named \code{promoter}, \code{exon},
 #'        \code{intron}, \code{mapped}, \code{extracted}, \code{rdna}, and
 #'        \code{tagdust}, that will be passed to the \code{mapStats} function.
-#' @param SCOPE The value on which to normalise (see \code{mapStats}).
+#' @param SCOPE The value on which to normalise (see the plotAnnot vignette).
 #' @param TITLE The title of the plot.
 #' 
 #' @family smallCAGEqc annotation functions

@@ -11,7 +11,7 @@ plotAnnot(LIBS, SCOPE, TITLE, GROUP = "default")
 \code{intron}, \code{mapped}, \code{extracted}, \code{rdna}, and
 \code{tagdust}, that will be passed to the \code{mapStats} function.}
 
-\item{SCOPE}{The value on which to normalise (see \code{mapStats}).}
+\item{SCOPE}{The value on which to normalise (see the plotAnnot vignette).}
 
 \item{TITLE}{The title of the plot.}
 }
