@@ -76,10 +76,15 @@ mapStats <- function( libs
     })
   } else if (scope == "mapped") {
     totalIs("mapped")
-    columns <- c("promoter","exon","intron","intergenic", "duplicates")
+    columns <- c( "Promoter", "Exon", "Intron", "Intergenic"
+                , "Duplicates", "Non_proper")
     libs %<>% within({
-      intergenic = counts - promoter - intron - exon
-      duplicates = mapped - counts
+      Non_proper <- mapped - properpairs
+      Duplicates <- properpairs - counts
+      Intergenic <- counts - promoter - intron - exon
+      Intron     <- intron
+      Exon       <- exon
+      Promoter   <- promoter
     })
   } else if (scope == "qc") {
     totalIs("extracted")
