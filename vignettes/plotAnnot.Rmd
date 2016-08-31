@@ -48,10 +48,10 @@ step after step in the processing.
  - **total**: The total number of pairs before tag extraction (called "raw" in
    some other pipelines). In cases where this number is not available per sample,
    for example when demultiplexing and tag extraction are performed at the same
-   stage, it is set arbitrarly to zero.
+   stage, it is set arbitrarily to zero.
 
  - **extracted**: The number of pairs where the linkers and unique molecular
-   identifier (if present) were succesfully extracted. 
+   identifier (if present) were successfully extracted. 
    
  - **cleaned**: The number of pairs remaining after filtering out spike, rRNA,
    low-complexity, primer artefact and other unwanted sequences.
@@ -134,7 +134,7 @@ duplicates and counts, and normalised by the total number of extracted pairs.
 Non-extracted pairs are ignored.
 
 Compared to "steps", this scope gives more details on the sequences removed
-at the TadDust and mapping stages of the processing pipeline.
+at the TagDust and mapping stages of the processing pipeline.
 
  - **Tag_dust**, **rDNA**, **Spikes**: same numbers as in the _tagdust_, _rdna_
    and _spikes_ columns of the metadata table.

@@ -11,6 +11,10 @@ The main command to produce annotation plots in _smallCAGEqc_ is called
 `plotAnnot`.  It takes a table containing the sample metadata, a _scope_,
 a title and optionally a factor to group similar plots together.
 
+The _scope_ determines what data is plotted and how it is normalised.
+The available scopes will be explained with an example plot in a later part
+of this document, but first, let's see the input in more details.
+
 Here, we will use some of the example data that is distributed in _smallCAGEqc_.
 The commands below load the R package and load the example data in a data frame
 called `libs`.
@@ -21,50 +25,65 @@ library(smallCAGEqc)
 libs <- read.table(system.file("extdata/libs-with-all-metadata.tsv", package="smallCAGEqc"))
 ```
 
-The _scopes_ determine what data is plotted and how it is normalised.
 
-Data categories
+Sample metadata
 ---------------
 
-The following categories describe the total remaining pairs after each step of
-the processing.
+The following columns in the metadata table describe the total remaining pairs
+step after step in the processing.
 
-
- - **total**: The total number of pairs before tag extraction.  In some cases this
-   number is not available per sample, for example when demultiplexing and tag
-   extraction are performed at the same stage.
+ - **total**: The total number of pairs before tag extraction (called "raw" in
+   some other pipelines). In cases where this number is not available per sample,
+   for example when demultiplexing and tag extraction are performed at the same
+   stage, it is set arbitrarily to zero.
 
  - **extracted**: The number of pairs where the linkers and unique molecular
-   identifier (if present) were succesfully extracted. 
+   identifier (if present) were successfully extracted. 
    
  - **cleaned**: The number of pairs remaining after filtering out spike, rRNA,
    low-complexity, primer artefact and other unwanted sequences.
    
- - **mapped**: The number of pairs with at least one successful alignment.
+ - **mapped**: The number of pairs with at least one successful alignment. This
+   called "genome_mapped" in some other pipelines.
  
  - **properpairs**: The number or pair remaining after filtering out the
-   non-proper alignments.
+   non-proper alignments.  This is called "properly_mapped" in some other
+   pipelines.
  
- - **counts**: The number of unique molecules counted after alignment.
+ - **counts**: The number of unique molecules counted after alignment.  This is
+   called "transcript_count" in some other pipelines.
  
-The following categories describe the number of pairs removed at each step of
+The following columns describe the number of pairs removed at some step of
 the processing.
 
-
- - **unextracted**: The total number of pairs where a tag could not be extracted.
- 
- - **spikes**, **rRNA**: The number of pairs removed because they matched
+ - **spikes**, **rdna**: The number of pairs removed because they matched
    spikes or rRNA reference sequences, respectively.
   
  - **tagdust**: The number of pairs removed because of low-complexity or
-   similarity to primer artefacts.}
+   similarity to primer artefacts.
    
- - **unmapped**: The number of non-mapped pairs.
+The following columns describe the number of TSS (after proper pairing and
+deduplication) aligning to known regions in the genome.
+
+ - **promoter**: Promoter regions.
  
- - **non-proper**: The number of non-properly mapped pairs.
+ - **exon**: Known exons.
  
- - **duplicates**: The number of pairs that do not add a molecule count.
+ - **intron**: Know introns (that is: the TSS matches a transcript but none of
+   its exons).
+   
+ - **unknown**: None of the above; basically intergenic.
  
+ - **other**: Normally there should not be anything in this category since
+   _unknown_ should catch all intergenic TSS.  But sometimes there is a
+   misdesign, for instance in the example data here, the annotation file
+   contained one more category, "boundary", which was not handled correctly
+   by smallCAGEqc.
+   
+The annotation is hierarchical (promoters have priority on exons, etc.), so
+the sum of the annotation columns above should be be equal to the _counts_
+column.
+
 
 Different types of scopes
 =========================
@@ -74,6 +93,21 @@ Step-by-step extraction
 
 Shows how many pairs are removed by the extraction, cleaning, mapping
 (proper pairs) and transcript counting steps described above.
+
+ - **Extraction**: The total number of pairs where a tag could not be extracted
+   (_extracted_ - _cleaned_).
+   
+ - **Cleaning**: The total number of pairs where a tag was discarded because
+   it matched a reference or artefact sequence, or because it had low complexity
+   (_tagdust_ + _rdna_ + _spikes_, or _cleaned_ - _mapped_).
+   
+ - **Mapping**: The number of non-mapped pairs (_mapped_ - _properpairs_).
+ 
+ - **Deduplication**: The number of non-properly mapped pairs (_properpairs_ -
+   _counts_).
+ 
+ - **Counts**: The number of molecule _counts_.
+ 
 
 
 ```r
@@ -89,6 +123,21 @@ Pairs are categorised as tag dust, rDNA, spikes, unmapped, non-proper,
 duplicates and counts, and normalised by the total number of extracted pairs.
 Non-extracted pairs are ignored.
 
+Compared to "steps", this scope gives more details on the sequences removed
+at the TagDust and mapping stages of the processing pipeline.
+
+ - **Tag_dust**, **rDNA**, **Spikes**: same numbers as in the _tagdust_, _rdna_
+   and _spikes_ columns of the metadata table.
+   
+ - **Unmapped**: The number of pairs that could not be mapped.
+ 
+ - **Non_proper**: The number of pairs that did not have a _proper_ alignment.
+
+ - **Duplicates**: The number of pairs that do not add a molecule count.
+ 
+ - **Counts**: same as in "steps".
+
+
 
 ```r
 plotAnnot(libs, "qc", "qc")
@@ -96,11 +145,12 @@ plotAnnot(libs, "qc", "qc")
 
 ![](plotAnnot_files/figure-html/qc-1.png)<!-- -->
 
+
 Annotation of the transcript or tag counts
 ------------------------------------------
 
 The unique molecule counts are grouped in annotation categories
-("promoter", "exon", "intron" and "intergenic").
+("promoter", "exon", "intron" and "intergenic"), as described above.
 
 
 ```r
@@ -109,10 +159,12 @@ plotAnnot(libs[libs$counts > 0,], "counts", "counts")
 
 ![](plotAnnot_files/figure-html/counts-1.png)<!-- -->
 
+
 Annotation of the mapped reads
 ------------------------------
 
-"promoter","exon","intron","intergenic", "duplicates"
+Same as "counts", with the addition of duplicates and non-proper pairs.
+Therefore the plot represents all the mapped data.
 
 
 ```r
@@ -120,6 +172,7 @@ plotAnnot(libs, "mapped", "mapped")
 ```
 
 ![](plotAnnot_files/figure-html/mapped-1.png)<!-- -->
+
 
 QC including annotations
 ------------------------
@@ -132,6 +185,7 @@ plotAnnot(libs, "all", "all")
 ```
 
 ![](plotAnnot_files/figure-html/all-1.png)<!-- -->
+
 
 Annotation, normalised by mapped reads
 --------------------------------------
