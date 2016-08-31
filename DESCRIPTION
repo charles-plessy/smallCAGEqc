@@ -29,6 +29,7 @@ Imports:
     VennDiagram
 Suggests:
     edgeR,
-    knitr
+    knitr,
+    rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
