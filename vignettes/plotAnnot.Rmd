@@ -123,7 +123,7 @@ Shows how many pairs are removed by the extraction, cleaning, mapping
  
 
 ```{r steps}
-plotAnnot(libs, "steps", "steps")
+plotAnnot(libs, SCOPE="steps", TITLE="steps")
 ```
 
 QC report
@@ -149,7 +149,7 @@ at the TagDust and mapping stages of the processing pipeline.
 
 
 ```{r qc}
-plotAnnot(libs, "qc", "qc")
+plotAnnot(libs, SCOPE="qc", TITLE="qc")
 ```
 
 
@@ -160,7 +160,7 @@ The unique molecule counts are grouped in annotation categories
 ("promoter", "exon", "intron" and "intergenic"), as described above.
 
 ```{r counts}
-plotAnnot(libs[libs$counts > 0,], "counts", "counts")
+plotAnnot(libs[libs$counts > 0,], SCOPE="counts", TITLE="counts")
 ```
 
 
@@ -171,7 +171,7 @@ Same as "counts", with the addition of duplicates and non-proper pairs.
 Therefore the plot represents all the mapped data.
 
 ```{r mapped}
-plotAnnot(libs, "mapped", "mapped")
+plotAnnot(libs, SCOPE="mapped", TITLE="mapped")
 ```
 
 
@@ -181,7 +181,7 @@ QC including annotations
 Pairs are categorised by extraction step and genome annotation.
 
 ```{r all}
-plotAnnot(libs, "all", "all")
+plotAnnot(libs, SCOPE="all", TITLE="all")
 ```
 
 
@@ -191,7 +191,7 @@ Annotation, normalised by mapped reads
 Same as `all` except that normalisation is relative to the number of mapped reads
 
 ```{r annotation}
-plotAnnot(libs, "annotation", "annotation")
+plotAnnot(libs, SCOPE="annotation", TITLE="annotation")
 ```
 
 
