@@ -44,10 +44,9 @@ Metadata infered from the above:
 ```{r library_information_2}
 BASEDIR      <- "/osc-fs_home/scratch/moirai"
 MOIRAI_RUN   <- paste(LIBRARY, WORKFLOW, MOIRAI_STAMP, sep=".")
-MOIRAI_BASE  <- paste(BASEDIR, MOIRAI_USER, "project", MOIRAI_PROJ, MOIRAI_RUN, sep="/")
-MOIRAI_ID    <- paste(LIBRARY, WORKFLOW, MOIRAI_STAMP, sep=".")
-MOIRAI_FRAGS <- paste0(MOIRAI_BASE, "/CAGEscan_fragments")
-MOIRAI_BAM   <- paste0(MOIRAI_BASE, "/genome_mapped")
+MOIRAI_BASE  <- file.path(BASEDIR, MOIRAI_USER, "project", MOIRAI_PROJ, MOIRAI_RUN)
+MOIRAI_FRAGS <- file.path(MOIRAI_BASE, "CAGEscan_fragments")
+MOIRAI_BAM   <- file.path(MOIRAI_BASE, "genome_mapped")
 MOIRAI_URL   <- paste0("http://moirai.gsc.riken.jp/", MOIRAI_BASE, "/", MOIRAI_RUN, ".html")
 ```
 
