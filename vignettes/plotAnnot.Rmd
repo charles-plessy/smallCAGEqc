@@ -66,7 +66,7 @@ step after step in the processing.
    successful alignment, regardless of its quality. This called "genome_mapped"
    in some other pipelines.
  
- - **properpairs**: The number or pair remaining after filtering out the
+ - **properpairs**: The number of pairs remaining after filtering out the
    non-proper alignments, that are unlikely to represent a real transcript
    because the mates are not aligned to the same chromosome, or are too far
    apart, or not on the same strand, or tail to tail.  This is called
@@ -119,17 +119,21 @@ Step-by-step extraction
 Shows how many pairs are removed by the extraction, cleaning, mapping
 (proper pairs) and transcript counting steps described above.
 
- - **Extraction**: The total number of pairs where a tag could not be extracted
-   (_extracted_ - _cleaned_).
+ - **Extraction**: The total number of pairs where a tag could not be extracted.
+   Calculated as _extracted − cleaned_.
    
- - **Cleaning**: The total number of pairs where a tag was discarded because
-   it matched a reference or artefact sequence, or because it had low complexity
-   (_tagdust_ + _rdna_ + _spikes_, or _cleaned_ - _mapped_).
+ - **Cleaning**: The total number of pairs removed because at least one mate
+  matched a reference or artefact sequence, or because it had low complexity
+   Calculated as _tagdust + rdna + spikes_, or _cleaned − mapped_.
    
- - **Mapping**: The number of non-mapped pairs (_mapped_ - _properpairs_).
+ - **Mapping**: The number of pairs removed by the mapping, because at least one
+   mate did not align or because the alignmens were not "properly paired" (see
+   "proerpairs" above)  Calculated as _mapped − properpairs_.
  
- - **Deduplication**: The number of non-properly mapped pairs (_properpairs_ -
-   _counts_).
+ - **Deduplication**: The number of pairs removed because they represent the
+   same molecule.  Thus, this definition is broader than just removing the
+   identical pairs (for instance with the rmdups command of samtools).
+  Calculated as _properpairs − counts_.
  
  - **Counts**: The number of molecule _counts_.
  
