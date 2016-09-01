@@ -18,6 +18,12 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+_The purpose of annotation plots is to provide a graphical overview of
+how were processed the sequences in CAGE libraries.  How many were
+discarded, and why ?  Where do align the remaining ones ?  The plotAnnot
+function displays this information as stacked bar plots, with error
+bars if multiple libraries are grouped together._
+
 R commands
 ==========
 
