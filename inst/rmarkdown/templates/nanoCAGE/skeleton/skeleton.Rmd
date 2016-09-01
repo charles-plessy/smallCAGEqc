@@ -92,7 +92,7 @@ MOIRAI metadata
 ---------------
 
 ```{r load_libs_from_moirai}
-libs <- loadMoiraiStats(processed_data=MOIRAI_BASE)
+libs <- loadMoiraiStats(processed_data = MOIRAI_BASE)
 # Pipe (%>%) to llPostProcess('nano-fluidigm') if appropriate
 libs %>% summary
 ```
@@ -112,47 +112,43 @@ myCAGEset <- new( "CAGEset"
                 , inputFilesType = "bed"
                 , sampleLabels = samplenames)
 getCTSS(myCAGEset)
+```
 
-# I prefer to have the coordinates as row names.
-myCTSStagCount <- function(CAGEset) {
-  ctss <- CTSStagCount(CAGEset)
-  rownames(ctss) <- ctss %>% (function(X) do.call("sprintf", c(fmt="%s:%s%s", as.list(X))))
-  ctss[,-1:-3]
+Here are functions for making CTSS tables, that I hope can be merged
+in CAGEr.  https://github.com/Bioconductor-mirror/CAGEr/pull/2
+
+```{r functions-for-making-CTSS-tables}
+library(SummarizedExperiment)
+CTSScoordinatesGR <- function (object){
+        ctssCoord <- object@CTSScoordinates
+        ctssCoord <- GRanges( ctssCoord$chr
+                            , IRanges(ctssCoord$pos, ctssCoord$pos)
+                            , ctssCoord$strand)
+        genome(ctssCoord) <- object@genomeName
+        ctssCoord
 }
 
-l1 <- myCTSStagCount(myCAGEset)
+CTSStagCountSE <- function (object){
+        colData <- data.frame( row.names   = object@sampleLabels
+                             , samplename  = object@sampleLabels
+                             , samplecolor = names(object@sampleLabels))
+        SummarizedExperiment( assays  = as.matrix(object@tagCountMatrix)
+                            , rowData = CTSScoordinatesGR(object)
+                            , colData = colData)
+}
+```
 
-l1Coords <-
-  CTSScoordinates(myCAGEset) %>%
-  (function (x)
-    GRanges( x$chr
-           , IRanges(x$pos, x$pos)
-           , x$strand))
+```{r make-ctss-data-frame}
+l1  <- CTSStagCountSE(myCAGEset)
 
 # Reorder l1 like libs
 l1 <- l1[, rownames(libs)]
 ```
 
-Annotation
-----------
+Annotation with GENCODE
+-----------------------
 
-### Promoter, Exon, Intron, ...
-
-```{r annotation}
-AnnotGRanges <- import.bed(ANNOTATION)
-annot.l1 <- findOverlaps(l1Coords, AnnotGRanges) %>%
-                as(., "List") %>%
-                extractList(mcols(AnnotGRanges)$name, .) %>%
-                unique %>%
-                unstrsplit(",")
-annot.l1 <- data.frame(feature=annot.l1) %>% hierarchAnnot
-annot.l1 %>% summary
-
-libs <- cbind(libs, t(rowsum(l1,  annot.l1[,'class']))[rownames(libs),])
-```
-
-
-### GENCODE
+### Gene symbols
 
 ```{r expression-per-gene}
 ah <- AnnotationHub()
@@ -161,13 +157,43 @@ ah["AH49556"]
 gff <- ah[["AH49556"]]
 head(gff)
 
-genes <- findOverlaps(l1Coords, gff) %>%
+mcols(ctss)$genes  <- findOverlaps(rowRanges(ctss), gff) %>%
            as(., "List") %>%
            extractList(mcols(gff)$gene_name, .) %>%
            unique %>%
-           unstrsplit(",")
+           unstrsplit(";")
 
-genes <- rowsum(l1, genes)
+genes <- rowsum(assay(ctss), mcols(ctss)$genes)
+```
+
+### Promoter, Exon, Intron, ...
+
+```{r annotation}
+findOverlapsBool <- function(A, B)
+  findOverlaps(A, B) %>% as(., "List") %>% any
+
+rowRanges(l1)$promoter <- 
+  findOverlapsBool(rowRanges(l1), promoters(gff, 500, 500))
+
+rowRanges(l1)$exon <- 
+  findOverlapsBool(rowRanges(l1), gff[mcols(gff)$type == "exon",])
+
+rowRanges(l1)$transcript <- 
+  findOverlapsBool(rowRanges(l1), gff[mcols(gff)$type == "transcript",])
+
+hannot2 <- function(x) {
+  if (x[1]) {"promoter"}
+  else if (x[2]) {"exon"}
+  else if (x[3]) {"intron"}
+  else {"unknown"}
+}
+
+rowRanges(l1)$annotation <- apply( mcols(l1)[,c("promoter", "exon", "transcript")]
+                                 , 1
+                                 , hannot2)
+
+# Not idempotent !
+colData(l1) %<>% cbind(DataFrame(t(rowsum(assay(l1),  mcols(l1)$annotation))[rownames(libs),]))
 ```
 
 Gene count
