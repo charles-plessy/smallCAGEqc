@@ -62,15 +62,21 @@ step after step in the processing.
  - **cleaned**: The number of pairs remaining after filtering out spike, rRNA,
    low-complexity, primer artefact and other unwanted sequences.
    
- - **mapped**: The number of pairs with at least one successful alignment. This
-   called "genome_mapped" in some other pipelines.
+ - **mapped**: The number of pairs mapped to the genome with at least one
+   successful alignment, regardless of its quality. This called "genome_mapped"
+   in some other pipelines.
  
  - **properpairs**: The number or pair remaining after filtering out the
-   non-proper alignments.  This is called "properly_mapped" in some other
-   pipelines.
+   non-proper alignments, that are unlikely to represent a real transcript
+   because the mates are not aligned to the same chromosome, or are too far
+   apart, or not on the same strand, or tail to tail.  This is called
+   "properly_mapped" in some other pipelines.  _Note that some real transcripts
+   may be missed by this filtering step, for instance if there was a recombination
+   not reflected in the reference genome, or in case of trans-splicing, etc._
  
  - **counts**: The number of unique molecules counted after alignment.  This is
-   called "transcript_count" in some other pipelines.
+   called "transcript_count" in some other pipelines.  The annotation statistics
+   will be calculated on these counts.
  
 The following columns describe the number of pairs removed at some step of
 the processing.
