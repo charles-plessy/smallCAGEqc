@@ -152,7 +152,8 @@ CTSStagCountSE <- function (object){
 
 ```{r make-ctss-data-frame}
 l1  <- CTSStagCountSE(myCAGEset)
-colData(l1)$l1 <- colSums(assay(l1) > 0)
+colData(l1)$counts <- colSums(assay(l1))
+colData(l1)$l1     <- colSums(assay(l1) > 0)
 ```
 
 Annotation with GENCODE
@@ -325,7 +326,7 @@ Annotation
 ----------
 
 ```{r annotation-barplots, dev=c('svg', 'png')}
-plotAnnot(libs, 'counts', LIBRARY, libs$Group)
+plotAnnot(colData(l1), 'counts', LIBRARY)
 ```
 
 Correlation between runs

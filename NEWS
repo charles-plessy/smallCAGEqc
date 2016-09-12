@@ -1,10 +1,12 @@
-Unreleased changes
+Changes in version 1.0.0
 
 NEW FEATURES
 
    o Supports the OP-WORKFLOW-CAGEscan-short-reads-v2.1 pipeline.
    o Annotation is done with GRanges in R instead of with bedtools in shell.
    o Expression table is generated with CAGEr instead of loaded from a OSCTable.
+   o "Level 1" expression table is in RangedSummarizedExperiment format.
+     Most uses of the "libs" table is now done through colData(l1).
    o New vignette (plotAnnot) explaining the graphs produced by plotAnnot().
 
 DEPRECATED FEATURES
@@ -14,10 +16,13 @@ DEPRECATED FEATURES
 
 OTHER CHANGES
 
-   o hanabi() accepts a single vector as input.
+   o hanabi() accepts a single vector or a matrix as input, which will be
+     coerced in a data frame.
    o hanabiPlot() will coerce GROUP in a factor instead of making an error.
    o TPM() checks that no expression value is negative.
    o The smallCAGEqc Rmarkdown template now uses hanabi() everywhere.
+   o mapStats() and therefore plotAnnot() will search for a "groups" column with
+     or without a capital G.
    
 BUG FIXES
 
