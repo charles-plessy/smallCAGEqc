@@ -49,9 +49,9 @@ mapStats <- function( libs
 {
   scope <- match.arg(scope)
   if (identical(group, "default")) {
-      if      (! "group" %in% colnames(libs)) {
+      if      ("group" %in% colnames(libs)) {
       group <- libs$group
-    } else if (! "Group" %in% colnames(libs)) {
+    } else if ("Group" %in% colnames(libs)) {
       group <- libs$Group
     } else
       stop(paste("Missing", dQuote("group"), "column in the data frame."))
