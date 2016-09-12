@@ -54,10 +54,14 @@ mapStats <- function( libs
     group <- libs$group
   }
   
-  totalIs <- function(what)
+  totalIs <- function(what) {
+    if (! what %in% colnames(libs))
+      stop( paste(what, "column is missing, see the plotAnnot vignette")
+           , call. = FALSE)
     if (is.numeric(libs[, what])) {
       total <<- libs[, what]
-    } else stop(paste0("libs$", what, " missing or not numeric"))
+    } else stop(paste(what, "column is not numeric."), call. = FALSE)
+  }
     
   defaultToZero <- function(what)
     if (! (what %in% colnames(libs)))
