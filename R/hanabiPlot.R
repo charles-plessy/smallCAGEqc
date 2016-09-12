@@ -5,8 +5,12 @@
 #' The computation can be long, so the steps of rarefaction and plotting
 #' are kept separate.
 #' 
+#' @details The input must be a data frame, or a vector or a matrix, which
+#'          will be coerced into a matrix.  The data must be counts (tag
+#'          counts, molecule counts, ...).
+#' 
 #' @param expr_data An expression table where columns are samples and rows
-#'        are features such as genes, TSS, etc.
+#'        are features such as genes, TSS, etc, or a vector of counts.
 #' @param npoints The maximum number of rarefactions per sample.
 #' @param step Subsample sizes are calculated by taking the largest sample
 #'        and multiplying it by the step "npoints" times.
@@ -36,6 +40,8 @@ hanabi <- function( expr_data
                   , from = NULL) {
   if (is.null(dim(expr_data)) & is.integer(expr_data))
     expr_data %<>% data.frame
+  if (is.matrix(expr_data)) expr_data %<>% data.frame
+  if (! is.data.frame(expr_data)) stop("Input must be a data frame.")
   ns <- step ^ (0:npoints)
   ns <- round(max(colSums(expr_data)) * ns)
   if (! is.null(from))
