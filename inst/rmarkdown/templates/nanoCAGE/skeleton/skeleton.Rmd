@@ -7,7 +7,7 @@ output:
     toc: yes
 ---
 
-```{r echo=FALSE}
+```{r setup echo=FALSE}
 knitr::opts_chunk$set(cache  = TRUE)
 knitr::opts_knit$set(verbose = TRUE)
 # knitr::opts_chunk$set(dev=c('svg', 'png'))
@@ -27,19 +27,15 @@ MOIRAI_USER  <- "<Insert Moirai user name>" # For example "nano-fluidigm"
 ASSEMBLY     <- "<Insert name of genome assembly>" # For example "hg38"
 BS_GENOME    <- "<Insert name of a BSGenome>" # For example "BSgenome.Hsapiens.UCSC.hg38"
 
-# Promoter/Exon annotation made by hand.
-# See https://gist.github.com/charles-plessy/9dbc8bc98fb773bf71b6 for hints
-ANNOTATION   <- "/osc-fs_home/scratch/gmtu/annotation/homo_sapiens/gencode-23/gencode.v23.annotation.bed"
-
-# In case of a pair of Fludigm C1 CAGE runs, uncomment the lines below and fill
-# insert missing information.  Otherwise, delete or leave as it is.
-#RunA  <- "<Insert ID of Run A>"
-#RunB  <- "<Insert ID of Run B>"
-#ctrls <- list( RunA=list(posi="<Insert well ID>", nega="<Insert well ID>")
-#             , RunB=list(posi="<Insert well ID>", nega="<Insert well ID>"))
+# # In case of a pair of Fludigm C1 CAGE runs, uncomment the lines below and fill
+# # insert missing information.  Otherwise, delete or leave as it is.
+# RunA  <- "<Insert ID of Run A>"
+# RunB  <- "<Insert ID of Run B>"
+# ctrls <- list( RunA=list(posi="<Insert well ID>", nega="<Insert well ID>")
+#              , RunB=list(posi="<Insert well ID>", nega="<Insert well ID>"))
 ```
 
-Metadata infered from the above:
+Metadata inferred from the above:
 
 ```{r library_information_2}
 BASEDIR      <- "/osc-fs_home/scratch/moirai"
@@ -50,21 +46,22 @@ MOIRAI_BAM   <- file.path(MOIRAI_BASE, "genome_mapped")
 MOIRAI_URL   <- paste0("http://moirai.gsc.riken.jp/", MOIRAI_BASE, "/", MOIRAI_RUN, ".html")
 ```
 
-<!-- Example title: MiSeq run `r LIBRARY` -->
 
-<Insert title>
+<Insert title>  <!-- Example title: MiSeq run `r LIBRARY` -->
 ==============
 
- - C1 runs `r RunA` and `r RunB`.
  - Sequenced on MiSeq (`r LIBRARY`)
  
-<!-- The lines about cellomics and controls below can be deleted if not using
-     C1 CAGE -->
-
+<!-- Fill and uncomment in case of C1 CAGE library.
+     
+ - C1 runs `r RunA` and `r RunB`.
  - Positive control (200 cells): `r ctrls$RunA$posi`, `r ctrls$RunB$posi`.
  - Negative control: `r ctrls$RunA$nega`, `r ctrls$RunB$nega`.
- 
-Jump directly to the [Analysis](#analysis) section if you are not interested in the details of the data processing.
+     
+-->
+
+Jump directly to the [Analysis](#analysis) section if you are not interested in
+the details of the data processing.
 
 
 Data load and QC in R
@@ -84,9 +81,11 @@ stopifnot(
     packageVersion("oscR") >= "0.2.0"
   , packageVersion("smallCAGEqc") >= "1"
 )
+library(SummarizedExperiment)
 library(reshape)
 library(vegan)
 ```
+
 
 MOIRAI metadata
 ---------------
@@ -112,13 +111,26 @@ myCAGEset <- new( "CAGEset"
                 , inputFilesType = "bed"
                 , sampleLabels = samplenames)
 getCTSS(myCAGEset)
+normalizeTagCount(myCAGEset, method = "simpleTpm")
 ```
+
+
+Raw reads per molecule (BED12 data)
+-----------------------------------
+
+```{r load_fragments}
+bed <- loadBED12(pathsToInputFiles)
+levels(bed$library) <- samplenames
+```
+
+
+CAGEr functions
+---------------
 
 Here are functions for making CTSS tables, that I hope can be merged
 in CAGEr.  https://github.com/Bioconductor-mirror/CAGEr/pull/2
 
 ```{r functions-for-making-CTSS-tables}
-library(SummarizedExperiment)
 CTSScoordinatesGR <- function (object){
         ctssCoord <- object@CTSScoordinates
         ctssCoord <- GRanges( ctssCoord$chr
@@ -140,9 +152,7 @@ CTSStagCountSE <- function (object){
 
 ```{r make-ctss-data-frame}
 l1  <- CTSStagCountSE(myCAGEset)
-
-# Reorder l1 like libs
-l1 <- l1[, rownames(libs)]
+colData(l1)$l1 <- colSums(assay(l1) > 0)
 ```
 
 Annotation with GENCODE
@@ -157,62 +167,54 @@ ah["AH49556"]
 gff <- ah[["AH49556"]]
 head(gff)
 
-mcols(ctss)$genes  <- findOverlaps(rowRanges(ctss), gff) %>%
-           as(., "List") %>%
-           extractList(mcols(gff)$gene_name, .) %>%
-           unique %>%
-           unstrsplit(";")
+ranges2genes <- function(ranges, genes)
+  findOverlaps(ranges, genes) %>%
+    as(., "List") %>%
+    extractList(mcols(genes)$gene_name, .) %>%
+    unique %>%
+    unstrsplit(";")
 
-genes <- rowsum(assay(ctss), mcols(ctss)$genes)
+mcols(l1)$genes  <- ranges2genes(rowRanges(l1), gff)
+genes <- rowsum(assay(l1), mcols(l1)$genes) %>% data.frame
 ```
 
 ### Promoter, Exon, Intron, ...
 
 ```{r annotation}
-findOverlapsBool <- function(A, B)
-  findOverlaps(A, B) %>% as(., "List") %>% any
+ranges2annot <- function(ranges, annot, showClasses=NULL) {
+  classes <- c("promoter", "exon", "intron", "unknown")
+  
+  if (! missing(showClasses) ) return(classes)
+  
+  findOverlapsBool <- function(A, B)
+    findOverlaps(A, B) %>% as(., "List") %>% any
+  
+  p <- findOverlapsBool(ranges, promoters(gff, 500, 500))
+  e <- findOverlapsBool(ranges, gff[mcols(gff)$type == "exon",])
+  t <- findOverlapsBool(ranges, gff[mcols(gff)$type == "transcript",])
 
-rowRanges(l1)$promoter <- 
-  findOverlapsBool(rowRanges(l1), promoters(gff, 500, 500))
-
-rowRanges(l1)$exon <- 
-  findOverlapsBool(rowRanges(l1), gff[mcols(gff)$type == "exon",])
-
-rowRanges(l1)$transcript <- 
-  findOverlapsBool(rowRanges(l1), gff[mcols(gff)$type == "transcript",])
-
-hannot2 <- function(x) {
-  if (x[1]) {"promoter"}
-  else if (x[2]) {"exon"}
-  else if (x[3]) {"intron"}
-  else {"unknown"}
+  sapply( 1:length(ranges), function(i) {
+         if (p[i]) {classes[1]}
+    else if (e[i]) {classes[2]}
+    else if (t[i]) {classes[3]}
+    else           {classes[4]}
+  }) %>% factor(levels = classes)
 }
 
-rowRanges(l1)$annotation <- apply( mcols(l1)[,c("promoter", "exon", "transcript")]
-                                 , 1
-                                 , hannot2)
+rowRanges(l1)$annotation <- ranges2annot(rowRanges(l1), gff)
 
-# Not idempotent !
-colData(l1) %<>% cbind(DataFrame(t(rowsum(assay(l1),  mcols(l1)$annotation))[rownames(libs),]))
+colData(l1)[ranges2annot(showClasses=T)] <- rowsum(assay(l1), mcols(l1)$annotation) %>% t %>% DataFrame
 ```
+
 
 Gene count
 ----------
 
 ```{r genesymbols_l1}
-libs$genes       <- colSums(genes > 0)
-libs$geneSymbols <- countSymbols(genes) # Not the same!
+colData(l1)$genes <- colSums(genes > 0)
+colData(l1)$geneSymbols <- countSymbols(genes) # Not the same!
 ```
 
-Raw reads per molecule (BED12 data)
------------------------------------
-
-```{r load_fragments}
-bed <- loadBED12( libs[libs$counts > 0, "samplename"] %>%
-             sub(RunA, "RunA", .) %>%
-             sub(RunB, "RunB", .) %>%
-             paste0(MOIRAI_FRAGS, "/", ., ".bed"))
-```
 
 Cell pictures
 -------------
@@ -298,8 +300,7 @@ Richness
 --------
 
 ```{r calculate-richness}
-libs$l1 <- colSums(l1 > 0)
-libs$r100l1 <- rarefy(t(l1),100)
+colData(l1)$r100l1 <- rarefy(t(assay(l1)),100)
 ```
 
 Analysis
@@ -374,54 +375,56 @@ The purpose of these plots is to ease the comparison of the libraries given that
 
 FIXME: dark orange !
 
-### Rarefaction
+The data is rarefied with enough sampling points to give a smooth appearance to
+the curves.  If it takes too much time, the output can be stored in an object
+saved on the hard drive.  This way, if the commands have been run through knitr,
+the long computations here can be skipped if needed again in an interactive
+session.
 
-```{r calculate-rarefactions}
-# If applicable, restore the previous computation with the command below:
-# load("rar.Rda")
+For example:
 
-# Rarefy at with enough sampling points to give a smooth appearance to
-# the curves.  It can take time !
-
-rar1 <- hanabi(l1, from = 0)
-rarg <- hanabi(genes, from = 0)
-rarU <- tapply(bed$score, bed$library, hanabi, from = 0) %>% 
-          structure(class = "hanabi") # tapply discards the class !
-
-# Save the result on the hard drive.  This way, if the commands have been run
-# through knitr, the long computations here can be skipped if needed again in
-# an interactive session.
-save(rar1, rarg, rarU, file="rar.Rda")
 ```
-
-### TSS discovery
-
-```{r hanabi-TSS, dev=c('svg', 'png')}
-hanabiPlot( rar1
-          , ylab='number of TSS detected'
-          , xlab='number of unique molecule counts'
-          , main=paste("TSS discovery for", LIBRARY)
-          , GROUP=libs$group)
-```
-
-### Gene discovery
-
-```{r hanabi-gene, dev=c('svg', 'png')}
-hanabiPlot( rarg
-          , ylab='number of genes detected'
-          , xlab='number of unique molecule counts'
-          , main=paste("Gene discovery for", LIBRARY)
-          , GROUP=libs$group)
+rar1 <- hanabi(assay(l1), from = 0)
+saveRDS(rar1, "rar1.rds")
+# And later...
+rar1 <- readRDS("rar1.rds")
 ```
 
 ### Transcript discovery (with raw reads)
 
+Would we detect more transcripts if we sequenced more raw reads ?
+
 ````{r hanabi-UMI, dev=c('svg', 'png')}
-hanabiPlot( rarU
-          , ylab='number of molecules detected'
-          , xlab='number of properly mapped reads'
-          , main=paste("Transcript discovery for", LIBRARY)
-          , GROUP=libs$Group)
+hanabiPlot( tapply(bed$score, bed$library, hanabi, from = 0) %>% 
+              structure(class = "hanabi")
+          , ylab  = 'number of molecules detected'
+          , xlab  = 'number of properly mapped reads'
+          , main  = paste("Transcript discovery for", LIBRARY)
+          , GROUP = bed$library %>% levels %>% sub("_.*", "", .))
+```
+
+### Gene discovery
+
+Would we detect more genes if we detected more transcripts ?
+
+```{r hanabi-gene, dev=c('svg', 'png')}
+hanabiPlot( hanabi(genes, from = 0)
+          , ylab  = 'number of genes detected'
+          , xlab  = 'number of unique molecule counts'
+          , main  = paste("Gene discovery for", LIBRARY)
+          , GROUP = colData(l1)$group)
+```
+
+### TSS discovery
+
+Would we detect more TSS if we detected more transcripts ?
+
+```{r hanabi-TSS, dev=c('svg', 'png')}
+hanabiPlot( hanabi(assay(l1), from = 0)
+          , ylab  = 'number of TSS detected'
+          , xlab  = 'number of unique molecule counts'
+          , main  = paste("TSS discovery for", LIBRARY)
+          , GROUP = colData(l1)$group)
 ```
 
 ### Comparison between the runs
