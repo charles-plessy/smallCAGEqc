@@ -3,7 +3,8 @@ Changes in version 0.90.0
 NEW FEATURES
 
    o Supports the OP-WORKFLOW-CAGEscan-short-reads-v2.1 pipeline.
-   o Annotation is done with GRanges in R instead of with bedtools in shell.
+   o Annotation is done with GRanges in R instead of with bedtools in shell,
+     with the new functions ranges2annot() and ranges2genes().
    o Expression table is generated with CAGEr instead of loaded from a OSCTable.
    o "Level 1" expression table is in RangedSummarizedExperiment format.
      Most uses of the "libs" table is now done through colData(l1).
