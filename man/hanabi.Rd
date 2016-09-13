@@ -8,7 +8,7 @@ hanabi(expr_data, npoints = 20, step = 0.75, from = NULL)
 }
 \arguments{
 \item{expr_data}{An expression table where columns are samples and rows
-are features such as genes, TSS, etc.}
+are features such as genes, TSS, etc, or a vector of counts.}
 
 \item{npoints}{The maximum number of rarefactions per sample.}
 
@@ -27,6 +27,10 @@ Rarefy data at multiple sample sizes, in preparation for plotting.
 \details{
 The computation can be long, so the steps of rarefaction and plotting
 are kept separate.
+
+The input must be a data frame, or a vector or a matrix, which
+         will be coerced into a matrix.  The data must be counts (tag
+         counts, molecule counts, ...).
 }
 \examples{
 

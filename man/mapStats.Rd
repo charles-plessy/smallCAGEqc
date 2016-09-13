@@ -48,6 +48,7 @@ mapStats(libs, "qc")
 \code{\link{loadLogs}}, \code{\link{loadMoiraiStats}}
 
 Other smallCAGEqc annotation functions: \code{\link{hannot}},
-  \code{\link{hierarchAnnot}}, \code{\link{plotAnnot}}
+  \code{\link{hierarchAnnot}}, \code{\link{plotAnnot}},
+  \code{\link{ranges2annot}}, \code{\link{ranges2genes}}
 }
 
