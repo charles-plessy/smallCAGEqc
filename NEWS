@@ -29,6 +29,7 @@ BUG FIXES
 
    o plotAnnot()'s scope "mapping" distinguishes non-proper pairs instead of
      calling them duplicates.
+   o Export the points.hanabi() function.
 
 Changes in version 0.12.3
 
