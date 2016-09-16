@@ -45,7 +45,7 @@ hanabi <- function( expr_data
   ns <- step ^ (0:npoints)
   ns <- round(max(colSums(expr_data)) * ns)
   if (! is.null(from))
-    ns <- c(ns, from)
+    ns <- c( ns[ns > from], from)
   nraref <- function(lib) {
     ntags <- sum(lib)
     ns <- c(ntags, ns[ns < ntags])
