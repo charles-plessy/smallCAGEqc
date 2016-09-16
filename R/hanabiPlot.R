@@ -74,7 +74,7 @@ as.list.hanabi <- function(h)
 #' @family Hanabi functions
 #' @seealso hanabi, plot.hanabi
 #' 
-#' @export points.hanabi
+#' @export points.hanabi lines.hanabi
 
 points.hanabi <- function(h, ...) {
   xmax <- sapply(h, function(x) max(x$x))
