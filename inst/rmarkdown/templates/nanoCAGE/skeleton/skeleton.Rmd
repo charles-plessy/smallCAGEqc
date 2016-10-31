@@ -166,7 +166,7 @@ ah <- AnnotationHub()
 query(ah, c("Gencode", "gff", "human"))
 ah["AH49556"]
 gff <- ah[["AH49556"]]
-head(gff)
+gff
 
 rowRanges(l1)$genes  <- ranges2genes(rowRanges(l1), gff)
 genes <- rowsum(assay(l1), rowRanges(l1)$genes) %>% data.frame
@@ -180,7 +180,7 @@ colData(l1)$geneSymbols <- countSymbols(genes)
 rowRanges(l1)$annotation <- ranges2annot(rowRanges(l1), gff)
 
 colData(l1)[levels(rowRanges(l1)$annotation)] <-
-  rowsum(assay(l1), mcols(l1)$annotation) %>% t %>% DataFrame
+  rowsum(assay(l1), rowRanges(l1)$annotation) %>% t %>% DataFrame
 ```
 
 
