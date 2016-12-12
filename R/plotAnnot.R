@@ -14,6 +14,8 @@
 #'        \code{tagdust}, that will be passed to the \code{mapStats} function.
 #' @param SCOPE The value on which to normalise (see the plotAnnot vignette).
 #' @param TITLE The title of the plot.
+#' @param customScope A function passed to \code{\link{mapStats}} for the
+#'        definition of custom scopes
 #' 
 #' @family smallCAGEqc annotation functions
 #' @seealso \code{\link{loadLogs}}
@@ -28,8 +30,8 @@
 #' p + ggplot2::theme_bw()
 #' ggplot2::theme_set(ggplot2::theme_bw()) ; p
 
-plotAnnot <- function(LIBS, SCOPE, TITLE, GROUP="default") {
-  ggplot( mapStats(LIBS, scope=SCOPE, group=GROUP)
+plotAnnot <- function(LIBS, SCOPE, TITLE, GROUP="default", customScope=NULL) {
+  ggplot( mapStats(LIBS, scope=SCOPE, group=GROUP, customScope = customScope)
         , aes( x    = group
              , y    = value
              , fill = variable)

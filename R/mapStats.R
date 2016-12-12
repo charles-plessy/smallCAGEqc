@@ -17,6 +17,11 @@
 #'        and \dQuote{counts} on the transcript counts.
 #' @param group A vector of factors defining groups in the data.  By default,
 #'        the \dQuote{group} column of the \dQuote{libs} table.
+#' @param customScope A function that implements a custom scope.  Use with
+#'        \code{scope = "custom"}.  The function takes a data frame in input
+#'        and returns a named list containing a data frame (\dQuote{libs}),
+#'        a character vector of columns to be plotted (\dQuote{columns}), and
+#'        a numeric vector of totals for the normalisation (\dQuote{total}).
 #'
 #' @return
 #' Returns a data frame with mean and standard deviation of normalised mapping statistics,
@@ -44,8 +49,10 @@ mapStats <- function( libs
                                , "counts"
                                , "mapped"
                                , "qc"
-                               , "steps")
-                    , group="default")
+                               , "steps"
+                               , "custom")
+                    , group="default"
+                    , customScope = NULL)
 {
   scope <- match.arg(scope)
   if (identical(group, "default")) {
@@ -81,6 +88,12 @@ mapStats <- function( libs
       Intron     <- intron
       Intergenic <- counts - promoter - intron - exon
     })
+  } else if (scope == "custom") {
+    stopifnot(is.function(customScope))
+    custom.list <- customScope(libs)
+    libs    <- custom.list$libs
+    columns <- custom.list$columns
+    total   <- custom.list$total
   } else if (scope == "mapped") {
     totalIs("mapped")
     columns <- c( "Promoter", "Exon", "Intron", "Intergenic"

@@ -4,7 +4,7 @@
 \alias{plotAnnot}
 \title{Plot annotation statistics}
 \usage{
-plotAnnot(LIBS, SCOPE, TITLE, GROUP = "default")
+plotAnnot(LIBS, SCOPE, TITLE, GROUP = "default", customScope = NULL)
 }
 \arguments{
 \item{LIBS}{A data frame with columns named \code{promoter}, \code{exon},
@@ -14,6 +14,9 @@ plotAnnot(LIBS, SCOPE, TITLE, GROUP = "default")
 \item{SCOPE}{The value on which to normalise (see the plotAnnot vignette).}
 
 \item{TITLE}{The title of the plot.}
+
+\item{customScope}{A function passed to \code{\link{mapStats}} for the
+definition of custom scopes}
 }
 \description{
 Using a data frame containing mapping statistics in counts, plot the data as

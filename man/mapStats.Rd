@@ -5,7 +5,7 @@
 \title{mapStats}
 \usage{
 mapStats(libs, scope = c("all", "annotation", "counts", "mapped", "qc",
-  "steps"), group = "default")
+  "steps", "custom"), group = "default", customScope = NULL)
 }
 \arguments{
 \item{libs}{A data frame with columns named \code{promoter}, \code{exon}, \code{intron}
@@ -18,6 +18,12 @@ and \dQuote{counts} on the transcript counts.}
 
 \item{group}{A vector of factors defining groups in the data.  By default,
 the \dQuote{group} column of the \dQuote{libs} table.}
+
+\item{customScope}{A function that implements a custom scope.  Use with
+\code{scope = "custom"}.  The function takes a data frame in input
+and returns a named list containing a data frame (\dQuote{libs}),
+a character vector of columns to be plotted (\dQuote{columns}), and
+a numeric vector of totals for the normalisation (\dQuote{total}).}
 }
 \value{
 Returns a data frame with mean and standard deviation of normalised mapping statistics,
