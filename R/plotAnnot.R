@@ -31,6 +31,28 @@
 #' ggplot2::theme_set(ggplot2::theme_bw()) ; p
 
 plotAnnot <- function(LIBS, SCOPE, TITLE, GROUP="default", customScope=NULL) {
+  
+# Quick fix for backwards-incompatible change in ggplot 2
+# The only difference is `position = position_stack(reverse = TRUE)`.
+# See <https://github.com/tidyverse/ggplot2/issues/1837>
+# No time for something beautiful.
+
+if (packageVersion("ggplot2") >= "2.2.0") {
+  ggplot( mapStats(LIBS, scope=SCOPE, group=GROUP, customScope = customScope)
+        , aes( x    = group
+             , y    = value
+             , fill = variable)
+        , main = all) +
+    geom_bar(stat="identity", position = position_stack(reverse = TRUE)) +
+    geom_segment(aes( xend = group
+                    , y    = ystart
+                    , yend = yend)) +
+    geom_point( aes( x = group
+                   , y = yend)
+              , shape = "|") +
+    coord_flip() +
+    ggtitle(TITLE)
+ } else {  
   ggplot( mapStats(LIBS, scope=SCOPE, group=GROUP, customScope = customScope)
         , aes( x    = group
              , y    = value
@@ -45,4 +67,5 @@ plotAnnot <- function(LIBS, SCOPE, TITLE, GROUP="default", customScope=NULL) {
               , shape = "|") +
     coord_flip() +
     ggtitle(TITLE)
+}
 }
