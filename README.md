@@ -19,6 +19,8 @@ Installation on Linux computers
 devtools::install_github('charles-plessy/smallCAGEqc', upgrade_dependencies = FALSE)
 ```
 
+You may need to enable the Bioconductor repository by running `setRepositories()` first.
+
 
 ### From a Git clone.
 
