@@ -5,7 +5,8 @@
 \title{mapStats}
 \usage{
 mapStats(libs, scope = c("all", "annotation", "counts", "mapped", "qc",
-  "steps", "custom"), group = "default", customScope = NULL)
+  "steps", "custom"), group = "default", customScope = NULL,
+  normalise = TRUE)
 }
 \arguments{
 \item{libs}{A data frame with columns named \code{promoter}, \code{exon}, \code{intron}
@@ -24,6 +25,8 @@ the \dQuote{group} column of the \dQuote{libs} table.}
 and returns a named list containing a data frame (\dQuote{libs}),
 a character vector of columns to be plotted (\dQuote{columns}), and
 a numeric vector of totals for the normalisation (\dQuote{total}).}
+
+\item{normalise}{Whether to normalise or not. Default: TRUE.}
 }
 \value{
 Returns a data frame with mean and standard deviation of normalised mapping statistics,

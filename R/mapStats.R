@@ -22,6 +22,7 @@
 #'        and returns a named list containing a data frame (\dQuote{libs}),
 #'        a character vector of columns to be plotted (\dQuote{columns}), and
 #'        a numeric vector of totals for the normalisation (\dQuote{total}).
+#' @param normalise Whether to normalise or not. Default: TRUE.
 #'
 #' @return
 #' Returns a data frame with mean and standard deviation of normalised mapping statistics,
@@ -52,7 +53,8 @@ mapStats <- function( libs
                                , "steps"
                                , "custom")
                     , group="default"
-                    , customScope = NULL)
+                    , customScope = NULL
+                    , normalise = TRUE)
 {
   scope <- match.arg(scope)
   if (identical(group, "default")) {
@@ -65,6 +67,10 @@ mapStats <- function( libs
   }
   
   totalIs <- function(what) {
+    if (normalise == FALSE) {
+      total <<- 1
+      return()
+    }
     if (! what %in% colnames(libs))
       stop( paste(what, "column is missing, see the plotAnnot vignette.")
            , call. = FALSE)

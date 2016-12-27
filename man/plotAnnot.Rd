@@ -4,7 +4,8 @@
 \alias{plotAnnot}
 \title{Plot annotation statistics}
 \usage{
-plotAnnot(LIBS, SCOPE, TITLE, GROUP = "default", customScope = NULL)
+plotAnnot(LIBS, SCOPE, TITLE, GROUP = "default", customScope = NULL,
+  normalise = TRUE)
 }
 \arguments{
 \item{LIBS}{A data frame with columns named \code{promoter}, \code{exon},
@@ -17,6 +18,8 @@ plotAnnot(LIBS, SCOPE, TITLE, GROUP = "default", customScope = NULL)
 
 \item{customScope}{A function passed to \code{\link{mapStats}} for the
 definition of custom scopes}
+
+\item{normalise}{Whether to normalise or not. Default: TRUE.}
 }
 \description{
 Using a data frame containing mapping statistics in counts, plot the data as
@@ -33,6 +36,7 @@ p <- plotAnnot(libs, 'qc', 'Here is the title')
 print(p)
 p + ggplot2::theme_bw()
 ggplot2::theme_set(ggplot2::theme_bw()) ; p
+plotAnnot(libs, 'qc', 'Same, non-normalised', normalise = FALSE)
 }
 \seealso{
 \code{\link{loadLogs}}

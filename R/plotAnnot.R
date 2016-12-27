@@ -16,6 +16,7 @@
 #' @param TITLE The title of the plot.
 #' @param customScope A function passed to \code{\link{mapStats}} for the
 #'        definition of custom scopes
+#' @param normalise Whether to normalise or not. Default: TRUE.
 #' 
 #' @family smallCAGEqc annotation functions
 #' @seealso \code{\link{loadLogs}}
@@ -29,8 +30,14 @@
 #' print(p)
 #' p + ggplot2::theme_bw()
 #' ggplot2::theme_set(ggplot2::theme_bw()) ; p
+#' plotAnnot(libs, 'qc', 'Same, non-normalised', normalise = FALSE)
 
-plotAnnot <- function(LIBS, SCOPE, TITLE, GROUP="default", customScope=NULL) {
+plotAnnot <- function( LIBS
+                     , SCOPE
+                     , TITLE
+                     , GROUP = "default"
+                     , customScope = NULL
+                     , normalise = TRUE) {
   
 # Quick fix for backwards-incompatible change in ggplot 2
 # The only difference is `position = position_stack(reverse = TRUE)`.
@@ -38,7 +45,7 @@ plotAnnot <- function(LIBS, SCOPE, TITLE, GROUP="default", customScope=NULL) {
 # No time for something beautiful.
 
 if (packageVersion("ggplot2") >= "2.2.0") {
-  ggplot( mapStats(LIBS, scope=SCOPE, group=GROUP, customScope = customScope)
+  ggplot( mapStats(LIBS, scope=SCOPE, group=GROUP, customScope = customScope, normalise = normalise)
         , aes( x    = group
              , y    = value
              , fill = variable)
@@ -53,7 +60,7 @@ if (packageVersion("ggplot2") >= "2.2.0") {
     coord_flip() +
     ggtitle(TITLE)
  } else {  
-  ggplot( mapStats(LIBS, scope=SCOPE, group=GROUP, customScope = customScope)
+  ggplot( mapStats(LIBS, scope=SCOPE, group=GROUP, customScope = customScope, normalise = normalise)
         , aes( x    = group
              , y    = value
              , fill = variable)

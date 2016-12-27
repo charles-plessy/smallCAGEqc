@@ -9,6 +9,8 @@ NEW FEATURES
    o "Level 1" expression table is in RangedSummarizedExperiment format.
      Most uses of the "libs" table is now done through colData(l1).
    o New vignette (plotAnnot) explaining the graphs produced by plotAnnot().
+   o mapStats() and thus plotAnnot() have a new parameter, "normalise",
+     which will turn off normalisation when set to FALSE.
 
 DEPRECATED FEATURES
 
