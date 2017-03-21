@@ -19,6 +19,7 @@ Description: Functions to quickly generate reports about CAGE libraries.
 License: file LICENSE
 Depends: magrittr
 Imports:
+    BiocGenerics,
     gdata,
     GenomicRanges,
     ggplot2 (>= 1.0.0),
