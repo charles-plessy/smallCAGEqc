@@ -7,8 +7,11 @@
 fldgmConcentrationPlot(LIBS, scales = "fixed", group = ~Run)
 }
 \arguments{
-\item{LIBS}{A \sQuote{libs} table, that contains at least a
-\sQuote{Concentration} and a \sQuote{Run} column}
+\item{LIBS}{A metadata table, often called \sQuote{libs} table,
+that contains at least a \sQuote{Concentration} and a \sQuote{Run}
+column.  The table will be coerced as a data frame
+(without checking names), so that Bioconductor's DataFrame
+objects can also be used.#'}
 
 \item{scales}{The \sQuote{scales} argument for the plot.
 Default: \sQuote{fixed}.}
@@ -18,5 +21,20 @@ Default: \sQuote{fixed}.}
 }
 \description{
 Plot histogram of cDNA concentrations after a C1 run
+}
+\examples{
+# Example data
+libs <- read.table(system.file("extdata/libs-with-all-metadata.tsv", package="smallCAGEqc"))
+
+# Plot a single histogram
+fldgmConcentrationPlot(libs)
+
+# Faced by group
+fldgmConcentrationPlot(libs, group = ~group)
+
+# Test coercion to data frame.
+if(require(S4Vectors))
+  fldgmConcentrationPlot(DataFrame(libs))
+
 }
 
