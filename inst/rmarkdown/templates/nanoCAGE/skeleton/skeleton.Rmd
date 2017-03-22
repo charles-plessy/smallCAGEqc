@@ -217,12 +217,12 @@ Controls
 Some samples with errors were repalced by the positive and negative controls.
 
 ```{r flag-controls}
-libs[libs$Well %in% ctrls[["RunA"]] & libs$Run == RunA, "Error"]   <- "5-Control"
-libs[libs$Well %in% ctrls[["RunB"]] & libs$Run == RunB, "Error"]   <- "5-Control"
-libs[libs$Well == ctrls$RunA$posi & libs$Run == RunA, "Comment"] <- "Positive control"
-libs[libs$Well == ctrls$RunB$posi & libs$Run == RunB, "Comment"] <- "Positive control"
-libs[libs$Well == ctrls$RunA$nega & libs$Run == RunA, "Comment"] <- "Negative control"
-libs[libs$Well == ctrls$RunB$nega & libs$Run == RunB, "Comment"] <- "Negative control"
+l1$Error[l1$Well %in% ctrls[["RunA"]] & l1$Run == RunA] <- "5-Control"
+l1$Error[l1$Well %in% ctrls[["RunB"]] & l1$Run == RunB] <- "5-Control"
+l1$Comment[l1$Well == ctrls$RunA$posi & l1$Run == RunA] <- "Positive control"
+l1$Comment[l1$Well == ctrls$RunB$posi & l1$Run == RunB] <- "Positive control"
+l1$Comment[l1$Well == ctrls$RunA$nega & l1$Run == RunA] <- "Negative control"
+l1$Comment[l1$Well == ctrls$RunB$nega & l1$Run == RunB] <- "Negative control"
 ```
 
 cDNA concentration.
