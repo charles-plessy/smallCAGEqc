@@ -1,0 +1,8 @@
+name: cDNA yield analysis
+description: >
+  Collates information on cDNA yields in C1 CAGE experiments and similar
+  protocols, where the yields were quantified by fluorometric assay using the
+  PicoGreen dye and reported in the template Excel sheets provided by Fluidigm
+  ("PN 100-6160", "PN 100-6260").
+  
+  See also `help(fldgmPicoGreen)`.

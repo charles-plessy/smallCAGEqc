@@ -1,0 +1,243 @@
+---
+title: "cDNA yields (all runs)"
+output: 
+  html_document: 
+    keep_md: yes
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+options(width=100)
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(verbose = TRUE)
+ggplot2::theme_set(ggplot2::theme_bw())
+```
+
+The files used here are fluorometric measurements (PicoGreen assays) of cDNA
+yield after C1 runs.  They are using templates provided by Fluidigm. See also
+our [GitHub page][] or the function from the `fldgmPicoGreen` function from
+the [smallCAGEqc][] R package.
+
+[GitHub page]: https://github.com/Population-Transcriptomics/Cell-Cycle-on-C1/blob/master/cDNA_concentration/cDNA_concentration.md
+
+[smallCAGEqc]: https://github.com/charles-plessy/smallCAGEqc
+
+
+```{r message = FALSE}
+library(magrittr)
+library(smallCAGEqc)
+library(gdata)
+library(ggplot2)
+library(reshape)
+library(plyr)
+
+RUNS <- list.files(pattern = "*.picogreen.xlsx") %>%
+  sub(pat = ".picogreen.xlsx", rep = "")
+```
+
+Histograms
+==========
+
+```{r cDNA_concentrations, fig.height=2.5, message=FALSE, warning=FALSE}
+read.pg <- function(RUN)
+  paste0(RUN, ".picogreen.xlsx") %>%
+    fldgmPicoGreen("PN 100-6160") %>%
+    extract(,"concentration")
+
+plotHisto <- function(RUN) {
+  df <- data.frame(row.names = 1:96)
+  df$Concentration <- read.pg(RUN)
+  df$Run <- RUN
+  plot(fldgmConcentrationPlot(df))
+}
+
+for(RUN in RUNS) plotHisto(RUN)
+```
+
+Standard curves in fluorometric (“PicoGreen”) measurements
+==========================================================
+
+## Read the data
+
+```{r}
+read_sc <- function(RUN) {
+  FILE <- paste(RUN, "picogreen.xlsx", sep = ".")
+  sc <- smallCAGEqc::fldgmPicoGreenStdCurve(FILE)
+  sc <- cbind(Run=RUN, sc)
+  return(sc)
+}
+
+sc <- Reduce( function(x,y) rbind(x, read_sc(y))
+            , RUNS
+            , data.frame())
+
+```
+
+## Fit a linear model
+
+### Plot  on a natural scale
+
+```{r standard-curves_natural, dev=c("png", "svg"), warning=FALSE}
+ggplot(
+  sc,
+  aes(
+    x=DNA,
+    y=Fluorescence,
+    colour=Run)
+) + geom_point() +
+    geom_line() + 
+    scale_x_continuous('DNA concentration (ng/\u03BCL)') +
+    scale_y_continuous('Average fluorescence (background subtracted)')
+```
+
+The point at highest DNA concentration is often outside the linear dynamic
+range.  Therefore, let's exclude it from the linear modeling.
+
+### Weighted linear model of the standard curves.
+
+```{r linear-model, dev=c("png", "svg")}
+models <- sc[c("DNA","Fluorescence")] %>%
+  split(sc$Run) %>%
+  lapply(
+    function(X) {
+      l <- lm( Fluorescence ~ DNA, X
+             , weight = 1 / DNA
+             , subset = 2:10)
+      c( Intercept = l$coefficients["(Intercept)"] %>% unname
+       , Slope     = l$coefficients["DNA"] %>% unname
+       , r.squared = summary(l)$r.squared)}) %>%
+  data.frame(check.names=F) %>%
+  t %>%
+  data.frame
+models
+```
+
+### Plot on a natural scale, normalised to arbitrary units
+
+```{r standard-curves_natural_normalised, dev=c("png", "svg"), warning=FALSE}
+sc$Fnorm <- sc$Fluorescence / models[sc$Run, "Slope"]
+ggplot(
+  sc,
+  aes(
+    x=DNA,
+    y=Fnorm,
+    colour=Run)
+) + geom_point() +
+    geom_line() + 
+    scale_x_continuous('DNA concentration (ng/\u03BCL)') +
+    scale_y_continuous('Arbitrary fluorescence (background subtracted)')
+```
+
+## Intercept at zero ng of DNA
+
+Note that in the values used here, the background was already subtracted.
+Thus, fluorescence intensity should be very close to zero at DNA concentration
+zero, unless there are remaining technical errors (which will be discussed
+in a section below).
+
+In the plot below, the intercept values have been normalised by the slopes.
+They are spread on the horizontal axis according to the r-squared value of
+the linear model that was fit.
+
+```{r fit-curves, dev=c("png", "svg")}
+qplot( r.squared
+     , Intercept / Slope
+     , data = models
+     , colour = rownames(models)) + theme_bw()
+```
+
+## Visualisation on a log-log scale
+
+A plot on a log-log scale will also reveal if there is background: in that
+case the plot would reach a plateau at low the lowest concentrations.
+
+In the plot below, a vertical shift indicates that a given mass of DNA was
+yielding higher fluorescence values.  Indeed, the two outliers (1772-123-237
+and 1772-123-238) were measured on a more recent machine with fresh reagents.
+
+```{r standard-curves, dev=c("png", "svg"), warning=FALSE}
+ggplot(
+  sc,
+  aes(
+    x=DNA,
+    y=Fluorescence,
+    colour=Run)
+) + geom_point() +
+    geom_line() + 
+    scale_x_log10('DNA concentration (ng/\u03BCL)') +
+    scale_y_log10('Average fluorescence (background subtracted)') +
+    theme_bw()
+```
+
+
+
+Dilution factors
+----------------
+
+Because the standard curve was prepared by 2-fold serial dilution, the
+fluorescence should be divided by two between each measurement.
+
+Excluding the first measurement at highest DNA concentration (see
+above) as well at the one at lowest concentration, that sometimes gives
+negative values.
+
+```{r dilution_factors, dev=c("png", "svg")}
+models$dil <- tapply( sc$Fluorescence
+                    , sc$Run
+                    , function(X) mean(X[2:8] / X[3:9]))
+models[["dil"]] %>% hist(main = "Measured dilution factors")
+```
+
+Most of the error in the standard curves is explained by technical
+variability in the dilution factors.
+
+```{r df_intercept, dev=c("png", "svg")}
+plot( models$Intercept / models$Slope
+    , models$dil
+    , xlab = "Intercept (normalised by slope)"
+    , ylab = "Dilution factor"
+    , main = "Relation between intercept and dilution factor")
+abline(h=2, col="gray")
+abline(v=0, col="gray")
+```
+
+
+Linear fits for each run.
+-------------------------
+
+ - Black: data;
+ - Red: weighted linear regression (used above);
+ - Blue: linear regression;
+ - Green: "robust" linear regression.
+
+```{r show_fits, dev=c("png", "svg")}
+byRun <- sc[c("DNA","Fluorescence")] %>%
+  split(sc$Run)
+
+plotFit <- function(name, x) {
+  l  <- lm(Fluorescence ~ DNA, x, subset = 2:10)
+  lw <- lm(Fluorescence ~ DNA, x, weights = 1 / DNA, subset = 2:10)
+  lr <- MASS::rlm(Fluorescence ~ DNA, x, subset = 2:10)
+
+  plot( x$DNA
+      , x$Fluorescence
+      , log = "xy"
+      , type="b"
+      , main=name
+      , xlab = "DNA"
+      , ylab = "Fluorescence"
+      , las = 1)
+  lines(x$DNA[2:10], predict(l), col="blue")
+  lines(x$DNA[2:10], predict(lr), col="green")
+  lines(x$DNA[2:10], predict(lw), col="red")
+}
+
+plyr::l_ply(names(byRun), function(X) plotFit(X, byRun[[X]]))
+```
+
+Session Info
+============
+
+```{r}
+sessionInfo()
+```
