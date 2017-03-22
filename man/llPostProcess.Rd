@@ -34,6 +34,13 @@ loadMoiraiStats(
   , pipeline  = "OP-WORKFLOW-CAGEscan-short-reads-v2.0" )
   
  libs \%>\% head
+ 
+ # Basic processing with "C1 CAGE" mode.
+ libs \%>\% llPostProcess("C1 CAGE") \%>\% head
+ 
+ # More extensive processing requires RunA and RunB to be set.
+ RunA <- "ID-of-Run-A"
+ RunB <- NA  # No RunB in this example
  libs \%>\% llPostProcess("nano-fluidigm") \%>\% head
 
 }
