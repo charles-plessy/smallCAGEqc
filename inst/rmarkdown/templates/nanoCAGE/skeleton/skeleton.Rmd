@@ -93,7 +93,7 @@ MOIRAI metadata
 ```{r load_libs_from_moirai}
 libs <- loadMoiraiStats(processed_data = MOIRAI_BASE)
 # Pipe (%>%) to llPostProcess("nano-fluidigm") or
-# llPostProcess("C1 CAGE") if appropriate; see help(llPostProcess).
+# llPostProcess("C1 96") if appropriate; see help(llPostProcess).
 libs %>% summary
 ```
 
