@@ -7,12 +7,13 @@
 llPostProcess(TABLE, TYPE = "")
 }
 \arguments{
-\item{TABLE}{A table output by loadLogs}
+\item{TABLE}{A table output by loadMoiraiStats.  Should at least contain
+a column called \sQuote{samplename}.}
 
-\item{TYPE}{A type of post-processing}
+\item{TYPE}{A type of post-processing.}
 }
 \description{
-Post-process the output of loadLogs.
+Post-process the output of loadMoiraiStats
 }
 \details{
 If the TYPE is \sQuote{C1 CAGE}, the sample names are assumed to be made
@@ -45,7 +46,7 @@ loadMoiraiStats(
 
 }
 \seealso{
-loadLogs
+loadMoiraiStats
 
 Other smallCAGEqc metadata functions: \code{\link{loadMoiraiStats}}
 }

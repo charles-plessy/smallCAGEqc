@@ -1,11 +1,12 @@
 #' llPostProcess
 #' 
-#' Post-process the output of loadLogs.
+#' Post-process the output of loadMoiraiStats
 #' 
-#' @seealso loadLogs
+#' @seealso loadMoiraiStats
 #' 
-#' @param TABLE A table output by loadLogs
-#' @param TYPE A type of post-processing
+#' @param TABLE A table output by loadMoiraiStats.  Should at least contain
+#'        a column called \sQuote{samplename}.
+#' @param TYPE A type of post-processing.
 #' 
 #' @details 
 #' 
@@ -42,6 +43,9 @@
 #' @export llPostProcess
 
 llPostProcess <- function (TABLE, TYPE='') {
+  
+  if(! "samplename" %in% colnames(TABLE))
+    stop('Input table must have a "samplename" column.')
   
   samplesnamesToWell <- function(TABLE) {
     TABLE$Well   <- sub('.*_', '', TABLE$samplename)
