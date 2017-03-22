@@ -286,7 +286,7 @@ QC barplots
 -----------
 
 ```{r qc-barplots, dev=c('svg', 'png')}
-plotAnnot(libs, 'qc', LIBRARY, libs$Group)
+plotAnnot(colData(l1), 'qc', LIBRARY, libs$Group)
 ```
 
 Annotation
