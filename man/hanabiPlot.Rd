@@ -4,19 +4,22 @@
 \alias{hanabiPlot}
 \title{hanabiPlot}
 \usage{
-hanabiPlot(RAR, S, GROUP = NULL, legend.pos = "topleft", pch = 1, ...)
+hanabiPlot(RAR, S, GROUP = NULL, legend.pos = "topleft", pch = 1,
+  col = "black", ...)
 }
 \arguments{
 \item{RAR}{A rarefaction table, or a hanabi object.}
 
 \item{S}{A vector of subsample sizes.}
 
-\item{GROUP}{A vector of factors grouping the samples.}
+\item{GROUP}{A vector grouping the samples.  Coerced to factor.}
 
 \item{legend.pos}{Position of the legend, passed as "x" parameter to the
 "legend" function.}
 
 \item{pch}{Plot character at the tip of the lines.}
+
+\item{col}{A vector of colors}
 
 \item{...}{Further arguments to be passed to the first plot function,
 that plots the empty frame.}
@@ -46,6 +49,8 @@ bed <- loadBED12(bedFiles)
 rar <- tapply(bed$score, bed$library, hanabi, from = 0) \%>\%
          structure(class = "hanabi")  # tapply discards the class !
 hanabiPlot(rar, GROUP = levels(bed$library))
+hanabiPlot(rar, GROUP = levels(bed$library), col=c("red", "green", "blue"))
+hanabiPlot(rar, col="purple")
 
 }
 \seealso{

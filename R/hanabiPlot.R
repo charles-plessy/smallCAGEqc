@@ -155,12 +155,13 @@ plot.hanabi <-
 #' 
 #' @param RAR A rarefaction table, or a hanabi object.
 #' @param S A vector of subsample sizes.
-#' @param GROUP A vector of factors grouping the samples.
+#' @param GROUP A vector grouping the samples.  Coerced to factor.
 #' @param ... Further arguments to be passed to the first plot function,
 #'  that plots the empty frame.
 #' @param legend.pos Position of the legend, passed as "x" parameter to the
 #'        "legend" function.
 #' @param pch Plot character at the tip of the lines.
+#' @param col A vector of colors
 #' 
 #' @seealso vegan, plot.hanabi, hanabi
 #' 
@@ -175,6 +176,8 @@ plot.hanabi <-
 #' rar <- tapply(bed$score, bed$library, hanabi, from = 0) %>%
 #'          structure(class = "hanabi")  # tapply discards the class !
 #' hanabiPlot(rar, GROUP = levels(bed$library))
+#' hanabiPlot(rar, GROUP = levels(bed$library), col=c("red", "green", "blue"))
+#' hanabiPlot(rar, col="purple")
 #' 
 #' @family Hanabi functions
 #' 
@@ -182,7 +185,8 @@ plot.hanabi <-
 #' @export hanabiPlot
 
 hanabiPlot <- function ( RAR, S, GROUP=NULL
-                       , legend.pos = "topleft", pch = 1, ...) {
+                       , legend.pos = "topleft", pch = 1
+                       , col = "black", ...) {
   
   # Accessory function to make the lines a little transparent.
   # See https://gist.github.com/mages/5339689#file-add-alpha-r
@@ -191,21 +195,37 @@ hanabiPlot <- function ( RAR, S, GROUP=NULL
            , 2
            , function(x)
              rgb(x[1], x[2], x[3], alpha=alpha))
+  
+  # Coerce GROUP to factor
+  if (! is.null(GROUP)) GROUP %<>% factor
+  
+  # Take user-provided color, or take group levels as colors.
+  # col is the list of colors
+  # cols is the color of each sample
+  
+  cols <- col
+  
+  if (missing(col) & ! is.null(GROUP)) {
+    col  <- 1:nlevels(GROUP)
+    cols <- as.numeric(GROUP)
+  } else {
+    cols <- col[as.numeric(GROUP)]
+  }
 
   if (class(RAR) == "hanabi") {
+    plot(RAR, pch = pch, col=col, ...)
     if (! is.null(GROUP)) {
-      GROUP %<>% factor
-      col <- as.numeric(GROUP)
-      plot(RAR, col = col, pch = pch, ...)
       legend( x = legend.pos
             , legend = levels(GROUP)
-            , col = 1:nlevels(GROUP)
+            , col = col
             , pch = pch)
-    } else {
-        plot(RAR, pch = pch, ...)
     }
     return(invisible())
   }
+  
+  warning(c( "Running hanabiPlot on non-hanabi objects is deprecated\n"
+           , "This will be removed in after smallCAGEqc 1.0."))
+  
   
   # Accessory function to prepare an empty frame.
   emptyFrame <- function ()
@@ -218,7 +238,7 @@ hanabiPlot <- function ( RAR, S, GROUP=NULL
   rarLines  <- function (X)
     lines( S
         , RAR[X,]
-        , col=add.alpha(as.numeric(GROUP[X]),0.5))
+        , col=add.alpha(cols[X],0.5))
   
   
   # Eliminate data points past a cell's sampling size.
@@ -238,6 +258,6 @@ hanabiPlot <- function ( RAR, S, GROUP=NULL
   emptyFrame()
   sapply( 1:nrow(RAR), rarLines)
   points( x = apply(RAR, 1, function(X) max(S[!is.na(X)])) # sampling sizes for each cell
-          , y = apply(RAR, 1, max, na.rm=T) # num. of detected feat. at max. sampl. size
-          , col=as.numeric(GROUP))
+        , y = apply(RAR, 1, max, na.rm=T) # num. of detected feat. at max. sampl. size
+        , col=cols)
 }
