@@ -9,9 +9,11 @@
 #' <http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2>.
 #' See <http://www.biomedcentral.com/1471-2164/14/665/figure/F1> for example.
 #' 
-#' @param LIBS A data frame with columns named \code{promoter}, \code{exon},
+#' @param LIBS A table with columns named \code{promoter}, \code{exon},
 #'        \code{intron}, \code{mapped}, \code{extracted}, \code{rdna}, and
 #'        \code{tagdust}, that will be passed to the \code{mapStats} function.
+#'        The table will be coerced to a data frame, so that Bioconductor's
+#'        DataFrame objects can be used.
 #' @param SCOPE The value on which to normalise (see the plotAnnot vignette).
 #' @param TITLE The title of the plot.
 #' @param customScope A function passed to \code{\link{mapStats}} for the
@@ -31,6 +33,9 @@
 #' p + ggplot2::theme_bw()
 #' ggplot2::theme_set(ggplot2::theme_bw()) ; p
 #' plotAnnot(libs, 'qc', 'Same, non-normalised', normalise = FALSE)
+#' # Test coercion to data frame
+#' if(require("S4Vectors"))
+#'   plotAnnot(DataFrame(libs), 'qc', 'Here is the title')
 
 plotAnnot <- function( LIBS
                      , SCOPE
@@ -43,6 +48,8 @@ plotAnnot <- function( LIBS
 # The only difference is `position = position_stack(reverse = TRUE)`.
 # See <https://github.com/tidyverse/ggplot2/issues/1837>
 # No time for something beautiful.
+  
+LIBS <- data.frame(LIBS, check.names = FALSE)
 
 if (packageVersion("ggplot2") >= "2.2.0") {
   ggplot( mapStats(LIBS, scope=SCOPE, group=GROUP, customScope = customScope, normalise = normalise)

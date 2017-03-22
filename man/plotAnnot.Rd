@@ -8,9 +8,11 @@ plotAnnot(LIBS, SCOPE, TITLE, GROUP = "default", customScope = NULL,
   normalise = TRUE)
 }
 \arguments{
-\item{LIBS}{A data frame with columns named \code{promoter}, \code{exon},
+\item{LIBS}{A table with columns named \code{promoter}, \code{exon},
 \code{intron}, \code{mapped}, \code{extracted}, \code{rdna}, and
-\code{tagdust}, that will be passed to the \code{mapStats} function.}
+\code{tagdust}, that will be passed to the \code{mapStats} function.
+The table will be coerced to a data frame, so that Bioconductor's
+DataFrame objects can be used.}
 
 \item{SCOPE}{The value on which to normalise (see the plotAnnot vignette).}
 
@@ -37,6 +39,9 @@ print(p)
 p + ggplot2::theme_bw()
 ggplot2::theme_set(ggplot2::theme_bw()) ; p
 plotAnnot(libs, 'qc', 'Same, non-normalised', normalise = FALSE)
+# Test coercion to data frame
+if(require("S4Vectors"))
+  plotAnnot(DataFrame(libs), 'qc', 'Here is the title')
 }
 \seealso{
 \code{\link{loadLogs}}
