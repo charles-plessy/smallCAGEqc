@@ -293,7 +293,7 @@ Annotation
 ----------
 
 ```{r annotation-barplots, dev=c('svg', 'png')}
-plotAnnot(colData(l1), 'counts', LIBRARY)
+plotAnnot(colData(l1), 'counts', LIBRARY, l1$Group)
 ```
 
 Correlation between runs
