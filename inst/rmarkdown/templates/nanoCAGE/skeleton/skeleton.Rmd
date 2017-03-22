@@ -188,27 +188,27 @@ Cell pictures
 -------------
 
 ```{r load_fluo_data}
-read.fluo <- function(RUN) read.delim( paste0("../imageJ/", RUN, ".txt")
-                                     , row.names="cell_id"
-                                     , stringsAsFactors = FALSE)
-fluo <- rbind(read.fluo(RunA), read.fluo(RunB))
-libs <- cbind(libs, subset(fluo,,c("mean_ch2", "bg_mean_ch2", "mean_ch3", "bg_mean_ch3", "Error", "Comment")))
-libs$Error <- factor( libs$Error
-                    , levels=c("0-No Error", "1-No cell", "2-Debris", "3-OutOfFocus", "4-MultipleCells", "5-Control", "6-Dead"))
+# read.fluo <- function(RUN) read.delim( paste0("../imageJ/", RUN, ".txt")
+#                                      , row.names="cell_id"
+#                                      , stringsAsFactors = FALSE)
+# fluo <- rbind(read.fluo(RunA), read.fluo(RunB))
+# libs <- cbind(libs, subset(fluo,,c("mean_ch2", "bg_mean_ch2", "mean_ch3", "bg_mean_ch3", "Error", "Comment")))
+# libs$Error <- factor( libs$Error
+#                     , levels=c("0-No Error", "1-No cell", "2-Debris", "3-OutOfFocus", "4-MultipleCells", "5-Control", "6-Dead"))
 ```
 
 A hardocoded treshold of 2.5 is used to identify dead cells.  The histogram
 below is to check if this value makes sense in this dataset.
 
 ```{r dead-cells, dev=c('svg', 'png'), fig.height=2.5}
-hist( libs$mean_ch3 - libs$bg_mean_ch3
-    , br   = 100
-    , main = "Current threshold for identifying dead cells"
-    , xlab = "mean_ch3 - bg_mean_ch3" )
-deadThresh <- 2.5
-abline(v=deadThresh, col="red")
-
-libs[libs$mean_ch3 - libs$bg_mean_ch3 > deadThresh, "Error"] <- "6-Dead"
+# hist( libs$mean_ch3 - libs$bg_mean_ch3
+#     , br   = 100
+#     , main = "Current threshold for identifying dead cells"
+#     , xlab = "mean_ch3 - bg_mean_ch3" )
+# deadThresh <- 2.5
+# abline(v=deadThresh, col="red")
+# 
+# libs[libs$mean_ch3 - libs$bg_mean_ch3 > deadThresh, "Error"] <- "6-Dead"
 ```
 
 Controls
@@ -243,15 +243,15 @@ Combined analysis of fluorescence and cDNA concentration.
 ### Array heatmaps.
 
 ```{r define_fldgmArrayQCplot}
-fldgmArrayQCplot <- function(RUN) fldgmArrayQC(libs[libs$Run==RUN,], RUN)
+# fldgmArrayQCplot <- function(RUN) fldgmArrayQC(libs[libs$Run==RUN,], RUN)
 ```
 
 ```{r 'runA.arrayQC', dev=c('svg', 'png'), fig.height=2.5}
-fldgmArrayQCplot(RunA)
+# fldgmArrayQCplot(RunA)
 ```
 
 ```{r 'runB.arrayQC', dev=c('svg', 'png'), fig.height=2.5}
-fldgmArrayQCplot(RunB)
+# fldgmArrayQCplot(RunB)
 ```
 
 ### Live / dead stain and DNA concentration.
@@ -260,8 +260,8 @@ Both runs are plotted together; this explains why there may be two groups, when 
 yields differed strongly. 
 
 ```{r live-dead, dev=c('svg', 'png')}
-with(libs, plotNameColor(Concentration, mean_ch2 - bg_mean_ch2, Error, Well))
-with(libs, plotNameColor(Concentration, mean_ch3 - bg_mean_ch3, Error, Well))
+# with(libs, plotNameColor(Concentration, mean_ch2 - bg_mean_ch2, Error, Well))
+# with(libs, plotNameColor(Concentration, mean_ch3 - bg_mean_ch3, Error, Well))
 ```
 
 Richness
@@ -275,11 +275,11 @@ Analysis
 ========
 
 ```{r richness-concentration, dev=c('svg', 'png')}
-with(libs, plotNameColor(Concentration, r100l1, Error, Well))
+# with(libs, plotNameColor(Concentration, r100l1, Error, Well))
 ```
 
 ```{r richness-outliers, dev=c('svg', 'png')}
-with(subset(libs, Error == "0-No Error"), plotNameColor(Concentration, r100l1, Run, Well))
+# with(subset(libs, Error == "0-No Error"), plotNameColor(Concentration, r100l1, Run, Well))
 ```
 
 QC barplots
