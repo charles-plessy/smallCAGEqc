@@ -11,6 +11,8 @@ NEW FEATURES
    o New vignette (plotAnnot) explaining the graphs produced by plotAnnot().
    o mapStats() and thus plotAnnot() have a new parameter, "normalise",
      which will turn off normalisation when set to FALSE.
+   o New function chrFreqs() to count features per chromosome.
+   o New `col` (color) option for hanabiPlot().
 
 DEPRECATED FEATURES
 
@@ -26,6 +28,8 @@ OTHER CHANGES
    o The smallCAGEqc Rmarkdown template now uses hanabi() everywhere.
    o mapStats() and therefore plotAnnot() will search for a "groups" column with
      or without a capital G.
+   o plotAnnot() and fldgmConcentrationPlot() now coerce their input to data
+     frames, thus accepts Bioconductor's DataFrames.
    
 BUG FIXES
 
