@@ -152,6 +152,8 @@ CTSStagCountSE <- function (object){
 
 ```{r make-ctss-data-frame}
 l1  <- CTSStagCountSE(myCAGEset)
+colnames(l1) <- samplenames
+colData(l1) <- libs %>% DataFrame
 l1$counts <- colSums(assay(l1))
 l1$l1     <- colSums(assay(l1) > 0)
 ```
