@@ -234,7 +234,7 @@ read.pg <- function(RUN)
     fldgmPicoGreen("PN 100-6160") %>%
     extract(,"concentration")
 l1$Concentration <- c(read.pg(RunA), read.pg(RunB))
-fldgmConcentrationPlot(colData)l1)
+fldgmConcentrationPlot(colData(l1))
 ```
 
 Combined analysis of fluorescence and cDNA concentration.
@@ -301,7 +301,7 @@ Correlation between runs
 
 ```{r correlation-heatmap, dev=c('svg', 'png')}
 NMF::aheatmap( cor(genes[-1, ])
-             , annCol=list(Run=libs$Ru))
+             , annCol=list(Run=l1$Run))
 ```
 
 ```{r correlation-heatmap-noerrors, dev=c('svg', 'png')}
