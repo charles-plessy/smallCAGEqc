@@ -341,8 +341,6 @@ Rarefaction (hanabi plot).
 
 The purpose of these plots is to ease the comparison of the libraries given that they do not have exactly the same sequencing depth, and to evaluate if extra sequencing depth would be useful.
 
-FIXME: dark orange !
-
 The data is rarefied with enough sampling points to give a smooth appearance to
 the curves.  If it takes too much time, the output can be stored in an object
 saved on the hard drive.  This way, if the commands have been run through knitr,
