@@ -152,8 +152,8 @@ CTSStagCountSE <- function (object){
 
 ```{r make-ctss-data-frame}
 l1  <- CTSStagCountSE(myCAGEset)
-colData(l1)$counts <- colSums(assay(l1))
-colData(l1)$l1     <- colSums(assay(l1) > 0)
+l1$counts <- colSums(assay(l1))
+l1$l1     <- colSums(assay(l1) > 0)
 ```
 
 Annotation with GENCODE
@@ -170,8 +170,8 @@ gff
 
 rowRanges(l1)$genes  <- ranges2genes(rowRanges(l1), gff)
 genes <- rowsum(assay(l1), rowRanges(l1)$genes) %>% data.frame
-colData(l1)$genes <- colSums(genes > 0)
-colData(l1)$geneSymbols <- countSymbols(genes)
+l1$genes <- colSums(genes > 0)
+l1$geneSymbols <- countSymbols(genes)
 ```
 
 ### Promoter, Exon, Intron, ...
@@ -179,19 +179,8 @@ colData(l1)$geneSymbols <- countSymbols(genes)
 ```{r annotation}
 rowRanges(l1)$annotation <- ranges2annot(rowRanges(l1), gff)
 
-colData(l1)[levels(rowRanges(l1)$annotation)] <-
-  rowsum(assay(l1), rowRanges(l1)$annotation) %>% t %>% DataFrame
+colData(l1) %<>% cbind(rowsum(assay(l1), rowRanges(l1)$annotation) %>% t %>% DataFrame)
 ```
-
-
-Gene count
-----------
-
-```{r genesymbols_l1}
-colData(l1)$genes <- colSums(genes > 0)
-colData(l1)$geneSymbols <- countSymbols(genes) # Not the same!
-```
-
 
 Cell pictures
 -------------
