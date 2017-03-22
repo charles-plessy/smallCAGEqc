@@ -10,6 +10,15 @@ you if we are not working together already.  It installs a Rmarkdown
 
   [template]: https://raw.githubusercontent.com/charles-plessy/smallCAGEqc/master/inst/rmarkdown/templates/nanoCAGE/skeleton/skeleton.Rmd
 
+Need help ?
+-----------
+
+Install the package (see below) and run the following:
+
+```
+help(package=smallCAGEqc)
+```
+
 Installation on Linux computers
 -------------------------------
 
