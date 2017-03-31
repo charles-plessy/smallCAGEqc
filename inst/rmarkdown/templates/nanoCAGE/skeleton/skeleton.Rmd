@@ -68,22 +68,22 @@ Data load and QC in R
 =====================
 
 ```{r load_R_libraries, message=F}
-library(AnnotationHub)
+library("AnnotationHub")
 library(BS_GENOME, character.only = T)
-library(CAGEr)
-library(data.table)
-library(ggplot2)
-library(magrittr)
-library(oscR)
-library(plyr)
-library(smallCAGEqc)
+library("CAGEr")
+library("data.table")
+library("ggplot2")
+library("magrittr")
+library("oscR")
+library("plyr")
+library("smallCAGEqc")
 stopifnot(
     packageVersion("oscR") >= "0.2.0"
   , packageVersion("smallCAGEqc") >= "1"
 )
-library(SummarizedExperiment)
-library(reshape)
-library(vegan)
+library("SummarizedExperiment")
+library("reshape")
+library("vegan")
 ```
 
 
