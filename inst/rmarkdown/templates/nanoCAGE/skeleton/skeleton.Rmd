@@ -104,7 +104,8 @@ Transcript counts (properly paired)
 -----------------------------------
 
 ```{r load-ctss-from-bed-files}
-pathsToInputFiles <- list.files(MOIRAI_FRAGS, "*.bed", full.names = TRUE)
+pathsToInputFiles <- list.files(MOIRAI_FRAGS, "*.bed", full.names = TRUE) %>%
+  Filter(f = function(file) file.size(file) > 0)
 samplenames <- basename(pathsToInputFiles) %>% sub(".bed", "", .)
 myCAGEset <- new( "CAGEset"
                 , genomeName = BS_GENOME
