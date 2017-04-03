@@ -213,7 +213,7 @@ hanabiPlot <- function ( RAR, S, GROUP=NULL
   }
 
   if (class(RAR) == "hanabi") {
-    plot(RAR, pch = pch, col=col, ...)
+    plot(RAR, pch = pch, col = cols, ...)
     if (! is.null(GROUP)) {
       legend( x = legend.pos
             , legend = levels(GROUP)
