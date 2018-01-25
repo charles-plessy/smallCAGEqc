@@ -13,4 +13,3 @@ Ad-hoc functions to QC shallow-sequenced libraries, for instance from MiSeq.
 
 Under construction
 }
-

@@ -37,4 +37,3 @@ TPM(data.frame(A=c(1,0,3), b=c(2,5,9)), margin = 1)
 \seealso{
 prop.table
 }
-

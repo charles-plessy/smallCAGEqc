@@ -65,4 +65,3 @@ libs$group <- libs$samplename \%>\% sub("Run._", "", .) \%>\% substr(1,1) \%>\% 
 \seealso{
 \code{\link{hierarchAnnot}}, \code{\link{mapStats}}
 }
-

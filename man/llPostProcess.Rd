@@ -50,4 +50,3 @@ loadMoiraiStats
 
 Other smallCAGEqc metadata functions: \code{\link{loadMoiraiStats}}
 }
-

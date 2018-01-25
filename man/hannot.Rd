@@ -55,4 +55,3 @@ Other smallCAGEqc annotation functions: \code{\link{hierarchAnnot}},
   \code{\link{mapStats}}, \code{\link{plotAnnot}},
   \code{\link{ranges2annot}}, \code{\link{ranges2genes}}
 }
-

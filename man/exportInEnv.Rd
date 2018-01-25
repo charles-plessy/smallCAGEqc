@@ -31,4 +31,3 @@ toto <- "tata"
 exportInEnv("foo", "toto")
 
 }
-

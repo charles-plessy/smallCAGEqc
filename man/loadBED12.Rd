@@ -53,4 +53,3 @@ loadBED12(c(fileA, fileB, fileC))
 \seealso{
 \code{\link{bedFieldNames}}, \code{\link{data.table}}
 }
-

@@ -49,4 +49,3 @@ Other smallCAGEqc annotation functions: \code{\link{hannot}},
   \code{\link{mapStats}}, \code{\link{plotAnnot}},
   \code{\link{ranges2annot}}, \code{\link{ranges2genes}}
 }
-

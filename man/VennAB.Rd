@@ -40,4 +40,3 @@ VennAB( "Name of group A", groupA
 }
 
 }
-

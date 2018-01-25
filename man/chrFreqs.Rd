@@ -30,4 +30,3 @@ if(require(rtracklayer, quietly = TRUE)) {
 }
 
 }
-

@@ -47,4 +47,3 @@ hanabiPlot(rar, GROUP = levels(bed$library))
 Other Hanabi functions: \code{\link{hanabiPlot}},
   \code{\link{plot.hanabi}}, \code{\link{points.hanabi}}
 }
-

@@ -26,4 +26,3 @@ experimental design, etc.
 Currently the plot colors are hardocded.  Dark green, cyan and yellow
 are used because the light versions are hard to see on a screen.
 }
-

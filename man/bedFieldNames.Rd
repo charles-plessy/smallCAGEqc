@@ -19,4 +19,3 @@ See \url{http://www.genome.ucsc.edu/FAQ/FAQformat.html#format1 for details}.
 bedFieldNames(6)
 
 }
-

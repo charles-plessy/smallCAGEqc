@@ -34,4 +34,3 @@ countSymbols(exp.tbl)
 \seealso{
 code{\link{listSymbols}}
 }
-

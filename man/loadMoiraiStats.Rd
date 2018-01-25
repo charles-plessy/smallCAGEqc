@@ -64,4 +64,3 @@ libs$group <- libs$samplename \%>\% sub("Run._", "", .) \%>\% substr(1,1) \%>\% 
 
 Other smallCAGEqc metadata functions: \code{\link{llPostProcess}}
 }
-

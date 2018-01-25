@@ -29,4 +29,3 @@ fldgmArrayQCplot(RunB)
 
 export fldgmArrayQC
 }
-

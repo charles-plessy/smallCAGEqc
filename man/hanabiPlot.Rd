@@ -59,4 +59,3 @@ vegan, plot.hanabi, hanabi
 Other Hanabi functions: \code{\link{hanabi}},
   \code{\link{plot.hanabi}}, \code{\link{points.hanabi}}
 }
-

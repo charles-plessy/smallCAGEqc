@@ -24,4 +24,3 @@ Reads standard curve from fluorometric measures entered in a template Excel shee
 \seealso{
 fldgmPicoGreen
 }
-

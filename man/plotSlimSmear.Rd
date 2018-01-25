@@ -40,4 +40,3 @@ plotSlimSmear(obj.comp, 'Here is the title')
 \seealso{
 \code{\link[edgeR]{plotSmear}}
 }
-

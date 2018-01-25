@@ -37,4 +37,3 @@ to retreive the data from the Internet or a local file.
 \seealso{
 loadMoiraiStats
 }
-
