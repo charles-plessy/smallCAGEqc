@@ -13,8 +13,5 @@
 #' @references Poulain S, Kato S, Arnaud O, Morlighem JÉ, Suzuki M, Plessy C,
 #'   Harbers M. NanoCAGE: A Method for the Analysis of Coding and Noncoding
 #'   5'-Capped Transcriptomes. Methods Mol Biol. 2017 1543:57-109
-#'
-#' @examples
-#' nanoCAGE2017barcodes
 
 "nanoCAGE2017barcodes"

@@ -15,9 +15,6 @@ oligonucleotide.  A list of 96 barcodes, was published in Poulain \emph{et
 al.}, 2017.  The barcodes were selected to avoid palindromes, polynucleotide
 tracts, and sequence similarity.
 }
-\examples{
-nanoCAGE2017barcodes
-}
 \references{
 Poulain S, Kato S, Arnaud O, Morlighem JÉ, Suzuki M, Plessy C,
   Harbers M. NanoCAGE: A Method for the Analysis of Coding and Noncoding
