@@ -13,6 +13,10 @@ NEW FEATURES
      which will turn off normalisation when set to FALSE.
    o New function chrFreqs() to count features per chromosome.
    o New `col` (color) option for hanabiPlot().
+   o New Rmarkdown template to analyse cDNA yields in C1 CAGE experiments.
+   o New "C1 96" mode for llPostProcess(), deprecating the "C1 CAGE" mode. 
+   o New lazy-loaded "nanoCAGE2017barcodes" dataset, providing the sequence
+     of the 96 barcodes published in Poulain et al., 2017.
 
 DEPRECATED FEATURES
 
@@ -30,6 +34,8 @@ OTHER CHANGES
      or without a capital G.
    o plotAnnot() and fldgmConcentrationPlot() now coerce their input to data
      frames, thus accepts Bioconductor's DataFrames.
+   o llPostProcess() now checks for the presence of a "samplename" column.
+   o listSymbols() now returns NULL when no symbol was found.
    
 BUG FIXES
 
